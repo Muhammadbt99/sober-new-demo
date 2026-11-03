@@ -1,0 +1,352 @@
+{
+  "version": "2026.10.29-1",
+  "created_at": "2026-10-29T04:53:59.020353+00:00",
+  "status": "approved",
+  "target": "expected injury-or-fatal crashes per km2 per hour",
+  "resolution": 8,
+  "features": [
+    "hist_rate",
+    "housing_density",
+    "lat",
+    "lon",
+    "borough_code",
+    "hour",
+    "day_of_week",
+    "month",
+    "is_weekend",
+    "is_holiday",
+    "is_covid",
+    "temperature",
+    "rain",
+    "wind_speed"
+  ],
+  "training_window": {
+    "start": "2020-01-01 00:00:00",
+    "end": "2026-06-11 13:00:00",
+    "crashes": 192219
+  },
+  "split": {
+    "train_end": "2025-01-01",
+    "validation_end": "2026-01-01",
+    "train_rows": 1451754,
+    "validation_rows": 297944,
+    "test_rows": 130745,
+    "holdout_borough": "BROOKLYN"
+  },
+  "selected_config": {
+    "name": "poisson_deep",
+    "learning_rate": 0.05,
+    "max_iter": 250,
+    "max_leaf_nodes": 63,
+    "min_samples_leaf": 20,
+    "l2_regularization": 2.0
+  },
+  "baseline": {
+    "type": "empirical_bayes_cell_hour_of_week",
+    "shrink_hours": 1.0,
+    "temporal_test": {
+      "name": "eb_shrink_1.0",
+      "poisson_deviance": 0.04669135315909034,
+      "mae": 0.006955013864783079,
+      "calibration": [
+        {
+          "decile": 1,
+          "predicted_rate": 1.409042304659209e-06,
+          "observed_rate": 0.0005451590848011317,
+          "lift": 0.15917918495131772
+        },
+        {
+          "decile": 2,
+          "predicted_rate": 3.427792933178947e-06,
+          "observed_rate": 0.0009514882278937922,
+          "lift": 0.2778218777408019
+        },
+        {
+          "decile": 3,
+          "predicted_rate": 6.149280223573493e-06,
+          "observed_rate": 0.0014920023492019624,
+          "lift": 0.4356447952766955
+        },
+        {
+          "decile": 4,
+          "predicted_rate": 9.858676142871306e-06,
+          "observed_rate": 0.0020300422797176858,
+          "lift": 0.5927452820859702
+        },
+        {
+          "decile": 5,
+          "predicted_rate": 1.567525854972704e-05,
+          "observed_rate": 0.0024923676822990533,
+          "lift": 0.7277381361297356
+        },
+        {
+          "decile": 6,
+          "predicted_rate": 0.0006656629287124221,
+          "observed_rate": 0.0032128826303104035,
+          "lift": 0.9381188953745822
+        },
+        {
+          "decile": 7,
+          "predicted_rate": 0.0034816145937974154,
+          "observed_rate": 0.003986815305683184,
+          "lift": 1.1640969188683516
+        },
+        {
+          "decile": 8,
+          "predicted_rate": 0.005434142433589925,
+          "observed_rate": 0.005101768386511138,
+          "lift": 1.4896483544275632
+        },
+        {
+          "decile": 9,
+          "predicted_rate": 0.008850590418392576,
+          "observed_rate": 0.007303172641689224,
+          "lift": 2.1324290488287927
+        },
+        {
+          "decile": 10,
+          "predicted_rate": 0.022243700139800378,
+          "observed_rate": 0.009327826829962974,
+          "lift": 2.7236010800446953
+        }
+      ],
+      "monotonic_deciles": true,
+      "top_decile_lift": 2.7236010800446953,
+      "base_rate": 0.003424813897419185
+    },
+    "holdout": {
+      "name": "eb_holdout",
+      "poisson_deviance": 0.05691732831388337,
+      "mae": 0.0076969205974572255,
+      "calibration": [
+        {
+          "decile": 1,
+          "predicted_rate": 0.0006719419790756888,
+          "observed_rate": 0.0012312655534251265,
+          "lift": 0.23268167671423362
+        },
+        {
+          "decile": 2,
+          "predicted_rate": 0.0011080946107391316,
+          "observed_rate": 0.0021750922891048997,
+          "lift": 0.41104383975434994
+        },
+        {
+          "decile": 3,
+          "predicted_rate": 0.0017162580117713615,
+          "observed_rate": 0.0036898103536037448,
+          "lift": 0.6972917072566079
+        },
+        {
+          "decile": 4,
+          "predicted_rate": 0.0021133089365012432,
+          "observed_rate": 0.004806377703044102,
+          "lift": 0.9082979863727796
+        },
+        {
+          "decile": 5,
+          "predicted_rate": 0.0024236086965831512,
+          "observed_rate": 0.00534259854766934,
+          "lift": 1.0096317440414175
+        },
+        {
+          "decile": 6,
+          "predicted_rate": 0.0026424627922058985,
+          "observed_rate": 0.006054539087640785,
+          "lift": 1.1441725976376
+        },
+        {
+          "decile": 7,
+          "predicted_rate": 0.0028886715795925547,
+          "observed_rate": 0.006307834895821346,
+          "lift": 1.1920398454365728
+        },
+        {
+          "decile": 8,
+          "predicted_rate": 0.0031875531273000165,
+          "observed_rate": 0.007040816970303649,
+          "lift": 1.3305570788778727
+        },
+        {
+          "decile": 9,
+          "predicted_rate": 0.0035837065317031887,
+          "observed_rate": 0.007675322355091729,
+          "lift": 1.4504644184489364
+        },
+        {
+          "decile": 10,
+          "predicted_rate": 0.004190466839082746,
+          "observed_rate": 0.00897087502797404,
+          "lift": 1.6952949242316147
+        }
+      ],
+      "monotonic_deciles": true,
+      "top_decile_lift": 1.6952949242316147,
+      "base_rate": 0.005291630913152206
+    }
+  },
+  "model_metrics": {
+    "temporal_test": {
+      "name": "poisson_deep",
+      "poisson_deviance": 0.03543602717403411,
+      "mae": 0.006479818075356072,
+      "calibration": [
+        {
+          "decile": 1,
+          "predicted_rate": 7.493697432367385e-05,
+          "observed_rate": 9.868637470119958e-05,
+          "lift": 0.02881510577131389
+        },
+        {
+          "decile": 2,
+          "predicted_rate": 0.0002904651108718728,
+          "observed_rate": 0.000390577119244441,
+          "lift": 0.11404331182455364
+        },
+        {
+          "decile": 3,
+          "predicted_rate": 0.0006327751034038455,
+          "observed_rate": 0.0007512647341883675,
+          "lift": 0.21935928686650485
+        },
+        {
+          "decile": 4,
+          "predicted_rate": 0.0010565678116102096,
+          "observed_rate": 0.001194525270584548,
+          "lift": 0.34878545414823814
+        },
+        {
+          "decile": 5,
+          "predicted_rate": 0.0016763144861742449,
+          "observed_rate": 0.0020369660205031117,
+          "lift": 0.5947669220911813
+        },
+        {
+          "decile": 6,
+          "predicted_rate": 0.002581136782275736,
+          "observed_rate": 0.0029267585469504626,
+          "lift": 0.854574477508387
+        },
+        {
+          "decile": 7,
+          "predicted_rate": 0.0037500753130632006,
+          "observed_rate": 0.004224543463416824,
+          "lift": 1.2335103716439266
+        },
+        {
+          "decile": 8,
+          "predicted_rate": 0.005145304567869052,
+          "observed_rate": 0.005936798609353673,
+          "lift": 1.7334660472580503
+        },
+        {
+          "decile": 9,
+          "predicted_rate": 0.007141679028292963,
+          "observed_rate": 0.008102897977629645,
+          "lift": 2.3659381853524053
+        },
+        {
+          "decile": 10,
+          "predicted_rate": 0.012731671392563043,
+          "observed_rate": 0.012783649052841474,
+          "lift": 3.732655097690057
+        }
+      ],
+      "monotonic_deciles": true,
+      "top_decile_lift": 3.732655097690057,
+      "base_rate": 0.003424813897419185
+    },
+    "holdout": {
+      "name": "poisson_deep_holdout",
+      "poisson_deviance": 0.05536796610667367,
+      "mae": 0.00833684433975499,
+      "calibration": [
+        {
+          "decile": 1,
+          "predicted_rate": 0.0005900140211239006,
+          "observed_rate": 0.0010848541269079884,
+          "lift": 0.20501318869606205
+        },
+        {
+          "decile": 2,
+          "predicted_rate": 0.0010201601333984741,
+          "observed_rate": 0.0021968664538797185,
+          "lift": 0.4151586703485812
+        },
+        {
+          "decile": 3,
+          "predicted_rate": 0.0014055845933157044,
+          "observed_rate": 0.0027624765740150987,
+          "lift": 0.522046344379204
+        },
+        {
+          "decile": 4,
+          "predicted_rate": 0.0018171292537718718,
+          "observed_rate": 0.0037436335121444697,
+          "lift": 0.7074630815312098
+        },
+        {
+          "decile": 5,
+          "predicted_rate": 0.0023056672087713535,
+          "observed_rate": 0.005002618938897574,
+          "lift": 0.945383194898136
+        },
+        {
+          "decile": 6,
+          "predicted_rate": 0.002889730726179294,
+          "observed_rate": 0.005787141977257876,
+          "lift": 1.093640518818894
+        },
+        {
+          "decile": 7,
+          "predicted_rate": 0.0035468112281513736,
+          "observed_rate": 0.0061695239727387295,
+          "lift": 1.1659021715601032
+        },
+        {
+          "decile": 8,
+          "predicted_rate": 0.0043589852615756545,
+          "observed_rate": 0.007335388323637797,
+          "lift": 1.3862244824002912
+        },
+        {
+          "decile": 9,
+          "predicted_rate": 0.0054879417429110535,
+          "observed_rate": 0.008883510968047053,
+          "lift": 1.6787850690733788
+        },
+        {
+          "decile": 10,
+          "predicted_rate": 0.007899611235079882,
+          "observed_rate": 0.010529291337971938,
+          "lift": 1.989800783686872
+        }
+      ],
+      "monotonic_deciles": true,
+      "top_decile_lift": 1.989800783686872,
+      "base_rate": 0.005291630913152206
+    }
+  },
+  "gate": {
+    "temporal_deviance_beats_baseline": true,
+    "holdout_deviance_beats_baseline": true,
+    "top_decile_lift_at_least_2x": true,
+    "deciles_monotonic": true,
+    "passed": true
+  },
+  "prior_rate": 0.003037756113472523,
+  "cell_count": 1120,
+  "percentile_reference_size": 188160,
+  "density_source": {
+    "provider": "NYC Open Data",
+    "dataset": "Housing Database by 2020 NTA (kyz5-72x5)",
+    "field": "cenunits20",
+    "interpretation": "2020 census housing units per km2 in the containing NTA"
+  },
+  "notes": [
+    "Weather is a minor feature and may be missing; NaN is passed through.",
+    "Property-damage-only crashes are excluded from the target.",
+    "The historical-rate feature only uses years before each row's year.",
+    "Housing density is external, non-crash data; it is what lets the model transfer to a held-out borough."
+  ]
+}

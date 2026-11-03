@@ -1,0 +1,871 @@
+{
+  "model": "HistGradientBoostingClassifier",
+  "model_configuration": "hist_gb_fatal30",
+  "status": "research only - needs post-crash attributes, so it is excluded from /risk",
+  "experimental": true,
+  "target": "crash_severity",
+  "classes": [
+    "property_damage_only",
+    "injury_likely",
+    "fatal_risk"
+  ],
+  "features": [
+    "hour",
+    "is_weekend",
+    "month",
+    "is_night",
+    "is_rush_hour",
+    "lat",
+    "lon",
+    "borough_code",
+    "n_vehicles",
+    "n_factors",
+    "is_bicycle",
+    "is_ebike",
+    "is_scooter",
+    "is_motorcycle",
+    "is_truck",
+    "is_bus",
+    "is_van",
+    "is_taxi",
+    "is_suv",
+    "is_sedan",
+    "is_other",
+    "factor_unsafe_speed",
+    "factor_alcohol",
+    "factor_distraction",
+    "factor_failure_to_yield",
+    "factor_following_too_closely",
+    "factor_lane_usage",
+    "factor_traffic_control",
+    "factor_backing",
+    "factor_turning",
+    "factor_inexperience",
+    "factor_view_obstructed",
+    "factor_aggressive",
+    "factor_slippery",
+    "factor_asleep",
+    "factor_brakes",
+    "factor_pedestrian_error"
+  ],
+  "context_features": [
+    "hour",
+    "is_weekend",
+    "month",
+    "is_night",
+    "is_rush_hour",
+    "lat",
+    "lon",
+    "borough_code"
+  ],
+  "dataset": {
+    "source": "NYC Open Data h9gi-nx95 - Motor Vehicle Collisions - Crashes",
+    "file": "nyc_crashes_rich.csv.gz",
+    "rows_used": 496392,
+    "date_range": [
+      "2020-01-01",
+      "2026-06-11"
+    ],
+    "class_counts": {
+      "property_damage_only": 304173,
+      "injury_likely": 191037,
+      "fatal_risk": 1182
+    },
+    "class_share": {
+      "property_damage_only": 0.612768,
+      "injury_likely": 0.384851,
+      "fatal_risk": 0.002381
+    }
+  },
+  "split": {
+    "train": 347473,
+    "validation": 49640,
+    "test": 99279,
+    "train_final": 397113
+  },
+  "training_records": 397113,
+  "n_folds": 5,
+  "cv_accuracy_mean": 0.6809,
+  "cv_accuracy_std": 0.0009,
+  "cv_scores_per_fold": [
+    0.6803,
+    0.6825,
+    0.6801,
+    0.6807,
+    0.6811
+  ],
+  "cv_macro_f1_mean": 0.4159,
+  "cv_macro_f1_std": 0.0032,
+  "cv_macro_f1_per_fold": [
+    0.4099,
+    0.4154,
+    0.4186,
+    0.418,
+    0.4177
+  ],
+  "cv_fatal_recall_mean": 0.044,
+  "accuracy": 0.6811,
+  "balanced_accuracy": 0.4332,
+  "macro_f1": 0.4223,
+  "baseline_accuracy": 0.6128,
+  "baseline_macro_f1": 0.2533,
+  "majority_class_share": 0.6128,
+  "roc_auc_macro": 0.7315,
+  "fatal_pr_auc": 0.0161,
+  "brier_score": 0.41761,
+  "per_class_recall": {
+    "property_damage_only": 0.9144,
+    "injury_likely": 0.3133,
+    "fatal_risk": 0.072
+  },
+  "per_class_precision": {
+    "property_damage_only": 0.6802,
+    "injury_likely": 0.6998,
+    "fatal_risk": 0.0433
+  },
+  "per_class_f1": {
+    "property_damage_only": 0.7801,
+    "injury_likely": 0.4328,
+    "fatal_risk": 0.0541
+  },
+  "confusion_matrix": [
+    [
+      55628,
+      5060,
+      147
+    ],
+    [
+      26009,
+      11970,
+      229
+    ],
+    [
+      144,
+      75,
+      17
+    ]
+  ],
+  "candidate_comparison": [
+    {
+      "name": "dummy_majority",
+      "accuracy": 0.6128,
+      "balanced_accuracy": 0.3333,
+      "macro_f1": 0.2533,
+      "roc_auc_macro": 0.5,
+      "fatal_pr_auc": 0.0024,
+      "brier_score": 0.77446,
+      "per_class_recall": {
+        "property_damage_only": 1.0,
+        "injury_likely": 0.0,
+        "fatal_risk": 0.0
+      },
+      "per_class_precision": {
+        "property_damage_only": 0.6128,
+        "injury_likely": 0.0,
+        "fatal_risk": 0.0
+      },
+      "per_class_f1": {
+        "property_damage_only": 0.7599,
+        "injury_likely": 0.0,
+        "fatal_risk": 0.0
+      },
+      "confusion_matrix": [
+        [
+          30418,
+          0,
+          0
+        ],
+        [
+          19104,
+          0,
+          0
+        ],
+        [
+          118,
+          0,
+          0
+        ]
+      ],
+      "predict_seconds": 0.0,
+      "fit_seconds": 0.0
+    },
+    {
+      "name": "logreg_balanced",
+      "accuracy": 0.4924,
+      "balanced_accuracy": 0.5242,
+      "macro_f1": 0.3575,
+      "roc_auc_macro": 0.6803,
+      "fatal_pr_auc": 0.0476,
+      "brier_score": 0.59666,
+      "per_class_recall": {
+        "property_damage_only": 0.5572,
+        "injury_likely": 0.3882,
+        "fatal_risk": 0.6271
+      },
+      "per_class_precision": {
+        "property_damage_only": 0.7029,
+        "injury_likely": 0.5,
+        "fatal_risk": 0.0069
+      },
+      "per_class_f1": {
+        "property_damage_only": 0.6217,
+        "injury_likely": 0.4371,
+        "fatal_risk": 0.0137
+      },
+      "confusion_matrix": [
+        [
+          16950,
+          7402,
+          6066
+        ],
+        [
+          7135,
+          7417,
+          4552
+        ],
+        [
+          29,
+          15,
+          74
+        ]
+      ],
+      "predict_seconds": 0.05,
+      "fit_seconds": 1.8
+    },
+    {
+      "name": "random_forest_balanced",
+      "accuracy": 0.6588,
+      "balanced_accuracy": 0.4257,
+      "macro_f1": 0.4277,
+      "roc_auc_macro": 0.7203,
+      "fatal_pr_auc": 0.0199,
+      "brier_score": 0.43453,
+      "per_class_recall": {
+        "property_damage_only": 0.7485,
+        "injury_likely": 0.5199,
+        "fatal_risk": 0.0085
+      },
+      "per_class_precision": {
+        "property_damage_only": 0.712,
+        "injury_likely": 0.5639,
+        "fatal_risk": 0.0217
+      },
+      "per_class_f1": {
+        "property_damage_only": 0.7298,
+        "injury_likely": 0.541,
+        "fatal_risk": 0.0122
+      },
+      "confusion_matrix": [
+        [
+          22769,
+          7623,
+          26
+        ],
+        [
+          9152,
+          9933,
+          19
+        ],
+        [
+          57,
+          60,
+          1
+        ]
+      ],
+      "predict_seconds": 1.93,
+      "fit_seconds": 23.9
+    },
+    {
+      "name": "extra_trees_balanced",
+      "accuracy": 0.6449,
+      "balanced_accuracy": 0.4452,
+      "macro_f1": 0.4288,
+      "roc_auc_macro": 0.6987,
+      "fatal_pr_auc": 0.0179,
+      "brier_score": 0.44966,
+      "per_class_recall": {
+        "property_damage_only": 0.7164,
+        "injury_likely": 0.5344,
+        "fatal_risk": 0.0847
+      },
+      "per_class_precision": {
+        "property_damage_only": 0.7147,
+        "injury_likely": 0.5498,
+        "fatal_risk": 0.0173
+      },
+      "per_class_f1": {
+        "property_damage_only": 0.7155,
+        "injury_likely": 0.542,
+        "fatal_risk": 0.0288
+      },
+      "confusion_matrix": [
+        [
+          21792,
+          8311,
+          315
+        ],
+        [
+          8642,
+          10210,
+          252
+        ],
+        [
+          58,
+          50,
+          10
+        ]
+      ],
+      "predict_seconds": 2.46,
+      "fit_seconds": 35.7
+    },
+    {
+      "name": "hist_gb_unweighted",
+      "accuracy": 0.6849,
+      "balanced_accuracy": 0.4184,
+      "macro_f1": 0.4188,
+      "roc_auc_macro": 0.7167,
+      "fatal_pr_auc": 0.0161,
+      "brier_score": 0.40973,
+      "per_class_recall": {
+        "property_damage_only": 0.9135,
+        "injury_likely": 0.3249,
+        "fatal_risk": 0.0169
+      },
+      "per_class_precision": {
+        "property_damage_only": 0.6818,
+        "injury_likely": 0.699,
+        "fatal_risk": 0.2857
+      },
+      "per_class_f1": {
+        "property_damage_only": 0.7809,
+        "injury_likely": 0.4436,
+        "fatal_risk": 0.032
+      },
+      "confusion_matrix": [
+        [
+          27788,
+          2627,
+          3
+        ],
+        [
+          12896,
+          6206,
+          2
+        ],
+        [
+          70,
+          46,
+          2
+        ]
+      ],
+      "predict_seconds": 1.22,
+      "fit_seconds": 11.4
+    },
+    {
+      "name": "hist_gb_balanced",
+      "accuracy": 0.5907,
+      "balanced_accuracy": 0.5116,
+      "macro_f1": 0.4062,
+      "roc_auc_macro": 0.7005,
+      "fatal_pr_auc": 0.0179,
+      "brier_score": 0.51286,
+      "per_class_recall": {
+        "property_damage_only": 0.6539,
+        "injury_likely": 0.4912,
+        "fatal_risk": 0.3898
+      },
+      "per_class_precision": {
+        "property_damage_only": 0.7176,
+        "injury_likely": 0.5401,
+        "fatal_risk": 0.0101
+      },
+      "per_class_f1": {
+        "property_damage_only": 0.6843,
+        "injury_likely": 0.5145,
+        "fatal_risk": 0.0197
+      },
+      "confusion_matrix": [
+        [
+          19891,
+          7955,
+          2572
+        ],
+        [
+          7790,
+          9383,
+          1931
+        ],
+        [
+          37,
+          35,
+          46
+        ]
+      ],
+      "predict_seconds": 0.47,
+      "fit_seconds": 5.9
+    },
+    {
+      "name": "hist_gb_fatal10",
+      "accuracy": 0.6843,
+      "balanced_accuracy": 0.4203,
+      "macro_f1": 0.4187,
+      "roc_auc_macro": 0.7233,
+      "fatal_pr_auc": 0.0263,
+      "brier_score": 0.4113,
+      "per_class_recall": {
+        "property_damage_only": 0.9161,
+        "injury_likely": 0.3194,
+        "fatal_risk": 0.0254
+      },
+      "per_class_precision": {
+        "property_damage_only": 0.6812,
+        "injury_likely": 0.703,
+        "fatal_risk": 0.0588
+      },
+      "per_class_f1": {
+        "property_damage_only": 0.7813,
+        "injury_likely": 0.4392,
+        "fatal_risk": 0.0355
+      },
+      "confusion_matrix": [
+        [
+          27866,
+          2535,
+          17
+        ],
+        [
+          12972,
+          6101,
+          31
+        ],
+        [
+          72,
+          43,
+          3
+        ]
+      ],
+      "predict_seconds": 0.93,
+      "fit_seconds": 8.2
+    },
+    {
+      "name": "hist_gb_fatal30",
+      "accuracy": 0.6807,
+      "balanced_accuracy": 0.4451,
+      "macro_f1": 0.4303,
+      "roc_auc_macro": 0.7236,
+      "fatal_pr_auc": 0.0325,
+      "brier_score": 0.41824,
+      "per_class_recall": {
+        "property_damage_only": 0.9168,
+        "injury_likely": 0.3085,
+        "fatal_risk": 0.1102
+      },
+      "per_class_precision": {
+        "property_damage_only": 0.6792,
+        "injury_likely": 0.7032,
+        "fatal_risk": 0.065
+      },
+      "per_class_f1": {
+        "property_damage_only": 0.7803,
+        "injury_likely": 0.4288,
+        "fatal_risk": 0.0818
+      },
+      "confusion_matrix": [
+        [
+          27886,
+          2457,
+          75
+        ],
+        [
+          13099,
+          5893,
+          112
+        ],
+        [
+          75,
+          30,
+          13
+        ]
+      ],
+      "predict_seconds": 0.81,
+      "fit_seconds": 7.6
+    },
+    {
+      "name": "hist_gb_fatal30_slow",
+      "accuracy": 0.6804,
+      "balanced_accuracy": 0.4442,
+      "macro_f1": 0.4286,
+      "roc_auc_macro": 0.719,
+      "fatal_pr_auc": 0.0265,
+      "brier_score": 0.41784,
+      "per_class_recall": {
+        "property_damage_only": 0.9198,
+        "injury_likely": 0.3027,
+        "fatal_risk": 0.1102
+      },
+      "per_class_precision": {
+        "property_damage_only": 0.678,
+        "injury_likely": 0.7079,
+        "fatal_risk": 0.0644
+      },
+      "per_class_f1": {
+        "property_damage_only": 0.7806,
+        "injury_likely": 0.424,
+        "fatal_risk": 0.0813
+      },
+      "confusion_matrix": [
+        [
+          27979,
+          2355,
+          84
+        ],
+        [
+          13217,
+          5782,
+          105
+        ],
+        [
+          74,
+          31,
+          13
+        ]
+      ],
+      "predict_seconds": 1.25,
+      "fit_seconds": 11.1
+    },
+    {
+      "name": "hist_gb_fatal30_deep",
+      "accuracy": 0.6811,
+      "balanced_accuracy": 0.423,
+      "macro_f1": 0.4169,
+      "roc_auc_macro": 0.7175,
+      "fatal_pr_auc": 0.0153,
+      "brier_score": 0.41509,
+      "per_class_recall": {
+        "property_damage_only": 0.9169,
+        "injury_likely": 0.3096,
+        "fatal_risk": 0.0424
+      },
+      "per_class_precision": {
+        "property_damage_only": 0.6786,
+        "injury_likely": 0.7027,
+        "fatal_risk": 0.0397
+      },
+      "per_class_f1": {
+        "property_damage_only": 0.78,
+        "injury_likely": 0.4299,
+        "fatal_risk": 0.041
+      },
+      "confusion_matrix": [
+        [
+          27890,
+          2461,
+          67
+        ],
+        [
+          13135,
+          5915,
+          54
+        ],
+        [
+          72,
+          41,
+          5
+        ]
+      ],
+      "predict_seconds": 1.49,
+      "fit_seconds": 14.5
+    }
+  ],
+  "ablation_context_only": {
+    "name": "context_only",
+    "accuracy": 0.4567,
+    "balanced_accuracy": 0.4091,
+    "macro_f1": 0.3312,
+    "roc_auc_macro": 0.5738,
+    "fatal_pr_auc": 0.0047,
+    "brier_score": 0.61296,
+    "per_class_recall": {
+      "property_damage_only": 0.4433,
+      "injury_likely": 0.4789,
+      "fatal_risk": 0.3051
+    },
+    "per_class_precision": {
+      "property_damage_only": 0.6638,
+      "injury_likely": 0.4299,
+      "fatal_risk": 0.0045
+    },
+    "per_class_f1": {
+      "property_damage_only": 0.5316,
+      "injury_likely": 0.4531,
+      "fatal_risk": 0.0088
+    },
+    "confusion_matrix": [
+      [
+        26971,
+        24180,
+        9684
+      ],
+      [
+        13579,
+        18298,
+        6331
+      ],
+      [
+        79,
+        85,
+        72
+      ]
+    ],
+    "predict_seconds": 0.68
+  },
+  "permutation_importance": {
+    "hour": {
+      "mean": 0.003046,
+      "std": 0.005339
+    },
+    "is_weekend": {
+      "mean": 0.001343,
+      "std": 0.000522
+    },
+    "month": {
+      "mean": 0.007953,
+      "std": 0.002921
+    },
+    "is_night": {
+      "mean": 0.010735,
+      "std": 0.008288
+    },
+    "is_rush_hour": {
+      "mean": -0.000796,
+      "std": 0.000595
+    },
+    "lat": {
+      "mean": 0.010105,
+      "std": 0.004505
+    },
+    "lon": {
+      "mean": 0.002713,
+      "std": 0.005609
+    },
+    "borough_code": {
+      "mean": 0.00408,
+      "std": 0.005598
+    },
+    "n_vehicles": {
+      "mean": 0.011429,
+      "std": 0.005722
+    },
+    "n_factors": {
+      "mean": 0.00386,
+      "std": 0.00948
+    },
+    "is_bicycle": {
+      "mean": 0.033881,
+      "std": 0.005455
+    },
+    "is_ebike": {
+      "mean": -0.00057,
+      "std": 0.000232
+    },
+    "is_scooter": {
+      "mean": 0.009627,
+      "std": 0.000999
+    },
+    "is_motorcycle": {
+      "mean": 0.021747,
+      "std": 0.001356
+    },
+    "is_truck": {
+      "mean": 0.001925,
+      "std": 0.00133
+    },
+    "is_bus": {
+      "mean": 3.2e-05,
+      "std": 0.000736
+    },
+    "is_van": {
+      "mean": 0.00024,
+      "std": 0.000183
+    },
+    "is_taxi": {
+      "mean": 0.000972,
+      "std": 0.000691
+    },
+    "is_suv": {
+      "mean": 0.000375,
+      "std": 0.004901
+    },
+    "is_sedan": {
+      "mean": -0.012737,
+      "std": 0.004492
+    },
+    "is_other": {
+      "mean": 0.024519,
+      "std": 0.001338
+    },
+    "factor_unsafe_speed": {
+      "mean": 0.00931,
+      "std": 0.000954
+    },
+    "factor_alcohol": {
+      "mean": 0.000143,
+      "std": 0.000285
+    },
+    "factor_distraction": {
+      "mean": 0.005404,
+      "std": 0.004251
+    },
+    "factor_failure_to_yield": {
+      "mean": 0.011411,
+      "std": 0.000714
+    },
+    "factor_following_too_closely": {
+      "mean": 0.003775,
+      "std": 0.004864
+    },
+    "factor_lane_usage": {
+      "mean": -0.006228,
+      "std": 0.005011
+    },
+    "factor_traffic_control": {
+      "mean": 0.002033,
+      "std": 0.0001
+    },
+    "factor_backing": {
+      "mean": 2.7e-05,
+      "std": 0.000316
+    },
+    "factor_turning": {
+      "mean": -0.000264,
+      "std": 0.000368
+    },
+    "factor_inexperience": {
+      "mean": 0.000241,
+      "std": 0.000349
+    },
+    "factor_view_obstructed": {
+      "mean": 0.000408,
+      "std": 0.000145
+    },
+    "factor_aggressive": {
+      "mean": -1.8e-05,
+      "std": 2.5e-05
+    },
+    "factor_slippery": {
+      "mean": -3.7e-05,
+      "std": 5.3e-05
+    },
+    "factor_asleep": {
+      "mean": -2.7e-05,
+      "std": 0.000308
+    },
+    "factor_brakes": {
+      "mean": -0.000199,
+      "std": 6.9e-05
+    },
+    "factor_pedestrian_error": {
+      "mean": 0.001296,
+      "std": 0.000336
+    }
+  },
+  "importance_method": "permutation importance (drop in macro-F1)",
+  "honesty": [
+    "Vehicle type and contributing factor are recorded after the crash, so this is a retrospective severity model, not a pre-crash risk predictor.",
+    "Contributing factors can be shaped by the outcome (an officer may record unsafe speed because the crash was severe), so the association is not causal.",
+    "Injury and fatality counts are used only to build the label; no count is a feature.",
+    "The ablation shows what context-only features achieve: that is the ceiling the previous model was working against.",
+    "Predicted probabilities are class-weighted, not calibrated: the fatal score averages 18.78x the observed fatality rate. The ranking is informative; the absolute value is not a real-world fatality rate."
+  ],
+  "limitations": [
+    "Trained only on NYC crash records; no non-crash examples.",
+    "Crashes without usable coordinates are excluded, so the model never scores them.",
+    "Severity labels describe crashes that already happened, not crash likelihood.",
+    "The model is excluded from /risk scoring and is research-only."
+  ],
+  "trained_at": "2026-10-25T13:43:20+00:00",
+  "sklearn_version": "1.9.0",
+  "dataset_file": "nyc_crashes_rich.csv.gz",
+  "calibration": {
+    "per_class": {
+      "property_damage_only": {
+        "mean_predicted": 0.58922,
+        "observed_rate": 0.61277,
+        "ratio": 0.96
+      },
+      "injury_likely": {
+        "mean_predicted": 0.36612,
+        "observed_rate": 0.38485,
+        "ratio": 0.95
+      },
+      "fatal_risk": {
+        "mean_predicted": 0.04465,
+        "observed_rate": 0.00238,
+        "ratio": 18.78
+      }
+    },
+    "fatal_reliability": [
+      {
+        "decile": 1,
+        "rows": 9928,
+        "mean_predicted": 0.005,
+        "observed_fatal_rate": 0.0002
+      },
+      {
+        "decile": 2,
+        "rows": 9928,
+        "mean_predicted": 0.01069,
+        "observed_fatal_rate": 0.0001
+      },
+      {
+        "decile": 3,
+        "rows": 9928,
+        "mean_predicted": 0.01536,
+        "observed_fatal_rate": 0.00101
+      },
+      {
+        "decile": 4,
+        "rows": 9928,
+        "mean_predicted": 0.01964,
+        "observed_fatal_rate": 0.00071
+      },
+      {
+        "decile": 5,
+        "rows": 9928,
+        "mean_predicted": 0.02417,
+        "observed_fatal_rate": 0.00151
+      },
+      {
+        "decile": 6,
+        "rows": 9928,
+        "mean_predicted": 0.02951,
+        "observed_fatal_rate": 0.00111
+      },
+      {
+        "decile": 7,
+        "rows": 9928,
+        "mean_predicted": 0.03695,
+        "observed_fatal_rate": 0.00181
+      },
+      {
+        "decile": 8,
+        "rows": 9928,
+        "mean_predicted": 0.04967,
+        "observed_fatal_rate": 0.00252
+      },
+      {
+        "decile": 9,
+        "rows": 9928,
+        "mean_predicted": 0.07483,
+        "observed_fatal_rate": 0.00463
+      },
+      {
+        "decile": 10,
+        "rows": 9927,
+        "mean_predicted": 0.18071,
+        "observed_fatal_rate": 0.01017
+      }
+    ],
+    "note": "Class weighting distorts absolute probabilities on purpose: it buys rare-class recall. Compare scenarios against each other or classes within a row; do not read fatal_risk as a real-world fatality rate."
+  }
+}

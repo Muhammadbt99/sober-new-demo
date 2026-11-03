@@ -1,0 +1,10 @@
+{
+  "alerts": [],
+  "data_quality": "fallback",
+  "last_checked": "2026-10-29 11:59:05",
+  "monitored_locations": 3,
+  "next_check": "Every 30 minutes",
+  "schema_version": "1.0.0",
+  "total_alerts": 0,
+  "warning": "Weather data unavailable - showing last known alerts"
+}

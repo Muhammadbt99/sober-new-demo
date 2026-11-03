@@ -1,0 +1,4 @@
+{
+  "error": "radius must not be negative",
+  "schema_version": "1.0.0"
+}

@@ -1,0 +1,14 @@
+# Runtime dependencies for the S.O.B.E.R API (served by gunicorn).
+# Training/dev extras (matplotlib, seaborn, osmium, pytest) live in
+# requirements-train.txt, which includes this file.
+flask==3.1.2
+flask-cors==6.0.5
+flask-limiter==4.1.1
+requests==2.32.3
+h3==4.5.0
+pandas==2.2.3
+numpy==2.1.2
+scikit-learn==1.9.0
+joblib==1.5.3
+python-dotenv==1.2.2
+gunicorn==23.0.0

@@ -1,0 +1,96 @@
+{
+  "bounds": {
+    "lat1": 40.7,
+    "lat2": 40.72,
+    "lon1": -74.02,
+    "lon2": -73.98
+  },
+  "coverage": "mixed",
+  "failed_points": 0,
+  "grid_size": 2,
+  "heatmap": [
+    {
+      "cell": "882a107287fffff",
+      "coverage": "rule_based_only",
+      "data_quality": {
+        "bars": "offline",
+        "model": "live",
+        "weather": "fallback"
+      },
+      "error": false,
+      "expected_rate": null,
+      "expected_rate_per_km2_hour": null,
+      "lat": 40.7,
+      "lon": -74.02,
+      "model_points": 0,
+      "nightlife_points": 16,
+      "percentile": null,
+      "risk_level": "LOW",
+      "risk_score": 16
+    },
+    {
+      "cell": "882a1072d3fffff",
+      "coverage": "model",
+      "data_quality": {
+        "bars": "offline",
+        "model": "live",
+        "weather": "fallback"
+      },
+      "error": false,
+      "expected_rate": 0.01873074632436581,
+      "expected_rate_per_km2_hour": 0.025294915040631957,
+      "lat": 40.7,
+      "lon": -73.98,
+      "model_points": 60.0,
+      "nightlife_points": 16,
+      "percentile": 99.03008078231292,
+      "risk_level": "CRITICAL",
+      "risk_score": 76.0
+    },
+    {
+      "cell": "882a1072ebfffff",
+      "coverage": "rule_based_only",
+      "data_quality": {
+        "bars": "offline",
+        "model": "live",
+        "weather": "fallback"
+      },
+      "error": false,
+      "expected_rate": null,
+      "expected_rate_per_km2_hour": null,
+      "lat": 40.72,
+      "lon": -74.02,
+      "model_points": 0,
+      "nightlife_points": 16,
+      "percentile": null,
+      "risk_level": "LOW",
+      "risk_score": 16
+    },
+    {
+      "cell": "882a100d37fffff",
+      "coverage": "model",
+      "data_quality": {
+        "bars": "offline",
+        "model": "live",
+        "weather": "fallback"
+      },
+      "error": false,
+      "expected_rate": 0.015471819312145784,
+      "expected_rate_per_km2_hour": 0.02088564044593507,
+      "lat": 40.72,
+      "lon": -73.98,
+      "model_points": 50.0,
+      "nightlife_points": 40,
+      "percentile": 97.92144982993197,
+      "risk_level": "CRITICAL",
+      "risk_score": 90.0
+    }
+  ],
+  "model_cells": 2,
+  "model_version": "2026.10.29-1",
+  "schema_version": "1.0.0",
+  "total_points": 4,
+  "warnings": [
+    "2 of 4 cells are outside the model's training coverage"
+  ]
+}

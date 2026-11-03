@@ -1,0 +1,12 @@
+{
+  "alerts": [],
+  "location": {
+    "lat": 40.758,
+    "lon": -73.9855,
+    "name": "Custom Location"
+  },
+  "message": "Location check completed",
+  "schema_version": "1.0.0",
+  "total_alerts": 0,
+  "weather_source": "fallback"
+}

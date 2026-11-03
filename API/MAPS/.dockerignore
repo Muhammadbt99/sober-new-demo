@@ -1,0 +1,43 @@
+# Build/runtime artifacts that must not be baked into the image.
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# Local secrets - injected at runtime instead.
+API_KEY.env
+.env
+.env.*
+
+# SQLite logs are created at runtime.
+*.db
+*.db-journal
+*.db-wal
+*.sqlite
+*.sqlite3
+
+# Tests and developer-only files.
+test_*.py
+*_test.py
+conftest.py
+weather_cache/
+
+# Generated datasets. crashes.csv IS needed at runtime (CrashIndex);
+# bars_nyc.csv (offline nightlife counts) and safe_stops_nyc.csv (offline
+# /nearest_safe) are also needed at runtime - keep all three.
+crashes_with_weather.csv
+training_data.csv
+
+# Model charts are kept: /ml/confusion_matrix and /ml/feature_importance
+# serve confusion_matrix.png and feature_importance.png at runtime.
+
+# Misc.
+*.log
+*.tmp
+.DS_Store
+Thumbs.db

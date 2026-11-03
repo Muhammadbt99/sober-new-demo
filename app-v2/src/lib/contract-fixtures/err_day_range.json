@@ -1,0 +1,4 @@
+{
+  "error": "day must be between 0 (Monday) and 6 (Sunday)",
+  "schema_version": "1.0.0"
+}

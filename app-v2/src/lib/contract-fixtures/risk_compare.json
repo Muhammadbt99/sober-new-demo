@@ -1,0 +1,84 @@
+{
+  "location_a": {
+    "action": "Avoid driving if possible. Consider alternative transportation.",
+    "cell": "882a100d67fffff",
+    "coverage": "model",
+    "data_quality": {
+      "bars": "offline",
+      "model": "live",
+      "weather": "fallback"
+    },
+    "expected_rate": 0.023221961453316894,
+    "expected_rate_per_km2_hour": 0.03132586002647667,
+    "lat": 40.758,
+    "lon": -73.9855,
+    "model_points": 60.0,
+    "model_version": "2026.10.29-1",
+    "nightlife_points": 40,
+    "percentile": 99.61309523809524,
+    "reasons": [
+      "0.02322 expected injury/fatal crashes per cell-hour (100th percentile)",
+      "0.0313 expected injury/fatal crashes per km2 per hour",
+      "Top-decile learned crash risk for this hex and hour",
+      "Nightlife density contributes 40 of 40 points"
+    ],
+    "risk_breakdown": {
+      "expected_rate": 0.023221961453316894,
+      "expected_rate_per_km2_hour": 0.03132586002647667,
+      "model": 60.0,
+      "model_max": 60,
+      "nightlife": 40,
+      "nightlife_max": 40,
+      "percentile": 99.61309523809524,
+      "total": 100.0
+    },
+    "risk_level": "CRITICAL",
+    "risk_score": 100.0,
+    "warnings": [
+      "Live weather unavailable - the model used a missing-value path"
+    ]
+  },
+  "location_b": {
+    "action": "Avoid driving if possible. Consider alternative transportation.",
+    "cell": "882a100da7fffff",
+    "coverage": "model",
+    "data_quality": {
+      "bars": "offline",
+      "model": "live",
+      "weather": "fallback"
+    },
+    "expected_rate": 0.02061737657863306,
+    "expected_rate_per_km2_hour": 0.027851115688346893,
+    "lat": 40.6829,
+    "lon": -73.9776,
+    "model_points": 60.0,
+    "model_version": "2026.10.29-1",
+    "nightlife_points": 40,
+    "percentile": 99.32025935374149,
+    "reasons": [
+      "0.02062 expected injury/fatal crashes per cell-hour (99th percentile)",
+      "0.0279 expected injury/fatal crashes per km2 per hour",
+      "Top-decile learned crash risk for this hex and hour",
+      "Nightlife density contributes 40 of 40 points"
+    ],
+    "risk_breakdown": {
+      "expected_rate": 0.02061737657863306,
+      "expected_rate_per_km2_hour": 0.027851115688346893,
+      "model": 60.0,
+      "model_max": 60,
+      "nightlife": 40,
+      "nightlife_max": 40,
+      "percentile": 99.32025935374149,
+      "total": 100.0
+    },
+    "risk_level": "CRITICAL",
+    "risk_score": 100.0,
+    "warnings": [
+      "Live weather unavailable - the model used a missing-value path"
+    ]
+  },
+  "recommendation": "Both locations have equal risk",
+  "risk_difference": 0.0,
+  "safer_location": "EQUAL",
+  "schema_version": "1.0.0"
+}

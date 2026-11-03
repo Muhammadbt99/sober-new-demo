@@ -1,0 +1,52 @@
+{
+  "checks": {
+    "crash_risk_model": {
+      "available": true,
+      "cells": 1120,
+      "error": null,
+      "gate_passed": true,
+      "status": "approved",
+      "version": "2026.10.29-1"
+    },
+    "indexes": {
+      "bars": "ok",
+      "crash": "ok",
+      "safe_stops": "ok"
+    },
+    "providers": {
+      "osrm": "http://router.project-osrm.org",
+      "routing_chain": "osrm-public -> osrm-fossgis -> valhalla-fossgis -> brouter -> graphhopper (disabled) -> ors (disabled)",
+      "weather_api_key": "missing"
+    },
+    "severity_model": "ok"
+  },
+  "coverage": {
+    "bounding_box": [
+      40.4,
+      41.0,
+      -74.5,
+      -73.5
+    ],
+    "model_area": "New York City"
+  },
+  "endpoint_count": 15,
+  "endpoints": [
+    "/health",
+    "/risk",
+    "/safe_route",
+    "/heatmap",
+    "/stats",
+    "/alerts",
+    "/alerts/check_location",
+    "/ml/stats",
+    "/ml/severity",
+    "/ml/confusion_matrix",
+    "/ml/feature_importance",
+    "/risk/trend",
+    "/hotspots",
+    "/nearest_safe",
+    "/risk/compare"
+  ],
+  "schema_version": "1.0.0",
+  "status": "ok"
+}

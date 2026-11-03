@@ -1,0 +1,48 @@
+# --- Secrets: never commit keys or local environment files -----------------
+.env
+.env.*
+!.env.example
+API_KEY.env
+*.env
+!.env.example
+*.pem
+*.key
+*.p12
+*.pfx
+secrets.*
+credentials*.json
+
+# --- Local data: the request log is rebuilt on first run ------------------
+*.db
+*.db-journal
+*.sqlite
+*.sqlite3
+
+# --- Logs ------------------------------------------------------------------
+*.log
+logs/
+
+# --- Python ----------------------------------------------------------------
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.venv/
+venv/
+
+# --- Node / Vite -------------------------------------------------------------
+node_modules/
+dist/
+*.tsbuildinfo
+.vite/
+
+# --- Editors and OS ----------------------------------------------------------
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# --- Tool output -------------------------------------------------------------
+.playwright-mcp/

@@ -1,0 +1,1148 @@
+{
+ "source": "World Bank WDI indicator SH.STA.TRAF.P5 (Mortality caused by road traffic injury, per 100,000 population), from WHO estimates",
+ "url": "https://api.worldbank.org/v2/country/all/indicator/SH.STA.TRAF.P5?format=json&mrnev=1",
+ "retrieved": "2026-11-03",
+ "median_deaths_per_100k": 14.9,
+ "countries": {
+  "AD": {
+   "iso3": "AND",
+   "name": "Andorra",
+   "deaths_per_100k": 7.6,
+   "year": "2013"
+  },
+  "AE": {
+   "iso3": "ARE",
+   "name": "United Arab Emirates",
+   "deaths_per_100k": 8.9,
+   "year": "2019"
+  },
+  "AF": {
+   "iso3": "AFG",
+   "name": "Afghanistan",
+   "deaths_per_100k": 15.9,
+   "year": "2019"
+  },
+  "AG": {
+   "iso3": "ATG",
+   "name": "Antigua and Barbuda",
+   "deaths_per_100k": 0.0,
+   "year": "2019"
+  },
+  "AL": {
+   "iso3": "ALB",
+   "name": "Albania",
+   "deaths_per_100k": 11.7,
+   "year": "2019"
+  },
+  "AM": {
+   "iso3": "ARM",
+   "name": "Armenia",
+   "deaths_per_100k": 20.0,
+   "year": "2019"
+  },
+  "AO": {
+   "iso3": "AGO",
+   "name": "Angola",
+   "deaths_per_100k": 26.1,
+   "year": "2019"
+  },
+  "AR": {
+   "iso3": "ARG",
+   "name": "Argentina",
+   "deaths_per_100k": 14.1,
+   "year": "2019"
+  },
+  "AT": {
+   "iso3": "AUT",
+   "name": "Austria",
+   "deaths_per_100k": 4.9,
+   "year": "2019"
+  },
+  "AU": {
+   "iso3": "AUS",
+   "name": "Australia",
+   "deaths_per_100k": 4.9,
+   "year": "2019"
+  },
+  "AZ": {
+   "iso3": "AZE",
+   "name": "Azerbaijan",
+   "deaths_per_100k": 6.7,
+   "year": "2019"
+  },
+  "BA": {
+   "iso3": "BIH",
+   "name": "Bosnia and Herzegovina",
+   "deaths_per_100k": 13.5,
+   "year": "2019"
+  },
+  "BB": {
+   "iso3": "BRB",
+   "name": "Barbados",
+   "deaths_per_100k": 8.2,
+   "year": "2019"
+  },
+  "BD": {
+   "iso3": "BGD",
+   "name": "Bangladesh",
+   "deaths_per_100k": 15.3,
+   "year": "2019"
+  },
+  "BE": {
+   "iso3": "BEL",
+   "name": "Belgium",
+   "deaths_per_100k": 5.8,
+   "year": "2019"
+  },
+  "BF": {
+   "iso3": "BFA",
+   "name": "Burkina Faso",
+   "deaths_per_100k": 31.0,
+   "year": "2019"
+  },
+  "BG": {
+   "iso3": "BGR",
+   "name": "Bulgaria",
+   "deaths_per_100k": 9.2,
+   "year": "2019"
+  },
+  "BH": {
+   "iso3": "BHR",
+   "name": "Bahrain",
+   "deaths_per_100k": 5.2,
+   "year": "2019"
+  },
+  "BI": {
+   "iso3": "BDI",
+   "name": "Burundi",
+   "deaths_per_100k": 35.5,
+   "year": "2019"
+  },
+  "BJ": {
+   "iso3": "BEN",
+   "name": "Benin",
+   "deaths_per_100k": 26.8,
+   "year": "2019"
+  },
+  "BN": {
+   "iso3": "BRN",
+   "name": "Brunei Darussalam",
+   "deaths_per_100k": 7.5,
+   "year": "2019"
+  },
+  "BO": {
+   "iso3": "BOL",
+   "name": "Bolivia",
+   "deaths_per_100k": 21.1,
+   "year": "2019"
+  },
+  "BR": {
+   "iso3": "BRA",
+   "name": "Brazil",
+   "deaths_per_100k": 16.0,
+   "year": "2019"
+  },
+  "BS": {
+   "iso3": "BHS",
+   "name": "Bahamas, The",
+   "deaths_per_100k": 7.7,
+   "year": "2019"
+  },
+  "BT": {
+   "iso3": "BTN",
+   "name": "Bhutan",
+   "deaths_per_100k": 16.2,
+   "year": "2019"
+  },
+  "BW": {
+   "iso3": "BWA",
+   "name": "Botswana",
+   "deaths_per_100k": 26.4,
+   "year": "2019"
+  },
+  "BY": {
+   "iso3": "BLR",
+   "name": "Belarus",
+   "deaths_per_100k": 7.6,
+   "year": "2019"
+  },
+  "BZ": {
+   "iso3": "BLZ",
+   "name": "Belize",
+   "deaths_per_100k": 22.6,
+   "year": "2019"
+  },
+  "CA": {
+   "iso3": "CAN",
+   "name": "Canada",
+   "deaths_per_100k": 5.3,
+   "year": "2019"
+  },
+  "CD": {
+   "iso3": "COD",
+   "name": "Congo, Dem. Rep.",
+   "deaths_per_100k": 34.9,
+   "year": "2019"
+  },
+  "CF": {
+   "iso3": "CAF",
+   "name": "Central African Republic",
+   "deaths_per_100k": 37.7,
+   "year": "2019"
+  },
+  "CG": {
+   "iso3": "COG",
+   "name": "Congo, Rep.",
+   "deaths_per_100k": 29.7,
+   "year": "2019"
+  },
+  "CH": {
+   "iso3": "CHE",
+   "name": "Switzerland",
+   "deaths_per_100k": 2.2,
+   "year": "2019"
+  },
+  "CI": {
+   "iso3": "CIV",
+   "name": "Cote d'Ivoire",
+   "deaths_per_100k": 24.1,
+   "year": "2019"
+  },
+  "CL": {
+   "iso3": "CHL",
+   "name": "Chile",
+   "deaths_per_100k": 14.9,
+   "year": "2019"
+  },
+  "CM": {
+   "iso3": "CMR",
+   "name": "Cameroon",
+   "deaths_per_100k": 30.2,
+   "year": "2019"
+  },
+  "CN": {
+   "iso3": "CHN",
+   "name": "China",
+   "deaths_per_100k": 17.4,
+   "year": "2019"
+  },
+  "CO": {
+   "iso3": "COL",
+   "name": "Colombia",
+   "deaths_per_100k": 15.4,
+   "year": "2019"
+  },
+  "CR": {
+   "iso3": "CRI",
+   "name": "Costa Rica",
+   "deaths_per_100k": 14.8,
+   "year": "2019"
+  },
+  "CU": {
+   "iso3": "CUB",
+   "name": "Cuba",
+   "deaths_per_100k": 8.9,
+   "year": "2019"
+  },
+  "CV": {
+   "iso3": "CPV",
+   "name": "Cabo Verde",
+   "deaths_per_100k": 26.8,
+   "year": "2019"
+  },
+  "CY": {
+   "iso3": "CYP",
+   "name": "Cyprus",
+   "deaths_per_100k": 5.8,
+   "year": "2019"
+  },
+  "CZ": {
+   "iso3": "CZE",
+   "name": "Czechia",
+   "deaths_per_100k": 5.9,
+   "year": "2019"
+  },
+  "DE": {
+   "iso3": "DEU",
+   "name": "Germany",
+   "deaths_per_100k": 3.8,
+   "year": "2019"
+  },
+  "DJ": {
+   "iso3": "DJI",
+   "name": "Djibouti",
+   "deaths_per_100k": 23.5,
+   "year": "2019"
+  },
+  "DK": {
+   "iso3": "DNK",
+   "name": "Denmark",
+   "deaths_per_100k": 3.7,
+   "year": "2019"
+  },
+  "DM": {
+   "iso3": "DMA",
+   "name": "Dominica",
+   "deaths_per_100k": 10.9,
+   "year": "2016"
+  },
+  "DO": {
+   "iso3": "DOM",
+   "name": "Dominican Republic",
+   "deaths_per_100k": 64.6,
+   "year": "2019"
+  },
+  "DZ": {
+   "iso3": "DZA",
+   "name": "Algeria",
+   "deaths_per_100k": 20.9,
+   "year": "2019"
+  },
+  "EC": {
+   "iso3": "ECU",
+   "name": "Ecuador",
+   "deaths_per_100k": 20.1,
+   "year": "2019"
+  },
+  "EE": {
+   "iso3": "EST",
+   "name": "Estonia",
+   "deaths_per_100k": 4.5,
+   "year": "2019"
+  },
+  "EG": {
+   "iso3": "EGY",
+   "name": "Egypt, Arab Rep.",
+   "deaths_per_100k": 10.1,
+   "year": "2019"
+  },
+  "ER": {
+   "iso3": "ERI",
+   "name": "Eritrea",
+   "deaths_per_100k": 37.9,
+   "year": "2019"
+  },
+  "ES": {
+   "iso3": "ESP",
+   "name": "Spain",
+   "deaths_per_100k": 3.9,
+   "year": "2019"
+  },
+  "ET": {
+   "iso3": "ETH",
+   "name": "Ethiopia",
+   "deaths_per_100k": 28.2,
+   "year": "2019"
+  },
+  "FI": {
+   "iso3": "FIN",
+   "name": "Finland",
+   "deaths_per_100k": 3.9,
+   "year": "2019"
+  },
+  "FJ": {
+   "iso3": "FJI",
+   "name": "Fiji",
+   "deaths_per_100k": 13.5,
+   "year": "2019"
+  },
+  "FM": {
+   "iso3": "FSM",
+   "name": "Micronesia, Fed. Sts.",
+   "deaths_per_100k": 0.2,
+   "year": "2019"
+  },
+  "FR": {
+   "iso3": "FRA",
+   "name": "France",
+   "deaths_per_100k": 5.1,
+   "year": "2019"
+  },
+  "GA": {
+   "iso3": "GAB",
+   "name": "Gabon",
+   "deaths_per_100k": 23.9,
+   "year": "2019"
+  },
+  "GB": {
+   "iso3": "GBR",
+   "name": "United Kingdom",
+   "deaths_per_100k": 3.2,
+   "year": "2019"
+  },
+  "GD": {
+   "iso3": "GRD",
+   "name": "Grenada",
+   "deaths_per_100k": 8.0,
+   "year": "2019"
+  },
+  "GE": {
+   "iso3": "GEO",
+   "name": "Georgia",
+   "deaths_per_100k": 12.4,
+   "year": "2019"
+  },
+  "GH": {
+   "iso3": "GHA",
+   "name": "Ghana",
+   "deaths_per_100k": 25.7,
+   "year": "2019"
+  },
+  "GM": {
+   "iso3": "GMB",
+   "name": "Gambia, The",
+   "deaths_per_100k": 29.6,
+   "year": "2019"
+  },
+  "GN": {
+   "iso3": "GIN",
+   "name": "Guinea",
+   "deaths_per_100k": 29.7,
+   "year": "2019"
+  },
+  "GQ": {
+   "iso3": "GNQ",
+   "name": "Equatorial Guinea",
+   "deaths_per_100k": 27.2,
+   "year": "2019"
+  },
+  "GR": {
+   "iso3": "GRC",
+   "name": "Greece",
+   "deaths_per_100k": 8.3,
+   "year": "2019"
+  },
+  "GT": {
+   "iso3": "GTM",
+   "name": "Guatemala",
+   "deaths_per_100k": 22.9,
+   "year": "2019"
+  },
+  "GW": {
+   "iso3": "GNB",
+   "name": "Guinea-Bissau",
+   "deaths_per_100k": 32.2,
+   "year": "2019"
+  },
+  "GY": {
+   "iso3": "GUY",
+   "name": "Guyana",
+   "deaths_per_100k": 22.3,
+   "year": "2019"
+  },
+  "HN": {
+   "iso3": "HND",
+   "name": "Honduras",
+   "deaths_per_100k": 16.1,
+   "year": "2019"
+  },
+  "HR": {
+   "iso3": "HRV",
+   "name": "Croatia",
+   "deaths_per_100k": 7.9,
+   "year": "2019"
+  },
+  "HT": {
+   "iso3": "HTI",
+   "name": "Haiti",
+   "deaths_per_100k": 18.8,
+   "year": "2019"
+  },
+  "HU": {
+   "iso3": "HUN",
+   "name": "Hungary",
+   "deaths_per_100k": 7.7,
+   "year": "2019"
+  },
+  "ID": {
+   "iso3": "IDN",
+   "name": "Indonesia",
+   "deaths_per_100k": 11.3,
+   "year": "2019"
+  },
+  "IE": {
+   "iso3": "IRL",
+   "name": "Ireland",
+   "deaths_per_100k": 3.1,
+   "year": "2019"
+  },
+  "IL": {
+   "iso3": "ISR",
+   "name": "Israel",
+   "deaths_per_100k": 3.9,
+   "year": "2019"
+  },
+  "IN": {
+   "iso3": "IND",
+   "name": "India",
+   "deaths_per_100k": 15.6,
+   "year": "2019"
+  },
+  "IQ": {
+   "iso3": "IRQ",
+   "name": "Iraq",
+   "deaths_per_100k": 27.3,
+   "year": "2019"
+  },
+  "IR": {
+   "iso3": "IRN",
+   "name": "Iran, Islamic Rep.",
+   "deaths_per_100k": 21.5,
+   "year": "2019"
+  },
+  "IS": {
+   "iso3": "ISL",
+   "name": "Iceland",
+   "deaths_per_100k": 2.0,
+   "year": "2019"
+  },
+  "IT": {
+   "iso3": "ITA",
+   "name": "Italy",
+   "deaths_per_100k": 5.3,
+   "year": "2019"
+  },
+  "JM": {
+   "iso3": "JAM",
+   "name": "Jamaica",
+   "deaths_per_100k": 15.1,
+   "year": "2019"
+  },
+  "JO": {
+   "iso3": "JOR",
+   "name": "Jordan",
+   "deaths_per_100k": 17.0,
+   "year": "2019"
+  },
+  "JP": {
+   "iso3": "JPN",
+   "name": "Japan",
+   "deaths_per_100k": 3.6,
+   "year": "2019"
+  },
+  "KE": {
+   "iso3": "KEN",
+   "name": "Kenya",
+   "deaths_per_100k": 28.3,
+   "year": "2019"
+  },
+  "KG": {
+   "iso3": "KGZ",
+   "name": "Kyrgyz Republic",
+   "deaths_per_100k": 12.7,
+   "year": "2019"
+  },
+  "KH": {
+   "iso3": "KHM",
+   "name": "Cambodia",
+   "deaths_per_100k": 19.6,
+   "year": "2019"
+  },
+  "KI": {
+   "iso3": "KIR",
+   "name": "Kiribati",
+   "deaths_per_100k": 1.9,
+   "year": "2019"
+  },
+  "KM": {
+   "iso3": "COM",
+   "name": "Comoros",
+   "deaths_per_100k": 26.6,
+   "year": "2019"
+  },
+  "KP": {
+   "iso3": "PRK",
+   "name": "Korea, Dem. People's Rep.",
+   "deaths_per_100k": 24.2,
+   "year": "2019"
+  },
+  "KR": {
+   "iso3": "KOR",
+   "name": "Korea, Rep.",
+   "deaths_per_100k": 8.6,
+   "year": "2019"
+  },
+  "KW": {
+   "iso3": "KWT",
+   "name": "Kuwait",
+   "deaths_per_100k": 15.4,
+   "year": "2019"
+  },
+  "KZ": {
+   "iso3": "KAZ",
+   "name": "Kazakhstan",
+   "deaths_per_100k": 12.7,
+   "year": "2019"
+  },
+  "LA": {
+   "iso3": "LAO",
+   "name": "Lao PDR",
+   "deaths_per_100k": 17.9,
+   "year": "2019"
+  },
+  "LB": {
+   "iso3": "LBN",
+   "name": "Lebanon",
+   "deaths_per_100k": 16.4,
+   "year": "2019"
+  },
+  "LC": {
+   "iso3": "LCA",
+   "name": "St. Lucia",
+   "deaths_per_100k": 29.8,
+   "year": "2019"
+  },
+  "LK": {
+   "iso3": "LKA",
+   "name": "Sri Lanka",
+   "deaths_per_100k": 19.7,
+   "year": "2019"
+  },
+  "LR": {
+   "iso3": "LBR",
+   "name": "Liberia",
+   "deaths_per_100k": 38.9,
+   "year": "2019"
+  },
+  "LS": {
+   "iso3": "LSO",
+   "name": "Lesotho",
+   "deaths_per_100k": 31.9,
+   "year": "2019"
+  },
+  "LT": {
+   "iso3": "LTU",
+   "name": "Lithuania",
+   "deaths_per_100k": 8.1,
+   "year": "2019"
+  },
+  "LU": {
+   "iso3": "LUX",
+   "name": "Luxembourg",
+   "deaths_per_100k": 4.1,
+   "year": "2019"
+  },
+  "LV": {
+   "iso3": "LVA",
+   "name": "Latvia",
+   "deaths_per_100k": 8.1,
+   "year": "2019"
+  },
+  "LY": {
+   "iso3": "LBY",
+   "name": "Libya",
+   "deaths_per_100k": 21.3,
+   "year": "2019"
+  },
+  "MA": {
+   "iso3": "MAR",
+   "name": "Morocco",
+   "deaths_per_100k": 17.0,
+   "year": "2019"
+  },
+  "MC": {
+   "iso3": "MCO",
+   "name": "Monaco",
+   "deaths_per_100k": 0.0,
+   "year": "2013"
+  },
+  "MD": {
+   "iso3": "MDA",
+   "name": "Moldova",
+   "deaths_per_100k": 7.3,
+   "year": "2019"
+  },
+  "ME": {
+   "iso3": "MNE",
+   "name": "Montenegro",
+   "deaths_per_100k": 7.6,
+   "year": "2019"
+  },
+  "MG": {
+   "iso3": "MDG",
+   "name": "Madagascar",
+   "deaths_per_100k": 29.2,
+   "year": "2019"
+  },
+  "MH": {
+   "iso3": "MHL",
+   "name": "Marshall Islands",
+   "deaths_per_100k": 5.7,
+   "year": "2013"
+  },
+  "MK": {
+   "iso3": "MKD",
+   "name": "North Macedonia",
+   "deaths_per_100k": 5.1,
+   "year": "2019"
+  },
+  "ML": {
+   "iso3": "MLI",
+   "name": "Mali",
+   "deaths_per_100k": 22.7,
+   "year": "2019"
+  },
+  "MM": {
+   "iso3": "MMR",
+   "name": "Myanmar",
+   "deaths_per_100k": 20.4,
+   "year": "2019"
+  },
+  "MN": {
+   "iso3": "MNG",
+   "name": "Mongolia",
+   "deaths_per_100k": 21.0,
+   "year": "2019"
+  },
+  "MR": {
+   "iso3": "MRT",
+   "name": "Mauritania",
+   "deaths_per_100k": 25.6,
+   "year": "2019"
+  },
+  "MT": {
+   "iso3": "MLT",
+   "name": "Malta",
+   "deaths_per_100k": 4.1,
+   "year": "2019"
+  },
+  "MU": {
+   "iso3": "MUS",
+   "name": "Mauritius",
+   "deaths_per_100k": 12.2,
+   "year": "2019"
+  },
+  "MV": {
+   "iso3": "MDV",
+   "name": "Maldives",
+   "deaths_per_100k": 1.6,
+   "year": "2019"
+  },
+  "MW": {
+   "iso3": "MWI",
+   "name": "Malawi",
+   "deaths_per_100k": 33.4,
+   "year": "2019"
+  },
+  "MX": {
+   "iso3": "MEX",
+   "name": "Mexico",
+   "deaths_per_100k": 12.8,
+   "year": "2019"
+  },
+  "MY": {
+   "iso3": "MYS",
+   "name": "Malaysia",
+   "deaths_per_100k": 22.5,
+   "year": "2019"
+  },
+  "MZ": {
+   "iso3": "MOZ",
+   "name": "Mozambique",
+   "deaths_per_100k": 30.0,
+   "year": "2019"
+  },
+  "NA": {
+   "iso3": "NAM",
+   "name": "Namibia",
+   "deaths_per_100k": 34.8,
+   "year": "2019"
+  },
+  "NE": {
+   "iso3": "NER",
+   "name": "Niger",
+   "deaths_per_100k": 25.5,
+   "year": "2019"
+  },
+  "NG": {
+   "iso3": "NGA",
+   "name": "Nigeria",
+   "deaths_per_100k": 20.7,
+   "year": "2019"
+  },
+  "NI": {
+   "iso3": "NIC",
+   "name": "Nicaragua",
+   "deaths_per_100k": 16.9,
+   "year": "2019"
+  },
+  "NL": {
+   "iso3": "NLD",
+   "name": "Netherlands",
+   "deaths_per_100k": 4.0,
+   "year": "2019"
+  },
+  "NO": {
+   "iso3": "NOR",
+   "name": "Norway",
+   "deaths_per_100k": 2.1,
+   "year": "2019"
+  },
+  "NP": {
+   "iso3": "NPL",
+   "name": "Nepal",
+   "deaths_per_100k": 16.3,
+   "year": "2019"
+  },
+  "NZ": {
+   "iso3": "NZL",
+   "name": "New Zealand",
+   "deaths_per_100k": 9.6,
+   "year": "2019"
+  },
+  "OM": {
+   "iso3": "OMN",
+   "name": "Oman",
+   "deaths_per_100k": 10.6,
+   "year": "2019"
+  },
+  "PA": {
+   "iso3": "PAN",
+   "name": "Panama",
+   "deaths_per_100k": 13.9,
+   "year": "2019"
+  },
+  "PE": {
+   "iso3": "PER",
+   "name": "Peru",
+   "deaths_per_100k": 13.6,
+   "year": "2019"
+  },
+  "PG": {
+   "iso3": "PNG",
+   "name": "Papua New Guinea",
+   "deaths_per_100k": 12.6,
+   "year": "2019"
+  },
+  "PH": {
+   "iso3": "PHL",
+   "name": "Philippines",
+   "deaths_per_100k": 12.0,
+   "year": "2019"
+  },
+  "PK": {
+   "iso3": "PAK",
+   "name": "Pakistan",
+   "deaths_per_100k": 13.0,
+   "year": "2019"
+  },
+  "PL": {
+   "iso3": "POL",
+   "name": "Poland",
+   "deaths_per_100k": 9.4,
+   "year": "2019"
+  },
+  "PS": {
+   "iso3": "PSE",
+   "name": "West Bank and Gaza",
+   "deaths_per_100k": 5.3,
+   "year": "2016"
+  },
+  "PT": {
+   "iso3": "PRT",
+   "name": "Portugal",
+   "deaths_per_100k": 8.2,
+   "year": "2019"
+  },
+  "PW": {
+   "iso3": "PLW",
+   "name": "Palau",
+   "deaths_per_100k": 4.8,
+   "year": "2013"
+  },
+  "PY": {
+   "iso3": "PRY",
+   "name": "Paraguay",
+   "deaths_per_100k": 22.0,
+   "year": "2019"
+  },
+  "QA": {
+   "iso3": "QAT",
+   "name": "Qatar",
+   "deaths_per_100k": 7.3,
+   "year": "2019"
+  },
+  "RO": {
+   "iso3": "ROU",
+   "name": "Romania",
+   "deaths_per_100k": 10.3,
+   "year": "2019"
+  },
+  "RS": {
+   "iso3": "SRB",
+   "name": "Serbia",
+   "deaths_per_100k": 7.5,
+   "year": "2019"
+  },
+  "RU": {
+   "iso3": "RUS",
+   "name": "Russian Federation",
+   "deaths_per_100k": 12.0,
+   "year": "2019"
+  },
+  "RW": {
+   "iso3": "RWA",
+   "name": "Rwanda",
+   "deaths_per_100k": 29.4,
+   "year": "2019"
+  },
+  "SA": {
+   "iso3": "SAU",
+   "name": "Saudi Arabia",
+   "deaths_per_100k": 35.9,
+   "year": "2019"
+  },
+  "SB": {
+   "iso3": "SLB",
+   "name": "Solomon Islands",
+   "deaths_per_100k": 16.5,
+   "year": "2019"
+  },
+  "SC": {
+   "iso3": "SYC",
+   "name": "Seychelles",
+   "deaths_per_100k": 11.3,
+   "year": "2019"
+  },
+  "SD": {
+   "iso3": "SDN",
+   "name": "Sudan",
+   "deaths_per_100k": 26.8,
+   "year": "2019"
+  },
+  "SE": {
+   "iso3": "SWE",
+   "name": "Sweden",
+   "deaths_per_100k": 3.1,
+   "year": "2019"
+  },
+  "SG": {
+   "iso3": "SGP",
+   "name": "Singapore",
+   "deaths_per_100k": 2.1,
+   "year": "2019"
+  },
+  "SI": {
+   "iso3": "SVN",
+   "name": "Slovenia",
+   "deaths_per_100k": 5.1,
+   "year": "2019"
+  },
+  "SK": {
+   "iso3": "SVK",
+   "name": "Slovak Republic",
+   "deaths_per_100k": 6.1,
+   "year": "2019"
+  },
+  "SL": {
+   "iso3": "SLE",
+   "name": "Sierra Leone",
+   "deaths_per_100k": 33.0,
+   "year": "2019"
+  },
+  "SM": {
+   "iso3": "SMR",
+   "name": "San Marino",
+   "deaths_per_100k": 0.0,
+   "year": "2016"
+  },
+  "SN": {
+   "iso3": "SEN",
+   "name": "Senegal",
+   "deaths_per_100k": 23.5,
+   "year": "2019"
+  },
+  "SO": {
+   "iso3": "SOM",
+   "name": "Somalia, Fed. Rep.",
+   "deaths_per_100k": 27.4,
+   "year": "2019"
+  },
+  "SR": {
+   "iso3": "SUR",
+   "name": "Suriname",
+   "deaths_per_100k": 15.3,
+   "year": "2019"
+  },
+  "SS": {
+   "iso3": "SSD",
+   "name": "South Sudan",
+   "deaths_per_100k": 36.7,
+   "year": "2019"
+  },
+  "ST": {
+   "iso3": "STP",
+   "name": "Sao Tome and Principe",
+   "deaths_per_100k": 27.9,
+   "year": "2019"
+  },
+  "SV": {
+   "iso3": "SLV",
+   "name": "El Salvador",
+   "deaths_per_100k": 20.9,
+   "year": "2019"
+  },
+  "SY": {
+   "iso3": "SYR",
+   "name": "Syrian Arab Republic",
+   "deaths_per_100k": 14.9,
+   "year": "2019"
+  },
+  "SZ": {
+   "iso3": "SWZ",
+   "name": "Eswatini",
+   "deaths_per_100k": 33.5,
+   "year": "2019"
+  },
+  "TD": {
+   "iso3": "TCD",
+   "name": "Chad",
+   "deaths_per_100k": 32.4,
+   "year": "2019"
+  },
+  "TG": {
+   "iso3": "TGO",
+   "name": "Togo",
+   "deaths_per_100k": 28.7,
+   "year": "2019"
+  },
+  "TH": {
+   "iso3": "THA",
+   "name": "Thailand",
+   "deaths_per_100k": 32.2,
+   "year": "2019"
+  },
+  "TJ": {
+   "iso3": "TJK",
+   "name": "Tajikistan",
+   "deaths_per_100k": 15.7,
+   "year": "2019"
+  },
+  "TL": {
+   "iso3": "TLS",
+   "name": "Timor-Leste",
+   "deaths_per_100k": 11.9,
+   "year": "2019"
+  },
+  "TM": {
+   "iso3": "TKM",
+   "name": "Turkmenistan",
+   "deaths_per_100k": 13.5,
+   "year": "2019"
+  },
+  "TN": {
+   "iso3": "TUN",
+   "name": "Tunisia",
+   "deaths_per_100k": 16.5,
+   "year": "2019"
+  },
+  "TO": {
+   "iso3": "TON",
+   "name": "Tonga",
+   "deaths_per_100k": 33.0,
+   "year": "2019"
+  },
+  "TR": {
+   "iso3": "TUR",
+   "name": "Turkiye",
+   "deaths_per_100k": 6.7,
+   "year": "2019"
+  },
+  "TT": {
+   "iso3": "TTO",
+   "name": "Trinidad and Tobago",
+   "deaths_per_100k": 9.3,
+   "year": "2019"
+  },
+  "TZ": {
+   "iso3": "TZA",
+   "name": "Tanzania",
+   "deaths_per_100k": 31.1,
+   "year": "2019"
+  },
+  "UA": {
+   "iso3": "UKR",
+   "name": "Ukraine",
+   "deaths_per_100k": 10.2,
+   "year": "2019"
+  },
+  "UG": {
+   "iso3": "UGA",
+   "name": "Uganda",
+   "deaths_per_100k": 29.4,
+   "year": "2019"
+  },
+  "US": {
+   "iso3": "USA",
+   "name": "United States",
+   "deaths_per_100k": 12.7,
+   "year": "2019"
+  },
+  "UY": {
+   "iso3": "URY",
+   "name": "Uruguay",
+   "deaths_per_100k": 14.8,
+   "year": "2019"
+  },
+  "UZ": {
+   "iso3": "UZB",
+   "name": "Uzbekistan",
+   "deaths_per_100k": 11.7,
+   "year": "2019"
+  },
+  "VC": {
+   "iso3": "VCT",
+   "name": "St. Vincent and the Grenadines",
+   "deaths_per_100k": 7.4,
+   "year": "2019"
+  },
+  "VE": {
+   "iso3": "VEN",
+   "name": "Venezuela, RB",
+   "deaths_per_100k": 39.0,
+   "year": "2019"
+  },
+  "VN": {
+   "iso3": "VNM",
+   "name": "Viet Nam",
+   "deaths_per_100k": 30.6,
+   "year": "2019"
+  },
+  "VU": {
+   "iso3": "VUT",
+   "name": "Vanuatu",
+   "deaths_per_100k": 14.9,
+   "year": "2019"
+  },
+  "WS": {
+   "iso3": "WSM",
+   "name": "Samoa",
+   "deaths_per_100k": 13.0,
+   "year": "2019"
+  },
+  "YE": {
+   "iso3": "YEM",
+   "name": "Yemen, Rep.",
+   "deaths_per_100k": 29.4,
+   "year": "2019"
+  },
+  "ZA": {
+   "iso3": "ZAF",
+   "name": "South Africa",
+   "deaths_per_100k": 22.2,
+   "year": "2019"
+  },
+  "ZM": {
+   "iso3": "ZMB",
+   "name": "Zambia",
+   "deaths_per_100k": 20.5,
+   "year": "2019"
+  },
+  "ZW": {
+   "iso3": "ZWE",
+   "name": "Zimbabwe",
+   "deaths_per_100k": 41.2,
+   "year": "2019"
+  }
+ }
+}

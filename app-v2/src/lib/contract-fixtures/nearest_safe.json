@@ -1,0 +1,111 @@
+{
+  "location": {
+    "lat": 40.758,
+    "lon": -73.9855
+  },
+  "message": "Nearest safe stop: Parking (166m away)",
+  "nearest_stop": {
+    "distance_km": 0.17,
+    "distance_m": 166,
+    "lat": 40.7565308,
+    "lon": -73.9851212,
+    "name": "Parking",
+    "safety_priority": 5,
+    "type": "parking"
+  },
+  "schema_version": "1.0.0",
+  "search_radius_m": 3000,
+  "stops": [
+    {
+      "distance_km": 0.17,
+      "distance_m": 166,
+      "lat": 40.7565308,
+      "lon": -73.9851212,
+      "name": "Parking",
+      "safety_priority": 5,
+      "type": "parking"
+    },
+    {
+      "distance_km": 0.18,
+      "distance_m": 183,
+      "lat": 40.7564987,
+      "lon": -73.9863817,
+      "name": "NYPD Times Square Substation",
+      "safety_priority": 1,
+      "type": "police"
+    },
+    {
+      "distance_km": 0.23,
+      "distance_m": 230,
+      "lat": 40.7577186,
+      "lon": -73.9882032,
+      "name": "Parking",
+      "safety_priority": 5,
+      "type": "parking"
+    },
+    {
+      "distance_km": 0.24,
+      "distance_m": 243,
+      "lat": 40.7596857,
+      "lon": -73.9873443,
+      "name": "Parking",
+      "safety_priority": 5,
+      "type": "parking"
+    },
+    {
+      "distance_km": 0.27,
+      "distance_m": 272,
+      "lat": 40.7603263,
+      "lon": -73.9865118,
+      "name": "Parking",
+      "safety_priority": 5,
+      "type": "parking"
+    },
+    {
+      "distance_km": 0.3,
+      "distance_m": 301,
+      "lat": 40.7606886,
+      "lon": -73.9851191,
+      "name": "Quik Park",
+      "safety_priority": 5,
+      "type": "parking"
+    },
+    {
+      "distance_km": 0.35,
+      "distance_m": 345,
+      "lat": 40.759012,
+      "lon": -73.9893758,
+      "name": "Parking",
+      "safety_priority": 5,
+      "type": "parking"
+    },
+    {
+      "distance_km": 0.36,
+      "distance_m": 359,
+      "lat": 40.7562922,
+      "lon": -73.9818893,
+      "name": "Penile Enhancement Center of New York",
+      "safety_priority": 3,
+      "type": "clinic"
+    },
+    {
+      "distance_km": 0.36,
+      "distance_m": 362,
+      "lat": 40.7562429,
+      "lon": -73.9818791,
+      "name": "Penile Enhancement Center of New York",
+      "safety_priority": 3,
+      "type": "clinic"
+    },
+    {
+      "distance_km": 0.36,
+      "distance_m": 363,
+      "lat": 40.7557106,
+      "lon": -73.982428,
+      "name": "Hippodrome Parking",
+      "safety_priority": 5,
+      "type": "parking"
+    }
+  ],
+  "total_found": 363
+}

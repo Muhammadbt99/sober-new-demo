@@ -1,0 +1,54 @@
+{
+  "action": "Normal driving conditions. Drive safely.",
+  "cell": "8843a13681fffff",
+  "coverage": "rule_based_only",
+  "coverage_reason": "cell_outside_training_coverage",
+  "data_quality": {
+    "bars": "offline",
+    "model": "live",
+    "weather": "fallback"
+  },
+  "expected_rate": null,
+  "expected_rate_per_km2_hour": null,
+  "features": {
+    "bars": 0,
+    "cell": "8843a13681fffff",
+    "day_of_week": 5,
+    "hour": 23,
+    "is_weekend": true,
+    "latitude": 25.2048,
+    "longitude": 55.2708,
+    "rain": 0,
+    "temperature": 20,
+    "wind_speed": 0
+  },
+  "local_time": {
+    "day_of_week": 5,
+    "hour": 23,
+    "is_weekend": true
+  },
+  "model_points": 0,
+  "model_version": "2026.10.29-1",
+  "nightlife_points": 0,
+  "percentile": null,
+  "reasons": [
+    "No training coverage for this hex - no learned crash points"
+  ],
+  "risk_breakdown": {
+    "expected_rate": null,
+    "expected_rate_per_km2_hour": null,
+    "model": 0,
+    "model_max": 60,
+    "nightlife": 0,
+    "nightlife_max": 40,
+    "percentile": null,
+    "total": 0
+  },
+  "risk_level": "LOW",
+  "risk_score": 0,
+  "schema_version": "1.0.0",
+  "warnings": [
+    "Live weather unavailable - the model used a missing-value path",
+    "No learned crash surface for this location - model points are unavailable"
+  ]
+}

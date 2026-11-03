@@ -1,0 +1,492 @@
+{
+  "average_risk": 93.3,
+  "coverage": "model",
+  "data_quality": {
+    "bars": "offline",
+    "model": "live",
+    "weather": "fallback"
+  },
+  "day": "Saturday",
+  "is_weekend": true,
+  "location": {
+    "lat": 40.758,
+    "lon": -73.9855
+  },
+  "model_version": "2026.10.29-1",
+  "peak_risk": {
+    "hour": 0,
+    "hour_label": "00:00",
+    "percentile": 99.67846513605443,
+    "risk_level": "CRITICAL",
+    "risk_score": 100.0
+  },
+  "safest_time": {
+    "hour": 5,
+    "hour_label": "05:00",
+    "percentile": 89.47704081632654,
+    "risk_level": "HIGH",
+    "risk_score": 70.0
+  },
+  "schema_version": "1.0.0",
+  "trend": [
+    {
+      "action": "Avoid driving if possible. Consider alternative transportation.",
+      "coverage": "model",
+      "expected_rate": 0.024251696763307934,
+      "expected_rate_per_km2_hour": 0.03271494786257298,
+      "hour": 0,
+      "hour_label": "00:00",
+      "model_points": 60.0,
+      "nightlife_points": 40,
+      "percentile": 99.67846513605443,
+      "reasons": [
+        "0.02425 expected injury/fatal crashes per cell-hour (100th percentile)",
+        "0.0327 expected injury/fatal crashes per km2 per hour",
+        "Top-decile learned crash risk for this hex and hour",
+        "Nightlife density contributes 40 of 40 points"
+      ],
+      "risk_level": "CRITICAL",
+      "risk_score": 100.0
+    },
+    {
+      "action": "Avoid driving if possible. Consider alternative transportation.",
+      "coverage": "model",
+      "expected_rate": 0.01664778926948926,
+      "expected_rate_per_km2_hour": 0.022457461978596636,
+      "hour": 1,
+      "hour_label": "01:00",
+      "model_points": 50.0,
+      "nightlife_points": 40,
+      "percentile": 98.47523384353741,
+      "reasons": [
+        "0.01665 expected injury/fatal crashes per cell-hour (98th percentile)",
+        "0.0225 expected injury/fatal crashes per km2 per hour",
+        "Top-decile learned crash risk for this hex and hour",
+        "Nightlife density contributes 40 of 40 points"
+      ],
+      "risk_level": "CRITICAL",
+      "risk_score": 90.0
+    },
+    {
+      "action": "Avoid driving if possible. Consider alternative transportation.",
+      "coverage": "model",
+      "expected_rate": 0.014532119416973233,
+      "expected_rate_per_km2_hour": 0.019603474911423755,
+      "hour": 2,
+      "hour_label": "02:00",
+      "model_points": 50.0,
+      "nightlife_points": 40,
+      "percentile": 97.24011479591837,
+      "reasons": [
+        "0.01453 expected injury/fatal crashes per cell-hour (97th percentile)",
+        "0.0196 expected injury/fatal crashes per km2 per hour",
+        "Top-decile learned crash risk for this hex and hour",
+        "Nightlife density contributes 40 of 40 points"
+      ],
+      "risk_level": "CRITICAL",
+      "risk_score": 90.0
+    },
+    {
+      "action": "Avoid driving if possible. Consider alternative transportation.",
+      "coverage": "model",
+      "expected_rate": 0.014758381982789047,
+      "expected_rate_per_km2_hour": 0.019908697598156156,
+      "hour": 3,
+      "hour_label": "03:00",
+      "model_points": 50.0,
+      "nightlife_points": 40,
+      "percentile": 97.42718962585035,
+      "reasons": [
+        "0.01476 expected injury/fatal crashes per cell-hour (97th percentile)",
+        "0.0199 expected injury/fatal crashes per km2 per hour",
+        "Top-decile learned crash risk for this hex and hour",
+        "Nightlife density contributes 40 of 40 points"
+      ],
+      "risk_level": "CRITICAL",
+      "risk_score": 90.0
+    },
+    {
+      "action": "Avoid driving if possible. Consider alternative transportation.",
+      "coverage": "model",
+      "expected_rate": 0.01602425306610409,
+      "expected_rate_per_km2_hour": 0.021616326837280028,
+      "hour": 4,
+      "hour_label": "04:00",
+      "model_points": 50.0,
+      "nightlife_points": 40,
+      "percentile": 98.2079081632653,
+      "reasons": [
+        "0.01602 expected injury/fatal crashes per cell-hour (98th percentile)",
+        "0.0216 expected injury/fatal crashes per km2 per hour",
+        "Top-decile learned crash risk for this hex and hour",
+        "Nightlife density contributes 40 of 40 points"
+      ],
+      "risk_level": "CRITICAL",
+      "risk_score": 90.0
+    },
+    {
+      "action": "Drive with extreme caution. Avoid high-risk areas.",
+      "coverage": "model",
+      "expected_rate": 0.009426013910636523,
+      "expected_rate_per_km2_hour": 0.012715463031226669,
+      "hour": 5,
+      "hour_label": "05:00",
+      "model_points": 30.0,
+      "nightlife_points": 40,
+      "percentile": 89.47704081632654,
+      "reasons": [
+        "0.00943 expected injury/fatal crashes per cell-hour (89th percentile)",
+        "0.0127 expected injury/fatal crashes per km2 per hour",
+        "Above-average learned crash risk for this hex and hour",
+        "Nightlife density contributes 40 of 40 points"
+      ],
+      "risk_level": "HIGH",
+      "risk_score": 70.0
+    },
+    {
+      "action": "Drive with extreme caution. Avoid high-risk areas.",
+      "coverage": "model",
+      "expected_rate": 0.007723372984420432,
+      "expected_rate_per_km2_hour": 0.010418641919141948,
+      "hour": 6,
+      "hour_label": "06:00",
+      "model_points": 30.0,
+      "nightlife_points": 40,
+      "percentile": 84.33035714285714,
+      "reasons": [
+        "0.00772 expected injury/fatal crashes per cell-hour (84th percentile)",
+        "0.0104 expected injury/fatal crashes per km2 per hour",
+        "Above-average learned crash risk for this hex and hour",
+        "Nightlife density contributes 40 of 40 points"
+      ],
+      "risk_level": "HIGH",
+      "risk_score": 70.0
+    },
+    {
+      "action": "Drive with extreme caution. Avoid high-risk areas.",
+      "coverage": "model",
+      "expected_rate": 0.009363233149059232,
+      "expected_rate_per_km2_hour": 0.012630773313974343,
+      "hour": 7,
+      "hour_label": "07:00",
+      "model_points": 30.0,
+      "nightlife_points": 40,
+      "percentile": 89.31441326530613,
+      "reasons": [
+        "0.00936 expected injury/fatal crashes per cell-hour (89th percentile)",
+        "0.0126 expected injury/fatal crashes per km2 per hour",
+        "Above-average learned crash risk for this hex and hour",
+        "Nightlife density contributes 40 of 40 points"
+      ],
+      "risk_level": "HIGH",
+      "risk_score": 70.0
+    },
+    {
+      "action": "Avoid driving if possible. Consider alternative transportation.",
+      "coverage": "model",
+      "expected_rate": 0.01562903431247556,
+      "expected_rate_per_km2_hour": 0.021083186371049622,
+      "hour": 8,
+      "hour_label": "08:00",
+      "model_points": 50.0,
+      "nightlife_points": 40,
+      "percentile": 98.01179846938776,
+      "reasons": [
+        "0.01563 expected injury/fatal crashes per cell-hour (98th percentile)",
+        "0.0211 expected injury/fatal crashes per km2 per hour",
+        "Top-decile learned crash risk for this hex and hour",
+        "Nightlife density contributes 40 of 40 points"
+      ],
+      "risk_level": "CRITICAL",
+      "risk_score": 90.0
+    },
+    {
+      "action": "Avoid driving if possible. Consider alternative transportation.",
+      "coverage": "model",
+      "expected_rate": 0.016564188776118552,
+      "expected_rate_per_km2_hour": 0.02234468695058103,
+      "hour": 9,
+      "hour_label": "09:00",
+      "model_points": 50.0,
+      "nightlife_points": 40,
+      "percentile": 98.44812925170068,
+      "reasons": [
+        "0.01656 expected injury/fatal crashes per cell-hour (98th percentile)",
+        "0.0223 expected injury/fatal crashes per km2 per hour",
+        "Top-decile learned crash risk for this hex and hour",
+        "Nightlife density contributes 40 of 40 points"
+      ],
+      "risk_level": "CRITICAL",
+      "risk_score": 90.0
+    },
+    {
+      "action": "Avoid driving if possible. Consider alternative transportation.",
+      "coverage": "model",
+      "expected_rate": 0.016095614152778645,
+      "expected_rate_per_km2_hour": 0.021712591203965775,
+      "hour": 10,
+      "hour_label": "10:00",
+      "model_points": 50.0,
+      "nightlife_points": 40,
+      "percentile": 98.24192176870748,
+      "reasons": [
+        "0.01610 expected injury/fatal crashes per cell-hour (98th percentile)",
+        "0.0217 expected injury/fatal crashes per km2 per hour",
+        "Top-decile learned crash risk for this hex and hour",
+        "Nightlife density contributes 40 of 40 points"
+      ],
+      "risk_level": "CRITICAL",
+      "risk_score": 90.0
+    },
+    {
+      "action": "Avoid driving if possible. Consider alternative transportation.",
+      "coverage": "model",
+      "expected_rate": 0.020079789813950238,
+      "expected_rate_per_km2_hour": 0.027087147067115295,
+      "hour": 11,
+      "hour_label": "11:00",
+      "model_points": 60.0,
+      "nightlife_points": 40,
+      "percentile": 99.2405399659864,
+      "reasons": [
+        "0.02008 expected injury/fatal crashes per cell-hour (99th percentile)",
+        "0.0271 expected injury/fatal crashes per km2 per hour",
+        "Top-decile learned crash risk for this hex and hour",
+        "Nightlife density contributes 40 of 40 points"
+      ],
+      "risk_level": "CRITICAL",
+      "risk_score": 100.0
+    },
+    {
+      "action": "Avoid driving if possible. Consider alternative transportation.",
+      "coverage": "model",
+      "expected_rate": 0.0211330311628045,
+      "expected_rate_per_km2_hour": 0.028507943976740405,
+      "hour": 12,
+      "hour_label": "12:00",
+      "model_points": 60.0,
+      "nightlife_points": 40,
+      "percentile": 99.39891581632654,
+      "reasons": [
+        "0.02113 expected injury/fatal crashes per cell-hour (99th percentile)",
+        "0.0285 expected injury/fatal crashes per km2 per hour",
+        "Top-decile learned crash risk for this hex and hour",
+        "Nightlife density contributes 40 of 40 points"
+      ],
+      "risk_level": "CRITICAL",
+      "risk_score": 100.0
+    },
+    {
+      "action": "Avoid driving if possible. Consider alternative transportation.",
+      "coverage": "model",
+      "expected_rate": 0.021524646537707522,
+      "expected_rate_per_km2_hour": 0.029036223572892955,
+      "hour": 13,
+      "hour_label": "13:00",
+      "model_points": 60.0,
+      "nightlife_points": 40,
+      "percentile": 99.44568452380952,
+      "reasons": [
+        "0.02152 expected injury/fatal crashes per cell-hour (99th percentile)",
+        "0.0290 expected injury/fatal crashes per km2 per hour",
+        "Top-decile learned crash risk for this hex and hour",
+        "Nightlife density contributes 40 of 40 points"
+      ],
+      "risk_level": "CRITICAL",
+      "risk_score": 100.0
+    },
+    {
+      "action": "Avoid driving if possible. Consider alternative transportation.",
+      "coverage": "model",
+      "expected_rate": 0.02285472359717374,
+      "expected_rate_per_km2_hour": 0.03083046510899348,
+      "hour": 14,
+      "hour_label": "14:00",
+      "model_points": 60.0,
+      "nightlife_points": 40,
+      "percentile": 99.57589285714286,
+      "reasons": [
+        "0.02285 expected injury/fatal crashes per cell-hour (100th percentile)",
+        "0.0308 expected injury/fatal crashes per km2 per hour",
+        "Top-decile learned crash risk for this hex and hour",
+        "Nightlife density contributes 40 of 40 points"
+      ],
+      "risk_level": "CRITICAL",
+      "risk_score": 100.0
+    },
+    {
+      "action": "Avoid driving if possible. Consider alternative transportation.",
+      "coverage": "model",
+      "expected_rate": 0.022848383749688762,
+      "expected_rate_per_km2_hour": 0.0308219128092533,
+      "hour": 15,
+      "hour_label": "15:00",
+      "model_points": 60.0,
+      "nightlife_points": 40,
+      "percentile": 99.57589285714286,
+      "reasons": [
+        "0.02285 expected injury/fatal crashes per cell-hour (100th percentile)",
+        "0.0308 expected injury/fatal crashes per km2 per hour",
+        "Top-decile learned crash risk for this hex and hour",
+        "Nightlife density contributes 40 of 40 points"
+      ],
+      "risk_level": "CRITICAL",
+      "risk_score": 100.0
+    },
+    {
+      "action": "Avoid driving if possible. Consider alternative transportation.",
+      "coverage": "model",
+      "expected_rate": 0.0228172370167172,
+      "expected_rate_per_km2_hour": 0.03077989662559411,
+      "hour": 16,
+      "hour_label": "16:00",
+      "model_points": 60.0,
+      "nightlife_points": 40,
+      "percentile": 99.57482993197279,
+      "reasons": [
+        "0.02282 expected injury/fatal crashes per cell-hour (100th percentile)",
+        "0.0308 expected injury/fatal crashes per km2 per hour",
+        "Top-decile learned crash risk for this hex and hour",
+        "Nightlife density contributes 40 of 40 points"
+      ],
+      "risk_level": "CRITICAL",
+      "risk_score": 100.0
+    },
+    {
+      "action": "Avoid driving if possible. Consider alternative transportation.",
+      "coverage": "model",
+      "expected_rate": 0.022875428279836036,
+      "expected_rate_per_km2_hour": 0.030858395221282895,
+      "hour": 17,
+      "hour_label": "17:00",
+      "model_points": 60.0,
+      "nightlife_points": 40,
+      "percentile": 99.57642431972789,
+      "reasons": [
+        "0.02288 expected injury/fatal crashes per cell-hour (100th percentile)",
+        "0.0309 expected injury/fatal crashes per km2 per hour",
+        "Top-decile learned crash risk for this hex and hour",
+        "Nightlife density contributes 40 of 40 points"
+      ],
+      "risk_level": "CRITICAL",
+      "risk_score": 100.0
+    },
+    {
+      "action": "Avoid driving if possible. Consider alternative transportation.",
+      "coverage": "model",
+      "expected_rate": 0.023235030717529113,
+      "expected_rate_per_km2_hour": 0.03134349014537011,
+      "hour": 18,
+      "hour_label": "18:00",
+      "model_points": 60.0,
+      "nightlife_points": 40,
+      "percentile": 99.6141581632653,
+      "reasons": [
+        "0.02324 expected injury/fatal crashes per cell-hour (100th percentile)",
+        "0.0313 expected injury/fatal crashes per km2 per hour",
+        "Top-decile learned crash risk for this hex and hour",
+        "Nightlife density contributes 40 of 40 points"
+      ],
+      "risk_level": "CRITICAL",
+      "risk_score": 100.0
+    },
+    {
+      "action": "Avoid driving if possible. Consider alternative transportation.",
+      "coverage": "model",
+      "expected_rate": 0.02792089994968706,
+      "expected_rate_per_km2_hour": 0.037664613533850595,
+      "hour": 19,
+      "hour_label": "19:00",
+      "model_points": 60.0,
+      "nightlife_points": 40,
+      "percentile": 99.81345663265306,
+      "reasons": [
+        "0.02792 expected injury/fatal crashes per cell-hour (100th percentile)",
+        "0.0377 expected injury/fatal crashes per km2 per hour",
+        "Top-decile learned crash risk for this hex and hour",
+        "Nightlife density contributes 40 of 40 points"
+      ],
+      "risk_level": "CRITICAL",
+      "risk_score": 100.0
+    },
+    {
+      "action": "Avoid driving if possible. Consider alternative transportation.",
+      "coverage": "model",
+      "expected_rate": 0.02753016451774597,
+      "expected_rate_per_km2_hour": 0.037137520959307405,
+      "hour": 20,
+      "hour_label": "20:00",
+      "model_points": 60.0,
+      "nightlife_points": 40,
+      "percentile": 99.79963860544218,
+      "reasons": [
+        "0.02753 expected injury/fatal crashes per cell-hour (100th percentile)",
+        "0.0371 expected injury/fatal crashes per km2 per hour",
+        "Top-decile learned crash risk for this hex and hour",
+        "Nightlife density contributes 40 of 40 points"
+      ],
+      "risk_level": "CRITICAL",
+      "risk_score": 100.0
+    },
+    {
+      "action": "Avoid driving if possible. Consider alternative transportation.",
+      "coverage": "model",
+      "expected_rate": 0.02753016451774597,
+      "expected_rate_per_km2_hour": 0.037137520959307405,
+      "hour": 21,
+      "hour_label": "21:00",
+      "model_points": 60.0,
+      "nightlife_points": 40,
+      "percentile": 99.79963860544218,
+      "reasons": [
+        "0.02753 expected injury/fatal crashes per cell-hour (100th percentile)",
+        "0.0371 expected injury/fatal crashes per km2 per hour",
+        "Top-decile learned crash risk for this hex and hour",
+        "Nightlife density contributes 40 of 40 points"
+      ],
+      "risk_level": "CRITICAL",
+      "risk_score": 100.0
+    },
+    {
+      "action": "Avoid driving if possible. Consider alternative transportation.",
+      "coverage": "model",
+      "expected_rate": 0.02629871102352663,
+      "expected_rate_per_km2_hour": 0.035476320209035704,
+      "hour": 22,
+      "hour_label": "22:00",
+      "model_points": 60.0,
+      "nightlife_points": 40,
+      "percentile": 99.75871598639456,
+      "reasons": [
+        "0.02630 expected injury/fatal crashes per cell-hour (100th percentile)",
+        "0.0355 expected injury/fatal crashes per km2 per hour",
+        "Top-decile learned crash risk for this hex and hour",
+        "Nightlife density contributes 40 of 40 points"
+      ],
+      "risk_level": "CRITICAL",
+      "risk_score": 100.0
+    },
+    {
+      "action": "Avoid driving if possible. Consider alternative transportation.",
+      "coverage": "model",
+      "expected_rate": 0.023221961453316894,
+      "expected_rate_per_km2_hour": 0.03132586002647667,
+      "hour": 23,
+      "hour_label": "23:00",
+      "model_points": 60.0,
+      "nightlife_points": 40,
+      "percentile": 99.61309523809524,
+      "reasons": [
+        "0.02322 expected injury/fatal crashes per cell-hour (100th percentile)",
+        "0.0313 expected injury/fatal crashes per km2 per hour",
+        "Top-decile learned crash risk for this hex and hour",
+        "Nightlife density contributes 40 of 40 points"
+      ],
+      "risk_level": "CRITICAL",
+      "risk_score": 100.0
+    }
+  ],
+  "warnings": [
+    "Live weather unavailable - the model used a missing-value path"
+  ]
+}

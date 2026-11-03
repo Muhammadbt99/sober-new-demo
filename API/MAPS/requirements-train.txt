@@ -1,0 +1,8 @@
+# Training, data-extraction and test dependencies.
+# Install with:  pip install -r requirements-train.txt
+-r requirements.txt
+
+matplotlib==3.9.2
+seaborn==0.13.2
+osmium==4.3.2
+pytest==9.0.3

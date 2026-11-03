@@ -1,0 +1,617 @@
+{
+  "coverage": "model",
+  "destination": {
+    "lat": 40.683,
+    "lon": -73.978
+  },
+  "detour_synthesis": {
+    "attempted": true,
+    "best_detour_expected_crashes": null,
+    "candidate_count": 0,
+    "fastest_expected_crashes": 0.161982,
+    "highest_risk_cell": "882a1072cbfffff",
+    "highest_risk_percentile": 99.78103741496598,
+    "improved": false,
+    "reason": "fewer_than_two_distinct_routes",
+    "scored_count": 0
+  },
+  "local_time": {
+    "day_of_week": 5,
+    "hour": 23,
+    "is_weekend": true
+  },
+  "model_version": "2026.10.29-1",
+  "origin": {
+    "lat": 40.758,
+    "lon": -73.9855
+  },
+  "provider_routes": 1,
+  "provider_source": "captured-fake-one",
+  "recommendation": {
+    "basis": "expected_injury_crashes",
+    "detour_improved": false,
+    "risk_reduction": 0.0,
+    "risk_reduction_percent": 0.0,
+    "text": "Only one route is available; there is no alternative to compare"
+  },
+  "recommended_route": 0,
+  "route_id": "40.758_-73.986_40.683_-73.978_23_5",
+  "routes": [
+    {
+      "average_percentile": 91.2,
+      "average_risk": 82.9,
+      "bars": "offline",
+      "coverage": "model",
+      "covered_length_m": 8602.6,
+      "data_quality": {
+        "bars": "offline",
+        "coverage_ratio": 1.0,
+        "model": "live",
+        "rain": 0,
+        "temperature": 20,
+        "weather": "fallback",
+        "wind_speed": 0
+      },
+      "distance_km": 8.6,
+      "duration_min": 26.0,
+      "expected_crashes_per_10km": 0.188294,
+      "expected_crashes_total": 0.161982,
+      "geometry": [
+        [
+          40.758,
+          -73.9855
+        ],
+        [
+          40.744,
+          -73.99
+        ],
+        [
+          40.73,
+          -73.994
+        ],
+        [
+          40.715,
+          -73.99
+        ],
+        [
+          40.7,
+          -73.983
+        ],
+        [
+          40.683,
+          -73.978
+        ]
+      ],
+      "highest_risk_segment": {
+        "action": "Avoid driving if possible. Consider alternative transportation.",
+        "bucket": "extreme",
+        "cell": "882a1072cbfffff",
+        "coverage": "model",
+        "end": [
+          40.716667,
+          -73.990444
+        ],
+        "expected_crashes": 0.02670921,
+        "expected_rate": 0.02701969055706416,
+        "expected_rate_per_km2_hour": 0.03647221228377218,
+        "length_m": 850.8,
+        "midpoint": [
+          40.717083,
+          -73.990556
+        ],
+        "model_points": 60.0,
+        "nightlife_points": 40,
+        "percentile": 99.78103741496598,
+        "reasons": [
+          "0.02702 expected injury/fatal crashes per cell-hour (100th percentile)",
+          "0.0365 expected injury/fatal crashes per km2 per hour",
+          "Top-decile learned crash risk for this hex and hour",
+          "Nightlife density contributes 40 of 40 points"
+        ],
+        "risk_level": "CRITICAL",
+        "risk_score": 100.0,
+        "start": [
+          40.724167,
+          -73.992444
+        ]
+      },
+      "is_balanced": true,
+      "is_fastest": true,
+      "is_safest": true,
+      "max_percentile": 99.78103741496598,
+      "max_waypoint_risk": 100.0,
+      "model_version": "2026.10.29-1",
+      "provider": "captured-fake-one",
+      "provider_distance_km": 8.7,
+      "rank": 1,
+      "risk_level": "CRITICAL",
+      "route_type": "safest",
+      "segments": [
+        {
+          "action": "Avoid driving if possible. Consider alternative transportation.",
+          "bucket": "extreme",
+          "cell": "882a100d67fffff",
+          "coverage": "model",
+          "end": [
+            40.753059,
+            -73.987088
+          ],
+          "expected_crashes": 0.01525185,
+          "expected_rate": 0.023221961453316894,
+          "expected_rate_per_km2_hour": 0.03132586002647667,
+          "length_m": 565.5,
+          "midpoint": [
+            40.753471,
+            -73.986956
+          ],
+          "model_points": 60.0,
+          "nightlife_points": 40,
+          "percentile": 99.61309523809524,
+          "reasons": [
+            "0.02322 expected injury/fatal crashes per cell-hour (100th percentile)",
+            "0.0313 expected injury/fatal crashes per km2 per hour",
+            "Top-decile learned crash risk for this hex and hour",
+            "Nightlife density contributes 40 of 40 points"
+          ],
+          "risk_level": "CRITICAL",
+          "risk_score": 100.0,
+          "start": [
+            40.758,
+            -73.9855
+          ]
+        },
+        {
+          "action": "Avoid driving if possible. Consider alternative transportation.",
+          "bucket": "extreme",
+          "cell": "882a100d2dfffff",
+          "coverage": "model",
+          "end": [
+            40.745647,
+            -73.989471
+          ],
+          "expected_crashes": 0.0183835,
+          "expected_rate": 0.018659104402790203,
+          "expected_rate_per_km2_hour": 0.02517303613930074,
+          "length_m": 848.2,
+          "midpoint": [
+            40.746059,
+            -73.989338
+          ],
+          "model_points": 60.0,
+          "nightlife_points": 40,
+          "percentile": 99.01201105442176,
+          "reasons": [
+            "0.01866 expected injury/fatal crashes per cell-hour (99th percentile)",
+            "0.0252 expected injury/fatal crashes per km2 per hour",
+            "Top-decile learned crash risk for this hex and hour",
+            "Nightlife density contributes 40 of 40 points"
+          ],
+          "risk_level": "CRITICAL",
+          "risk_score": 100.0,
+          "start": [
+            40.753059,
+            -73.987088
+          ]
+        },
+        {
+          "action": "Avoid driving if possible. Consider alternative transportation.",
+          "bucket": "extreme",
+          "cell": "882a100d21fffff",
+          "coverage": "model",
+          "end": [
+            40.73875,
+            -73.9915
+          ],
+          "expected_crashes": 0.01463755,
+          "expected_rate": 0.0160363586197464,
+          "expected_rate_per_km2_hour": 0.021637941004940705,
+          "length_m": 785.8,
+          "midpoint": [
+            40.739187,
+            -73.991375
+          ],
+          "model_points": 50.0,
+          "nightlife_points": 40,
+          "percentile": 98.21109693877551,
+          "reasons": [
+            "0.01604 expected injury/fatal crashes per cell-hour (98th percentile)",
+            "0.0216 expected injury/fatal crashes per km2 per hour",
+            "Top-decile learned crash risk for this hex and hour",
+            "Nightlife density contributes 40 of 40 points"
+          ],
+          "risk_level": "CRITICAL",
+          "risk_score": 90.0,
+          "start": [
+            40.745647,
+            -73.989471
+          ]
+        },
+        {
+          "action": "Avoid driving if possible. Consider alternative transportation.",
+          "bucket": "extreme",
+          "cell": "882a100d27fffff",
+          "coverage": "model",
+          "end": [
+            40.732625,
+            -73.99325
+          ],
+          "expected_crashes": 0.01079903,
+          "expected_rate": 0.013340490269772276,
+          "expected_rate_per_km2_hour": 0.018002080589003936,
+          "length_m": 696.8,
+          "midpoint": [
+            40.733063,
+            -73.993125
+          ],
+          "model_points": 50.0,
+          "nightlife_points": 40,
+          "percentile": 96.24149659863946,
+          "reasons": [
+            "0.01334 expected injury/fatal crashes per cell-hour (96th percentile)",
+            "0.0180 expected injury/fatal crashes per km2 per hour",
+            "Top-decile learned crash risk for this hex and hour",
+            "Nightlife density contributes 40 of 40 points"
+          ],
+          "risk_level": "CRITICAL",
+          "risk_score": 90.0,
+          "start": [
+            40.73875,
+            -73.9915
+          ]
+        },
+        {
+          "action": "Avoid driving if possible. Consider alternative transportation.",
+          "bucket": "extreme",
+          "cell": "882a1072c9fffff",
+          "coverage": "model",
+          "end": [
+            40.724167,
+            -73.992444
+          ],
+          "expected_crashes": 0.0163152,
+          "expected_rate": 0.014622867051907356,
+          "expected_rate_per_km2_hour": 0.0197355322652882,
+          "length_m": 960.4,
+          "midpoint": [
+            40.724583,
+            -73.992556
+          ],
+          "model_points": 50.0,
+          "nightlife_points": 40,
+          "percentile": 97.30442176870748,
+          "reasons": [
+            "0.01462 expected injury/fatal crashes per cell-hour (97th percentile)",
+            "0.0197 expected injury/fatal crashes per km2 per hour",
+            "Top-decile learned crash risk for this hex and hour",
+            "Nightlife density contributes 40 of 40 points"
+          ],
+          "risk_level": "CRITICAL",
+          "risk_score": 90.0,
+          "start": [
+            40.732625,
+            -73.99325
+          ]
+        },
+        {
+          "action": "Avoid driving if possible. Consider alternative transportation.",
+          "bucket": "extreme",
+          "cell": "882a1072cbfffff",
+          "coverage": "model",
+          "end": [
+            40.716667,
+            -73.990444
+          ],
+          "expected_crashes": 0.02670921,
+          "expected_rate": 0.02701969055706416,
+          "expected_rate_per_km2_hour": 0.03647221228377218,
+          "length_m": 850.8,
+          "midpoint": [
+            40.717083,
+            -73.990556
+          ],
+          "model_points": 60.0,
+          "nightlife_points": 40,
+          "percentile": 99.78103741496598,
+          "reasons": [
+            "0.02702 expected injury/fatal crashes per cell-hour (100th percentile)",
+            "0.0365 expected injury/fatal crashes per km2 per hour",
+            "Top-decile learned crash risk for this hex and hour",
+            "Nightlife density contributes 40 of 40 points"
+          ],
+          "risk_level": "CRITICAL",
+          "risk_score": 100.0,
+          "start": [
+            40.724167,
+            -73.992444
+          ]
+        },
+        {
+          "action": "Drive with extreme caution. Avoid high-risk areas.",
+          "bucket": "high",
+          "cell": "882a1072ddfffff",
+          "coverage": "model",
+          "end": [
+            40.709167,
+            -73.987278
+          ],
+          "expected_crashes": 0.00899562,
+          "expected_rate": 0.008826962633593987,
+          "expected_rate_per_km2_hour": 0.011916767618415591,
+          "length_m": 877.1,
+          "midpoint": [
+            40.709583,
+            -73.987472
+          ],
+          "model_points": 30.0,
+          "nightlife_points": 28,
+          "percentile": 87.81675170068027,
+          "reasons": [
+            "0.00883 expected injury/fatal crashes per cell-hour (88th percentile)",
+            "0.0119 expected injury/fatal crashes per km2 per hour",
+            "Above-average learned crash risk for this hex and hour",
+            "Nightlife density contributes 28 of 40 points"
+          ],
+          "risk_level": "HIGH",
+          "risk_score": 58.0,
+          "start": [
+            40.716667,
+            -73.990444
+          ]
+        },
+        {
+          "action": "Normal driving conditions. Drive safely.",
+          "bucket": "low",
+          "cell": "882a1072d1fffff",
+          "coverage": "model",
+          "end": [
+            40.701667,
+            -73.983778
+          ],
+          "expected_crashes": 0.00126107,
+          "expected_rate": 0.0012268237956562596,
+          "expected_rate_per_km2_hour": 0.0016565129767317289,
+          "length_m": 884.6,
+          "midpoint": [
+            40.702083,
+            -73.983972
+          ],
+          "model_points": 0.0,
+          "nightlife_points": 16,
+          "percentile": 37.010522959183675,
+          "reasons": [
+            "0.00123 expected injury/fatal crashes per cell-hour (37th percentile)",
+            "0.0017 expected injury/fatal crashes per km2 per hour",
+            "Below-median learned crash risk for this hex and hour",
+            "Nightlife density contributes 16 of 40 points"
+          ],
+          "risk_level": "LOW",
+          "risk_score": 16.0,
+          "start": [
+            40.709167,
+            -73.987278
+          ]
+        },
+        {
+          "action": "Avoid driving if possible. Consider alternative transportation.",
+          "bucket": "extreme",
+          "cell": "882a1072d3fffff",
+          "coverage": "model",
+          "end": [
+            40.6932,
+            -73.981
+          ],
+          "expected_crashes": 0.0211416,
+          "expected_rate": 0.01873074632436581,
+          "expected_rate_per_km2_hour": 0.025294915040631957,
+          "length_m": 971.3,
+          "midpoint": [
+            40.693625,
+            -73.981125
+          ],
+          "model_points": 60.0,
+          "nightlife_points": 28,
+          "percentile": 99.03008078231292,
+          "reasons": [
+            "0.01873 expected injury/fatal crashes per cell-hour (99th percentile)",
+            "0.0253 expected injury/fatal crashes per km2 per hour",
+            "Top-decile learned crash risk for this hex and hour",
+            "Nightlife density contributes 28 of 40 points"
+          ],
+          "risk_level": "CRITICAL",
+          "risk_score": 88.0,
+          "start": [
+            40.701667,
+            -73.983778
+          ]
+        },
+        {
+          "action": "Avoid driving if possible. Consider alternative transportation.",
+          "bucket": "extreme",
+          "cell": "882a100da5fffff",
+          "coverage": "model",
+          "end": [
+            40.68555,
+            -73.97875
+          ],
+          "expected_crashes": 0.02152593,
+          "expected_rate": 0.021252183382298295,
+          "expected_rate_per_km2_hour": 0.028704316618850385,
+          "length_m": 871.5,
+          "midpoint": [
+            40.685975,
+            -73.978875
+          ],
+          "model_points": 60.0,
+          "nightlife_points": 40,
+          "percentile": 99.41326530612245,
+          "reasons": [
+            "0.02125 expected injury/fatal crashes per cell-hour (99th percentile)",
+            "0.0287 expected injury/fatal crashes per km2 per hour",
+            "Top-decile learned crash risk for this hex and hour",
+            "Nightlife density contributes 40 of 40 points"
+          ],
+          "risk_level": "CRITICAL",
+          "risk_score": 100.0,
+          "start": [
+            40.6932,
+            -73.981
+          ]
+        },
+        {
+          "action": "Avoid driving if possible. Consider alternative transportation.",
+          "bucket": "extreme",
+          "cell": "882a100da7fffff",
+          "coverage": "model",
+          "end": [
+            40.683,
+            -73.978
+          ],
+          "expected_crashes": 0.00696153,
+          "expected_rate": 0.02061737657863306,
+          "expected_rate_per_km2_hour": 0.027851115688346893,
+          "length_m": 290.5,
+          "midpoint": [
+            40.683425,
+            -73.978125
+          ],
+          "model_points": 60.0,
+          "nightlife_points": 40,
+          "percentile": 99.32025935374149,
+          "reasons": [
+            "0.02062 expected injury/fatal crashes per cell-hour (99th percentile)",
+            "0.0279 expected injury/fatal crashes per km2 per hour",
+            "Top-decile learned crash risk for this hex and hour",
+            "Nightlife density contributes 40 of 40 points"
+          ],
+          "risk_level": "CRITICAL",
+          "risk_score": 100.0,
+          "start": [
+            40.68555,
+            -73.97875
+          ]
+        }
+      ],
+      "synthetic": false,
+      "uncovered_length_m": -0.0,
+      "waypoints": [
+        {
+          "bucket": "extreme",
+          "cell": "882a100d67fffff",
+          "expected_rate": 0.023221961453316894,
+          "lat": 40.753471,
+          "lon": -73.986956,
+          "percentile": 99.61309523809524,
+          "risk_level": "CRITICAL",
+          "risk_score": 100.0
+        },
+        {
+          "bucket": "extreme",
+          "cell": "882a100d2dfffff",
+          "expected_rate": 0.018659104402790203,
+          "lat": 40.746059,
+          "lon": -73.989338,
+          "percentile": 99.01201105442176,
+          "risk_level": "CRITICAL",
+          "risk_score": 100.0
+        },
+        {
+          "bucket": "extreme",
+          "cell": "882a100d21fffff",
+          "expected_rate": 0.0160363586197464,
+          "lat": 40.739187,
+          "lon": -73.991375,
+          "percentile": 98.21109693877551,
+          "risk_level": "CRITICAL",
+          "risk_score": 90.0
+        },
+        {
+          "bucket": "extreme",
+          "cell": "882a100d27fffff",
+          "expected_rate": 0.013340490269772276,
+          "lat": 40.733063,
+          "lon": -73.993125,
+          "percentile": 96.24149659863946,
+          "risk_level": "CRITICAL",
+          "risk_score": 90.0
+        },
+        {
+          "bucket": "extreme",
+          "cell": "882a1072c9fffff",
+          "expected_rate": 0.014622867051907356,
+          "lat": 40.724583,
+          "lon": -73.992556,
+          "percentile": 97.30442176870748,
+          "risk_level": "CRITICAL",
+          "risk_score": 90.0
+        },
+        {
+          "bucket": "extreme",
+          "cell": "882a1072cbfffff",
+          "expected_rate": 0.02701969055706416,
+          "lat": 40.717083,
+          "lon": -73.990556,
+          "percentile": 99.78103741496598,
+          "risk_level": "CRITICAL",
+          "risk_score": 100.0
+        },
+        {
+          "bucket": "high",
+          "cell": "882a1072ddfffff",
+          "expected_rate": 0.008826962633593987,
+          "lat": 40.709583,
+          "lon": -73.987472,
+          "percentile": 87.81675170068027,
+          "risk_level": "HIGH",
+          "risk_score": 58.0
+        },
+        {
+          "bucket": "low",
+          "cell": "882a1072d1fffff",
+          "expected_rate": 0.0012268237956562596,
+          "lat": 40.702083,
+          "lon": -73.983972,
+          "percentile": 37.010522959183675,
+          "risk_level": "LOW",
+          "risk_score": 16.0
+        },
+        {
+          "bucket": "extreme",
+          "cell": "882a1072d3fffff",
+          "expected_rate": 0.01873074632436581,
+          "lat": 40.693625,
+          "lon": -73.981125,
+          "percentile": 99.03008078231292,
+          "risk_level": "CRITICAL",
+          "risk_score": 88.0
+        },
+        {
+          "bucket": "extreme",
+          "cell": "882a100da5fffff",
+          "expected_rate": 0.021252183382298295,
+          "lat": 40.685975,
+          "lon": -73.978875,
+          "percentile": 99.41326530612245,
+          "risk_level": "CRITICAL",
+          "risk_score": 100.0
+        },
+        {
+          "bucket": "extreme",
+          "cell": "882a100da7fffff",
+          "expected_rate": 0.02061737657863306,
+          "lat": 40.683425,
+          "lon": -73.978125,
+          "percentile": 99.32025935374149,
+          "risk_level": "CRITICAL",
+          "risk_score": 100.0
+        }
+      ]
+    }
+  ],
+  "routing_source": "captured-fake-one",
+  "schema_version": "1.0.0",
+  "total_routes": 1,
+  "warnings": [
+    "Live weather unavailable - missing-value path",
+    "Fewer than two distinct routes were returned and no synthetic detour could be scored"
+  ]
+}
