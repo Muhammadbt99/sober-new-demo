@@ -24,6 +24,7 @@ from dataclasses import dataclass, field
 from typing import Callable, Iterable, Sequence
 
 import numpy as np
+from scipy.spatial import cKDTree
 
 from crash_model import risk_band
 
@@ -60,6 +61,35 @@ VIA_MAX_OVERLAP = 0.85         # must run on different roads for >= 15% of its l
 VIA_BACKTRACK_M = 25.0         # a route that returns this close to itself doubled back
 VIA_DEADLINE_S = 9.0
 VIA_WORKERS = 4
+# A detour is a nudge of DETOUR_OFFSETS_M. Past this length a nudge is the same
+# trip scored again, not an alternative, so none are made.
+DETOUR_MAX_ROUTE_KM = 300.0
+
+# Past this length a trip keeps three routes and calm stretches lose their notes.
+LONG_TRIP_KM = 600.0
+SLIM_FIELDS = (
+    "reasons",
+    "action",
+    "model_points",
+    "nightlife_points",
+    "danger_types",
+)
+
+# When a slower route is worth recommending over the fastest. Design choices, not
+# findings: the lowest-risk road is no use if nobody would ever drive it.
+RECOMMEND_MIN_CUT_PERCENT = 5.0
+RECOMMEND_CUT_PER_EXTRA_MINUTE = 1.0
+RECOMMEND_MAX_EXTRA_TIME = 0.30
+
+# The departure planner. The crash model changes by the hour, so slots are whole
+# hours: finer ones would be false precision.
+DEPARTURE_WINDOW_HOURS = 3
+# A design choice, shown to the user: smaller gains are not worth changing a plan.
+MEANINGFUL_REDUCTION = 0.15
+# The model counts crashes per place and hour, not per car. Before 06:00 (the
+# danger model's small-hours bands) few crashes mostly means few cars, and that
+# is when impaired and drowsy crashes peak, so these hours are never advised.
+SMALL_HOURS = frozenset(range(0, 6))
 
 
 class RoutePlanningError(Exception):
@@ -224,6 +254,11 @@ def score_geometry(
         if pieces:
             run["mid_lat"], run["mid_lon"] = pieces[len(pieces) // 2]
 
+    # A scorer may batch work for the whole route up front.
+    prepare = getattr(score_at, "prepare", None)
+    if prepare is not None:
+        prepare([(run["mid_lat"], run["mid_lon"]) for run in runs])
+
     segments = []
     covered_length_m = 0.0
     risk_weighted: list[tuple[float, float]] = []
@@ -261,6 +296,13 @@ def score_geometry(
             "action": score.get("action"),
             "coverage": score.get("coverage"),
         }
+        if score.get("danger_types") is not None:
+            # What kind of crash is over-represented on this stretch now.
+            segment["danger_types"] = score["danger_types"]
+        method = (score.get("context") or {}).get("method")
+        if method:
+            # Which model scored a stretch outside NYC (the global crash model).
+            segment["method"] = method
         segments.append(segment)
         if covered:
             risk_value = score.get("risk_score")
@@ -538,13 +580,10 @@ def route_overlap(
     lat0 = mine[0][0]
     a = _local_xy(mine, lat0)
     b = _local_xy(theirs, lat0)
-    nearest = np.empty(len(a))
-    # Chunked so a long route does not build one enormous distance matrix.
-    for start in range(0, len(a), 256):
-        chunk = a[start : start + 256]
-        d = np.hypot(chunk[:, None, 0] - b[None, :, 0], chunk[:, None, 1] - b[None, :, 1])
-        nearest[start : start + 256] = d.min(axis=1)
-    return float(np.mean(nearest <= tolerance_m))
+    # A tree, not a distance matrix: Dubai to Makkah is 30,000 x 40,000 samples.
+    # The bound is exclusive, so step just past it to keep "<= tolerance".
+    nearest, _ = cKDTree(b).query(a, distance_upper_bound=np.nextafter(tolerance_m, np.inf))
+    return float(np.mean(np.isfinite(nearest)))
 
 
 def has_backtrack(
@@ -570,15 +609,31 @@ def has_backtrack(
         return False
     xy = _local_xy(samples, samples[0][0])
     along = np.asarray([row[2] for row in samples])
-    close = np.hypot(xy[:, None, 0] - xy[None, :, 0], xy[:, None, 1] - xy[None, :, 1]) <= tolerance_m
-    far = np.abs(along[:, None] - along[None, :]) >= max(min_gap_m, spacing * run)
-    hit = close & far
-    m = n - (run - 1)
-    # hit[i + k, j - k] for k in 0..run-1: opposite directions, side by side.
-    joined = np.ones((m, m), dtype=bool)
-    for k in range(run):
-        joined &= hit[k : m + k, (run - 1 - k) : (run - 1 - k) + m]
-    return bool(joined.any())
+    # Only pairs that touch are kept: an n x n matrix needs gigabytes on a long
+    # trip, because every vertex of the line survives resampling.
+    pairs = cKDTree(xy).query_pairs(tolerance_m, output_type="ndarray")
+    if len(pairs) == 0:
+        return False
+    first, second = pairs[:, 0], pairs[:, 1]
+    far = np.abs(along[first] - along[second]) >= max(min_gap_m, spacing * run)
+    first, second = first[far], second[far]
+    # Each (i, j) as one number, both ways round. Walking i up and j down, the
+    # (i + k, j - k) of a spur differ from it by k * (n - 1).
+    hit = np.concatenate([first * n + second, second * n + first])
+    start = hit[(hit // n + run - 1 < n) & (hit % n >= run - 1)]
+    for k in range(1, run):
+        start = start[np.isin(start + k * (n - 1), hit, assume_unique=False)]
+    return bool(len(start))
+
+
+def _haversine_to(lat: float, lon: float, points: np.ndarray) -> np.ndarray:
+    """``haversine_m`` from one point to an array of ``(lat, lon)`` rows."""
+    phi1 = math.radians(lat)
+    phi2 = np.radians(points[:, 0])
+    half_lat = (phi2 - phi1) / 2.0
+    half_lon = np.radians(points[:, 1] - lon) / 2.0
+    a = np.sin(half_lat) ** 2 + math.cos(phi1) * np.cos(phi2) * np.sin(half_lon) ** 2
+    return 2.0 * EARTH_RADIUS_M * np.arcsin(np.sqrt(np.clip(a, 0.0, 1.0)))
 
 
 def _without_position(maneuver: dict) -> dict:
@@ -606,6 +661,10 @@ class RouteHints:
         self.maneuvers = [m for m in raw.get("maneuvers") or [] if "lat" in m and "lon" in m]
         self.cell_for = cell_for
         self.cells = self._per_cell() if cell_for is not None else {}
+        # Arrays, because `_near` runs once per stretch: searching Python lists
+        # there made scoring grow with the square of the trip's length.
+        self._road = np.asarray(self.points[:-1], dtype=float).reshape(-1, 2)
+        self._junctions = np.asarray(self.junctions, dtype=float).reshape(-1, 2)
 
     def _per_cell(self) -> dict:
         cells: dict = {}
@@ -640,15 +699,12 @@ class RouteHints:
         hint: dict = {}
         if self.speeds:
             scale = math.cos(math.radians(lat))
-            index = min(
-                range(len(self.points) - 1),
-                key=lambda i: (self.points[i][0] - lat) ** 2 + ((self.points[i][1] - lon) * scale) ** 2,
-            )
-            speed = self.speeds[index]
+            squared = (self._road[:, 0] - lat) ** 2 + ((self._road[:, 1] - lon) * scale) ** 2
+            speed = self.speeds[int(np.argmin(squared))]
             if speed:
                 hint["speed_kmh"] = float(speed)
         if self.junctions:
-            near = sum(1 for jlat, jlon in self.junctions if haversine_m(lat, lon, jlat, jlon) <= 250.0)
+            near = int(np.count_nonzero(_haversine_to(lat, lon, self._junctions) <= 250.0))
             hint["junctions_per_km"] = near / 0.5  # junctions on ~500 m of road around the point
         return hint
 
@@ -793,7 +849,62 @@ def _fetch_via_routes(
     return fetched
 
 
-def _tag_routes(routes: list[dict]) -> None:
+def slim_long_trip(routes: list[dict]) -> list[dict]:
+    """Keep a very long trip light enough for a browser to draw.
+
+    Five 2,000 km routes came to 12.6 MB and about 15,000 stretches, which held
+    the page for over a minute to offer roads that barely differ. Past
+    ``LONG_TRIP_KM`` only the pick, the fastest and the safest stay, and calm
+    stretches lose the notes nobody is shown. Numbers are untouched.
+    """
+    if not routes or max(route["distance_km"] for route in routes) <= LONG_TRIP_KM:
+        return routes
+    pick = routes[choose_recommended(routes)]
+    kept = [route for route in routes if route is pick or route.get("is_fastest") or route.get("is_safest")]
+    for route in kept:
+        for segment in route.get("segments", []):
+            if segment.get("risk_level") not in ("HIGH", "CRITICAL"):
+                for field in SLIM_FIELDS:
+                    segment.pop(field, None)
+    for rank, route in enumerate(kept, start=1):
+        route["rank"] = rank
+    return kept
+
+
+def choose_recommended(routes: Sequence[dict]) -> int:
+    """The index of the route worth driving: the fastest, unless a slower one earns it.
+
+    A slower route must cut risk by enough, buy enough risk per extra minute, and
+    not be far longer. Of those that do, the lowest risk wins.
+    """
+    timed = [route for route in routes if route.get("duration_min")]
+    if not timed:
+        return 0
+    # Equal times: the lower risk is the better fastest route.
+    fastest = min(timed, key=lambda route: (route["duration_min"], route["expected_crashes_total"]))
+    base = fastest["expected_crashes_total"]
+    if base <= 0:
+        return list(routes).index(fastest)
+
+    def worth_it(route: dict) -> bool:
+        cut = (base - route["expected_crashes_total"]) / base * 100.0
+        extra = route["duration_min"] - fastest["duration_min"]
+        return (
+            cut >= RECOMMEND_MIN_CUT_PERCENT
+            and cut >= extra * RECOMMEND_CUT_PER_EXTRA_MINUTE
+            and extra <= fastest["duration_min"] * RECOMMEND_MAX_EXTRA_TIME
+        )
+
+    choices = [route for route in timed if route is not fastest and worth_it(route)]
+    chosen = min(choices, key=lambda route: route["expected_crashes_total"]) if choices else fastest
+    return list(routes).index(chosen)
+
+
+def tag_routes(routes: list[dict]) -> None:
+    """Name the safest, fastest and balanced routes, and sort by risk.
+
+    Run again whenever durations change: traffic can make another route fastest.
+    """
     if not routes:
         return
     max_exposure = max(route["expected_crashes_total"] for route in routes)
@@ -889,6 +1000,7 @@ def plan_routes(
                 "synthetic": False,
                 "provider": provider_source,
                 "provider_distance_km": round((raw.get("distance") or 0) / 1000.0, 2),
+                **({"live_reroute": True} if raw.get("live_reroute") else {}),
             }
         )
 
@@ -1013,7 +1125,8 @@ def plan_routes(
                     "provider_returned_nothing" if not fetched else "no_distinct_alternative"
                 )
 
-    if len(distinct) < 2:
+    too_long_to_nudge = max(route["distance_km"] for route in distinct) > DETOUR_MAX_ROUTE_KM
+    if len(distinct) < 2 and not too_long_to_nudge:
         fastest = min(
             distinct,
             key=lambda route: route["duration_min"]
@@ -1094,7 +1207,7 @@ def plan_routes(
                 "No modeled segment was available to anchor a synthesized detour"
             )
 
-    _tag_routes(distinct)
+    tag_routes(distinct)
     return RoutePlan(
         routes=distinct,
         provider_source=provider_source,
@@ -1104,3 +1217,185 @@ def plan_routes(
         warnings=warnings,
         via_alternatives=via_alternatives,
     )
+
+
+def departure_slots(hour: int, day: int, window: int = DEPARTURE_WINDOW_HOURS) -> list[tuple[int, int, int]]:
+    """``(offset, hour, day)`` around a departure, rolling over midnight (0 = Monday)."""
+    slots = []
+    for offset in range(-window, window + 1):
+        total = hour + offset
+        slots.append((offset, total % 24, (day + total // 24) % 7))
+    return slots
+
+
+def departure_centre(hour: int, day: int, anchor: tuple[int, int] | None) -> tuple[int, int]:
+    """The hour the window sits around: the original plan, while still in reach.
+
+    After taking a suggested time the window stays where it was. Re-centring it
+    on the new time would let every suggestion push the trip a little later.
+    """
+    if anchor is not None and any(
+        (slot_hour, slot_day) == (hour, day) for _, slot_hour, slot_day in departure_slots(*anchor)
+    ):
+        return anchor
+    return hour, day
+
+
+def _hour_label(hour: int) -> str:
+    return f"{hour:02d}:00"
+
+
+def _departure_text(
+    verdict: str,
+    chosen: dict,
+    best: dict | None,
+    percent: float,
+    basis: str,
+    centre_hour: int,
+) -> str:
+    if verdict == "move":
+        gain = (
+            f"lowers this route's estimated risk by {percent:.0f}%"
+            if basis == "relative_risk_estimate"
+            else f"means {percent:.0f}% fewer expected injury crashes on this route"
+        )
+        text = f"Leaving at {_hour_label(best['hour'])} instead of {_hour_label(chosen['hour'])} {gain}."
+        beyond = best.get("adjusted_change_percent")
+        if beyond is not None:
+            text += f" That is {abs(beyond):.0f}% beyond the citywide change at that hour."
+        return text
+    if verdict == "already_best":
+        return f"This is the best hour within three hours of your original {_hour_label(centre_hour)}."
+    if verdict == "busy_hours_only":
+        return (
+            "Other hours look lower, but mostly because roads across the city are "
+            "quieter then, so no change of time is advised."
+        )
+    if verdict == "only_small_hours":
+        return (
+            "Only the small hours look lower, and that mostly reflects empty roads, "
+            "so no change of time is advised."
+        )
+    return "Timing makes little difference for this trip within three hours either way."
+
+
+def plan_departures(
+    segments: Sequence[dict],
+    hour: int,
+    day: int,
+    rate_at: Callable[[float, float, int, int], dict],
+    *,
+    basis: str = "expected_injury_crashes",
+    city_rate: Callable[[int, int], float] | None = None,
+    anchor: tuple[int, int] | None = None,
+    can_leave_earlier: bool = True,
+) -> dict:
+    """Re-score a route's stretches at each hour around the plan.
+
+    No routing happens here: the stretches are the chosen route's. Adds up the
+    same way ``score_geometry`` does, one score per cell, so the chosen hour
+    reproduces the route card's number.
+
+    ``city_rate`` is the city's mean rate at an hour. With no traffic counts,
+    it stands in for how busy that hour is: a route that only falls as far as
+    the whole city does has shown nothing about itself, so a suggestion must
+    beat the city's change as well. This also discounts real per-car effects,
+    so it errs towards saying nothing.
+
+    A live trip cannot leave earlier than now, so ``can_leave_earlier`` false
+    keeps the earlier hours on the chart but out of the advice.
+    """
+    centre = departure_centre(hour, day, anchor)
+    slots = []
+    for offset, slot_hour, slot_day in departure_slots(*centre):
+        scores: dict[str, dict] = {}
+        total = 0.0
+        for segment in segments:
+            cell = segment["cell"]
+            score = scores.get(cell)
+            if score is None:
+                lat, lon = segment["midpoint"]
+                score = rate_at(lat, lon, slot_hour, slot_day)
+                scores[cell] = score
+            rate = score.get("expected_rate")
+            if rate is not None:
+                total += float(rate) * (float(segment["length_m"]) / 1000.0) / _cell_width_km(score)
+        slots.append(
+            {
+                "offset_hours": offset,
+                "hour": slot_hour,
+                "day_of_week": slot_day,
+                "expected_crashes_total": round(total, 6),
+                "is_chosen": (slot_hour, slot_day) == (hour, day),
+                "is_recommended": False,
+                "small_hours": slot_hour in SMALL_HOURS,
+            }
+        )
+
+    chosen = next(slot for slot in slots if slot["is_chosen"])
+    base = chosen["expected_crashes_total"]
+    for slot in slots:
+        slot["is_past"] = not can_leave_earlier and slot["offset_hours"] < chosen["offset_hours"]
+    for slot in slots:
+        slot["change_percent"] = (
+            round((slot["expected_crashes_total"] - base) / base * 100.0, 1) if base > 0 else 0.0
+        )
+    if city_rate is not None:
+        city_base = city_rate(hour, day)
+        for slot in slots:
+            city_ratio = city_rate(slot["hour"], slot["day_of_week"]) / city_base if city_base > 0 else 1.0
+            slot["city_change_percent"] = round((city_ratio - 1.0) * 100.0, 1)
+            slot["adjusted_change_percent"] = (
+                round(((slot["expected_crashes_total"] / base) / city_ratio - 1.0) * 100.0, 1)
+                if base > 0 and city_ratio > 0
+                else 0.0
+            )
+
+    def beats_the_city(slot: dict) -> bool:
+        adjusted = slot.get("adjusted_change_percent")
+        return adjusted is None or adjusted <= -MEANINGFUL_REDUCTION * 100.0
+
+    def meaningful(slot: dict) -> bool:
+        return not slot["is_chosen"] and not slot["is_past"] and base > 0 and (
+            slot["expected_crashes_total"] <= base * (1.0 - MEANINGFUL_REDUCTION)
+        )
+
+    candidates = [slot for slot in slots if meaningful(slot)]
+    waking = [slot for slot in candidates if not slot["small_hours"]]
+    allowed = [slot for slot in waking if beats_the_city(slot)]
+    best = None
+    if allowed:
+        # Ties go to the smaller change of plan, then to leaving later.
+        best = min(
+            allowed,
+            key=lambda slot: (
+                slot["expected_crashes_total"],
+                abs(slot["offset_hours"]),
+                -slot["offset_hours"],
+            ),
+        )
+        best["is_recommended"] = True
+        verdict = "move"
+    elif waking:
+        verdict = "busy_hours_only"
+    elif candidates:
+        verdict = "only_small_hours"
+    elif centre != (hour, day):
+        verdict = "already_best"
+    else:
+        verdict = "little_difference"
+
+    percent = (base - best["expected_crashes_total"]) / base * 100.0 if best else 0.0
+    return {
+        "available": True,
+        "basis": basis,
+        "verdict": verdict,
+        "text": _departure_text(verdict, chosen, best, percent, basis, centre[0]),
+        "recommended": best,
+        "reduction_percent": round(percent, 1),
+        "adjusted_reduction_percent": (
+            abs(best["adjusted_change_percent"]) if best and "adjusted_change_percent" in best else None
+        ),
+        "threshold_percent": round(MEANINGFUL_REDUCTION * 100.0),
+        "slots": slots,
+    }

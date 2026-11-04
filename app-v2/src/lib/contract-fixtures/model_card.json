@@ -1,0 +1,159 @@
+{
+  "cells": 1122,
+  "created_at": "2026-11-03T15:32:23.728508+00:00",
+  "gate": {
+    "deciles_monotonic": true,
+    "holdout_deviance_beats_baseline": true,
+    "passed": true,
+    "temporal_deviance_beats_baseline": true,
+    "top_decile_lift_at_least_2x": true
+  },
+  "holdout": {
+    "baseline_deviance": 0.055653539393121634,
+    "baseline_top_decile_lift": 1.7068068958530223,
+    "deciles": [
+      {
+        "decile": 1,
+        "lift": 0.19251947912542766,
+        "observed_rate": 0.0010157832520508725,
+        "predicted_rate": 0.0005546638586139894
+      },
+      {
+        "decile": 2,
+        "lift": 0.3443321348853777,
+        "observed_rate": 0.0018167866303628079,
+        "predicted_rate": 0.0009535895934237654
+      },
+      {
+        "decile": 3,
+        "lift": 0.4770377159419465,
+        "observed_rate": 0.0025169760725081347,
+        "predicted_rate": 0.0013311520269865095
+      },
+      {
+        "decile": 4,
+        "lift": 0.7035393756308425,
+        "observed_rate": 0.0037120582196180922,
+        "predicted_rate": 0.0017591990908977192
+      },
+      {
+        "decile": 5,
+        "lift": 0.920866497413468,
+        "observed_rate": 0.004858733099095543,
+        "predicted_rate": 0.002302442381763333
+      },
+      {
+        "decile": 6,
+        "lift": 1.1021659636022543,
+        "observed_rate": 0.005815316620913356,
+        "predicted_rate": 0.0029600729427316577
+      },
+      {
+        "decile": 7,
+        "lift": 1.2299995771138401,
+        "observed_rate": 0.006489800284821537,
+        "predicted_rate": 0.0036708489597799833
+      },
+      {
+        "decile": 8,
+        "lift": 1.3740590234493926,
+        "observed_rate": 0.007249895697255302,
+        "predicted_rate": 0.004544858526216527
+      },
+      {
+        "decile": 9,
+        "lift": 1.5960296854677762,
+        "observed_rate": 0.008421071112590916,
+        "predicted_rate": 0.005785326388434996
+      },
+      {
+        "decile": 10,
+        "lift": 2.188938939284829,
+        "observed_rate": 0.011549415801394904,
+        "predicted_rate": 0.008216903897611564
+      }
+    ],
+    "monotonic_deciles": true,
+    "poisson_deviance": 0.05484193430140071,
+    "top_decile_lift": 2.188938939284829
+  },
+  "holdout_borough": "BROOKLYN",
+  "prior_rate": 0.0035770044042216743,
+  "schema_version": "1.0.0",
+  "target": "expected injury-or-fatal crashes per km2 per hour",
+  "temporal_test": {
+    "baseline_deviance": 0.045883937701224696,
+    "baseline_top_decile_lift": 2.920894682886304,
+    "deciles": [
+      {
+        "decile": 1,
+        "lift": 0.029787236535572303,
+        "observed_rate": 0.00010417100712529691,
+        "predicted_rate": 8.432466127531305e-05
+      },
+      {
+        "decile": 2,
+        "lift": 0.10794298036939837,
+        "observed_rate": 0.0003774948697828353,
+        "predicted_rate": 0.00033950099666614145
+      },
+      {
+        "decile": 3,
+        "lift": 0.21947509985528585,
+        "observed_rate": 0.0007675415664540418,
+        "predicted_rate": 0.0007828850724451766
+      },
+      {
+        "decile": 4,
+        "lift": 0.3576004062244573,
+        "observed_rate": 0.0012505891380803545,
+        "predicted_rate": 0.001298346605002147
+      },
+      {
+        "decile": 5,
+        "lift": 0.5782460735089715,
+        "observed_rate": 0.0020222243769321417,
+        "predicted_rate": 0.0020627394209395272
+      },
+      {
+        "decile": 6,
+        "lift": 0.8732115245495742,
+        "observed_rate": 0.003053768476881549,
+        "predicted_rate": 0.0030440828616413573
+      },
+      {
+        "decile": 7,
+        "lift": 1.1981979789438526,
+        "observed_rate": 0.004190301106080041,
+        "predicted_rate": 0.004345051078203742
+      },
+      {
+        "decile": 8,
+        "lift": 1.7008369450180176,
+        "observed_rate": 0.005948114633153432,
+        "predicted_rate": 0.006145233863965478
+      },
+      {
+        "decile": 9,
+        "lift": 2.3388336096777835,
+        "observed_rate": 0.008179296939065557,
+        "predicted_rate": 0.008531626288219333
+      },
+      {
+        "decile": 10,
+        "lift": 3.9035300255463157,
+        "observed_rate": 0.013651305102418188,
+        "predicted_rate": 0.0138747400067787
+      }
+    ],
+    "monotonic_deciles": true,
+    "poisson_deviance": 0.03589062805170274,
+    "top_decile_lift": 3.9035300255463157
+  },
+  "training_window": {
+    "crashes": 226745,
+    "end": "2026-06-11 23:00:00",
+    "start": "2020-01-01 00:00:00"
+  },
+  "version": "2026.11.03-1"
+}

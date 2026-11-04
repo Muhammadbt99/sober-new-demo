@@ -403,18 +403,20 @@ def test_crash_density_is_numeric(crash_index):
 
 NYC_QUERY = "lat=40.7580&lon=-73.9855"
 SHARJAH_QUERY = "lat=25.3463&lon=55.4209"
+# Outside every global-model region (the UAE has one), so the context estimate answers.
+RIYADH_QUERY = "lat=24.7136&lon=46.6753"
 
 
 def test_risk_outside_nyc_is_a_labelled_context_estimate(client):
     """Outside NYC the API estimates instead of shrugging, and says it estimated."""
-    response = client.get(f"/risk?{SHARJAH_QUERY}&hour=23&day=3")
+    response = client.get(f"/risk?{RIYADH_QUERY}&hour=23&day=3")
     assert response.status_code == 200
     data = response.get_json()
     assert data["coverage"] == "context"
     assert data["model_version"] == "context-2"
     assert 0 < data["risk_score"] <= 100
-    assert data["context"]["country"] == "AE"
-    assert any("United Arab Emirates" in reason for reason in data["reasons"])
+    assert data["context"]["country"] == "SA"
+    assert any("Saudi Arabia" in reason for reason in data["reasons"])
     assert any("not a trained crash model" in message for message in data["warnings"])
 
 
@@ -422,7 +424,7 @@ def test_context_estimate_can_be_switched_off(client, monkeypatch):
     import app as app_module
 
     monkeypatch.setattr(app_module, "CONTEXT_ENABLED", False)
-    data = client.get(f"/risk?{SHARJAH_QUERY}").get_json()
+    data = client.get(f"/risk?{RIYADH_QUERY}").get_json()
     assert data["coverage"] == "rule_based_only"
     assert data["model_points"] == 0
 

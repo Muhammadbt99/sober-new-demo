@@ -1,5 +1,5 @@
 import { useEffect, useId, useRef, useState, type KeyboardEvent } from "react";
-import { LoaderCircle, MapPin, Search, X } from "lucide-react";
+import { LoaderCircle, LocateFixed, MapPin, Search, X } from "lucide-react";
 
 import { searchPlaces, type Place } from "@/lib/api";
 
@@ -11,6 +11,17 @@ type PlaceSearchProps = {
   onSelect: (place: Place | null) => void;
 };
 
+/** A browser refusal in words a driver can act on. */
+function locationProblem(error: GeolocationPositionError): string {
+  if (error.code === error.PERMISSION_DENIED) {
+    return "Location is blocked. Allow it for this site in the browser, or type a place.";
+  }
+  if (error.code === error.TIMEOUT) {
+    return "Finding your location timed out. Try again or type a place.";
+  }
+  return "This device could not find its location. Type a place instead.";
+}
+
 export function PlaceSearch({ id, label, placeholder, value, onSelect }: PlaceSearchProps) {
   const [text, setText] = useState(value?.name ?? "");
   const [results, setResults] = useState<Place[]>([]);
@@ -19,6 +30,8 @@ export function PlaceSearch({ id, label, placeholder, value, onSelect }: PlaceSe
   const [active, setActive] = useState(0);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [locating, setLocating] = useState(false);
+  const [locationError, setLocationError] = useState<string | null>(null);
   const wrapperRef = useRef<HTMLDivElement | null>(null);
   const listId = useId();
 
@@ -86,6 +99,32 @@ export function PlaceSearch({ id, label, placeholder, value, onSelect }: PlaceSe
     onSelect(place);
   }
 
+  function locateMe() {
+    setLocationError(null);
+    if (!("geolocation" in navigator)) {
+      setLocationError("This browser cannot share a location. Type a place instead.");
+      return;
+    }
+    setLocating(true);
+    navigator.geolocation.getCurrentPosition(
+      ({ coords }) => {
+        setLocating(false);
+        choose({
+          id: `current-${coords.latitude.toFixed(5)}-${coords.longitude.toFixed(5)}`,
+          name: "Current location",
+          detail: `${coords.latitude.toFixed(4)}, ${coords.longitude.toFixed(4)}`,
+          lat: coords.latitude,
+          lon: coords.longitude,
+        });
+      },
+      (problem) => {
+        setLocating(false);
+        setLocationError(locationProblem(problem));
+      },
+      { enableHighAccuracy: false, maximumAge: 60_000, timeout: 10_000 },
+    );
+  }
+
   function onKeyDown(event: KeyboardEvent<HTMLInputElement>) {
     if (!open && (event.key === "ArrowDown" || event.key === "ArrowUp")) {
       setOpen(true);
@@ -140,6 +179,20 @@ export function PlaceSearch({ id, label, placeholder, value, onSelect }: PlaceSe
             aria-label="Searching"
           />
         )}
+        <button
+          type="button"
+          className="place-locate"
+          aria-label={`Use current location for ${label}`}
+          title="Use my current location"
+          disabled={locating}
+          onClick={locateMe}
+        >
+          {locating ? (
+            <LoaderCircle size={13} className="animate-spin" aria-hidden="true" />
+          ) : (
+            <LocateFixed size={13} aria-hidden="true" />
+          )}
+        </button>
         {!loading && text && (
           <button
             type="button"
@@ -180,6 +233,12 @@ export function PlaceSearch({ id, label, placeholder, value, onSelect }: PlaceSe
           ))}
           <div className="search-attribution">Search by OpenStreetMap / Nominatim</div>
         </div>
+      )}
+
+      {locationError && (
+        <span className="place-location-error" role="alert">
+          {locationError}
+        </span>
       )}
 
       {!text && (

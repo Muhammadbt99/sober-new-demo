@@ -30,7 +30,7 @@ METADATA_PATH = os.path.join(ARTIFACT_DIR, "crash_risk_metadata.json")
 CELL_RATES_PATH = os.path.join(ARTIFACT_DIR, "cell_rates.csv")
 REFERENCE_PATH = os.path.join(ARTIFACT_DIR, "percentile_reference.npy")
 
-MODEL_VERSION = "2026.10.29-1"
+MODEL_VERSION = "2026.11.03-1"
 TRAIN_END = "2025-01-01"
 VALIDATION_END = "2026-01-01"
 HOLDOUT_BOROUGH = "BROOKLYN"

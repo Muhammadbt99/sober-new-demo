@@ -8,5 +8,5 @@
   "message": "Location check completed",
   "schema_version": "1.0.0",
   "total_alerts": 0,
-  "weather_source": "fallback"
+  "weather_source": "live"
 }

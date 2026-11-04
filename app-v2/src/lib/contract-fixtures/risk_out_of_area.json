@@ -1,17 +1,33 @@
 {
-  "action": "Normal driving conditions. Drive safely.",
+  "action": "Avoid driving if possible. Consider alternative transportation.",
   "cell": "8843a13681fffff",
-  "coverage": "rule_based_only",
-  "coverage_reason": "cell_outside_training_coverage",
+  "context": {
+    "basis": "global crash model trained on five cities and Dubai; ranked against every hour of the hexes Dubai Police record",
+    "country": "AE",
+    "country_name": "United Arab Emirates",
+    "index": 8.8324,
+    "maneuvers": [],
+    "method": "global_model",
+    "region": "uae",
+    "region_name": "United Arab Emirates",
+    "relative_rate": 8.8324,
+    "road_class": "primary",
+    "road_name": "\u0634\u0627\u0631\u0639 \u0627\u0644\u0645\u0631\u0643\u0632 \u0627\u0644\u0645\u0627\u0644\u064a",
+    "time_ratio": 1.53,
+    "trained_on": "530,367 recorded crashes in New York, Chicago, London, Paris, Berlin and Dubai"
+  },
+  "coverage": "context",
+  "coverage_reason": "global_model",
+  "danger_types": null,
   "data_quality": {
     "bars": "offline",
     "model": "live",
-    "weather": "fallback"
+    "weather": "live"
   },
-  "expected_rate": null,
-  "expected_rate_per_km2_hour": null,
+  "expected_rate": 0.035329490661621096,
+  "expected_rate_per_km2_hour": 0.04793689370640583,
   "features": {
-    "bars": 0,
+    "bars": 8,
     "cell": "8843a13681fffff",
     "day_of_week": 5,
     "hour": 23,
@@ -19,36 +35,44 @@
     "latitude": 25.2048,
     "longitude": 55.2708,
     "rain": 0,
-    "temperature": 20,
-    "wind_speed": 0
+    "temperature": 27.8,
+    "wind_speed": 6.9
   },
   "local_time": {
     "day_of_week": 5,
     "hour": 23,
     "is_weekend": true
   },
-  "model_points": 0,
-  "model_version": "2026.10.29-1",
-  "nightlife_points": 0,
-  "percentile": null,
+  "model_points": 60.0,
+  "model_version": "global-2026.11.04-1",
+  "nightlife_points": 16,
+  "percentile": 100.0,
+  "place": {
+    "area": "United Arab Emirates",
+    "name": "\u0634\u0627\u0631\u0639 \u0627\u0644\u0645\u0631\u0643\u0632 \u0627\u0644\u0645\u0627\u0644\u064a",
+    "source": "road"
+  },
   "reasons": [
-    "No training coverage for this hex - no learned crash points"
+    "23:00 Saturday: 1.5x this place's average hour of the week",
+    "50 street junctions in this hex, more than 95% of UAE hexes",
+    "11.5 km of motorway, trunk or primary road in this hex",
+    "About 18,700 people live in and around this hex",
+    "8 bars, pubs or clubs mapped within about 1 km add 16 points"
   ],
   "risk_breakdown": {
-    "expected_rate": null,
-    "expected_rate_per_km2_hour": null,
-    "model": 0,
+    "expected_rate": 0.035329490661621096,
+    "expected_rate_per_km2_hour": 0.04793689370640583,
+    "model": 60.0,
     "model_max": 60,
-    "nightlife": 0,
+    "nightlife": 16,
     "nightlife_max": 40,
-    "percentile": null,
-    "total": 0
+    "percentile": 100.0,
+    "total": 76.0
   },
-  "risk_level": "LOW",
-  "risk_score": 0,
+  "risk_level": "CRITICAL",
+  "risk_score": 76.0,
   "schema_version": "1.0.0",
   "warnings": [
-    "Live weather unavailable - the model used a missing-value path",
-    "No learned crash surface for this location - model points are unavailable"
+    "Outside the NYC crash model: scored by the global crash model, which learned from six cities' crash records, including Dubai's"
   ]
 }

@@ -1,15 +1,104 @@
 {
   "action": "Avoid driving if possible. Consider alternative transportation.",
   "cell": "882a100d67fffff",
+  "context": null,
   "coverage": "model",
   "coverage_reason": null,
+  "danger_types": {
+    "area": {
+      "borough": "Manhattan",
+      "neighbourhood": "Midtown-Times Square"
+    },
+    "band": {
+      "id": "weekend_night",
+      "label": "Weekend night (Fri-Sat 20:00-23:59, Sat-Sun 00:00-05:59)"
+    },
+    "basis": "recorded_contributing_factors",
+    "groups": [
+      {
+        "band_share_ratio": 0.83,
+        "city_band_share": 0.05485,
+        "city_share": 0.01792,
+        "evidence": "borough",
+        "evidence_crashes": 4450,
+        "id": "impaired",
+        "label": "Impaired driving",
+        "rate_ratio": 17.31,
+        "reason": "In Manhattan on a weekend night, 4.5% of injury crashes had alcohol or drugs recorded (city overall 1.8%).",
+        "share": 0.04526,
+        "share_high": 0.04999,
+        "share_low": 0.04065,
+        "share_ratio": 2.53,
+        "short": "Impaired",
+        "status": "ok"
+      },
+      {
+        "band_share_ratio": 0.38,
+        "city_band_share": 0.00995,
+        "city_share": 0.00556,
+        "evidence": "borough",
+        "evidence_crashes": 4450,
+        "id": "drowsy",
+        "label": "Drowsy driving",
+        "rate_ratio": 4.71,
+        "reason": "In Manhattan on a weekend night, 0.4% of injury crashes had a driver asleep or fatigued recorded (city overall 0.6%).",
+        "share": 0.00374,
+        "share_high": 0.00493,
+        "share_low": 0.00263,
+        "share_ratio": 0.67,
+        "short": "Drowsy",
+        "status": "ok"
+      },
+      {
+        "id": "distracted",
+        "label": "Distracted driving",
+        "status": "not_validated"
+      },
+      {
+        "band_share_ratio": 0.65,
+        "city_band_share": 0.08019,
+        "city_share": 0.0504,
+        "evidence": "borough",
+        "evidence_crashes": 4450,
+        "id": "speeding",
+        "label": "Speeding",
+        "rate_ratio": 7.17,
+        "reason": "In Manhattan on a weekend night, 5.2% of injury crashes had unsafe speed recorded (city overall 5.0%).",
+        "share": 0.05229,
+        "share_high": 0.0648,
+        "share_low": 0.04049,
+        "share_ratio": 1.04,
+        "short": "Speeding",
+        "status": "ok"
+      },
+      {
+        "band_share_ratio": 1.08,
+        "city_band_share": 0.08803,
+        "city_share": 0.12481,
+        "evidence": "neighbourhood",
+        "evidence_crashes": 246,
+        "id": "failure_to_yield",
+        "label": "Failure to yield",
+        "rate_ratio": 5.17,
+        "reason": "In Midtown-Times Square on a weekend night, 9.5% of injury crashes had a driver failing to yield right of way recorded (city overall 12.5%).",
+        "share": 0.09485,
+        "share_high": 0.11547,
+        "share_low": 0.07524,
+        "share_ratio": 0.76,
+        "short": "Not yielding",
+        "status": "ok"
+      }
+    ],
+    "note": "Shares of injury crashes whose police-recorded factors include each group; about half of all factor entries are 'Unspecified', so these rank places and hours rather than measure true prevalence. They explain the score and never change it.",
+    "version": "danger-types-2026.11.03-2"
+  },
   "data_quality": {
     "bars": "offline",
     "model": "live",
-    "weather": "fallback"
+    "weather": "live"
   },
-  "expected_rate": 0.023221961453316894,
-  "expected_rate_per_km2_hour": 0.03132586002647667,
+  "expected_rate": 0.026939672825459747,
+  "expected_rate_per_km2_hour": 0.036340962058090495,
   "features": {
     "bars": 145,
     "cell": "882a100d67fffff",
@@ -19,8 +108,8 @@
     "latitude": 40.758,
     "longitude": -73.9855,
     "rain": 0,
-    "temperature": 20,
-    "wind_speed": 0
+    "temperature": 12.8,
+    "wind_speed": 7.3
   },
   "local_time": {
     "day_of_week": 5,
@@ -28,29 +117,32 @@
     "is_weekend": true
   },
   "model_points": 60.0,
-  "model_version": "2026.10.29-1",
+  "model_version": "2026.11.03-1",
   "nightlife_points": 40,
-  "percentile": 99.61309523809524,
+  "percentile": 99.76816484169426,
+  "place": {
+    "area": "Manhattan",
+    "name": "Midtown-Times Square",
+    "source": "neighbourhood"
+  },
   "reasons": [
-    "0.02322 expected injury/fatal crashes per cell-hour (100th percentile)",
-    "0.0313 expected injury/fatal crashes per km2 per hour",
+    "0.02694 expected injury/fatal crashes per cell-hour (100th percentile)",
+    "0.0363 expected injury/fatal crashes per km2 per hour",
     "Top-decile learned crash risk for this hex and hour",
     "Nightlife density contributes 40 of 40 points"
   ],
   "risk_breakdown": {
-    "expected_rate": 0.023221961453316894,
-    "expected_rate_per_km2_hour": 0.03132586002647667,
+    "expected_rate": 0.026939672825459747,
+    "expected_rate_per_km2_hour": 0.036340962058090495,
     "model": 60.0,
     "model_max": 60,
     "nightlife": 40,
     "nightlife_max": 40,
-    "percentile": 99.61309523809524,
+    "percentile": 99.76816484169426,
     "total": 100.0
   },
   "risk_level": "CRITICAL",
   "risk_score": 100.0,
   "schema_version": "1.0.0",
-  "warnings": [
-    "Live weather unavailable - the model used a missing-value path"
-  ]
+  "warnings": []
 }

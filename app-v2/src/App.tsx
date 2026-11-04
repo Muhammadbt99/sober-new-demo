@@ -1,16 +1,18 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Navigate, Route, Routes } from "react-router-dom";
-import { Info } from "lucide-react";
+import { ChevronDown, ChevronUp, Info } from "lucide-react";
 
 import { TopBar } from "@/components/TopBar";
 import { TimeDock } from "@/components/TimeDock";
 import { ExplorePanel } from "@/features/explore/ExplorePanel";
 import { MethodScreen } from "@/features/method/MethodScreen";
+import type { DriveTrip } from "@/features/drive/DriveMode";
 import { PlanPanel } from "@/features/plan/PlanPanel";
 import { PRESENT_STEPS, PresentBar } from "@/features/present/PresentBar";
 import type { Place } from "@/lib/api";
 import {
   useCompare,
+  useGlobalSurface,
   useHealth,
   useHeatmap,
   useHotspots,
@@ -21,8 +23,11 @@ import {
   useSurface,
   useTrend,
 } from "@/lib/queries";
-import { inNycBox } from "@/lib/places";
-import { RISK_COLORS } from "@/lib/risk";
+import { inNycBox, inUaeBox } from "@/lib/places";
+import { DANGER_META, LAYER_STEPS } from "@/lib/danger";
+import { RISK_COLORS, formatDateFor, formatHour } from "@/lib/risk";
+import { EMPTY_CHECK_IN, activeGroups, type CheckIn } from "@/lib/checkin";
+import { routeKey, trafficNote } from "@/lib/routes";
 import { stopKey } from "@/lib/stops";
 import { scenarioInstant } from "@/map/sun";
 import { formatPointParam, useUrlState, type Panel } from "@/lib/use-url-state";
@@ -69,6 +74,8 @@ function AppFrame() {
     swapEndpoints,
   } = useUrlState();
   const [presentStep, setPresentStep] = useState(0);
+  // On a phone the panel is a sheet that can be put away to reach the map.
+  const [sheetOpen, setSheetOpen] = useState(true);
   const worstSegmentAppliedRef = useRef(false);
   const [reveal, setReveal] = useState<RevealTarget | null>(null);
   const revealKeyRef = useRef(0);
@@ -118,19 +125,26 @@ function AppFrame() {
   const inNyc = inNycBox(point);
 
   const risk = useRisk(point, time);
-  // The whole NYC model surface (1,120 cells) for the hour. Outside New York,
-  // or against an API without /surface, the sampled grid draws the estimate.
-  const surface = useSurface(time);
-  const sampled = !inNyc || surface.isError;
+  // The whole NYC model surface (1,122 cells) for the hour. In the UAE the
+  // global crash model's cells around the point; anywhere else, or against an
+  // API without these endpoints, the sampled grid draws the estimate.
+  // In Explore the map can show one kind of crash (layer=impaired, ...).
+  const dangerLayer = state.panel === "explore" ? state.dangerLayer : null;
+  const surface = useSurface(time, dangerLayer);
+  const inUae = inUaeBox(point);
+  const regionSurface = useGlobalSurface(point, time, inUae);
+  const regional = inUae && !regionSurface.isError;
+  const sampled = (!inNyc && !regional) || surface.isError;
   const heatmap = useHeatmap(point, time, sampled);
   const cells = useMemo<MapCell[]>(() => {
     const city = surface.data?.cells ?? [];
+    const region = regional
+      ? (regionSurface.data?.cells ?? []).map((cell) => ({ ...cell, source: "global_model" }))
+      : [];
     const grid = sampled ? heatmap.data?.heatmap ?? [] : [];
-    if (city.length === 0 && grid.length === 0) return NO_CELLS;
-    if (grid.length === 0) return city;
-    if (city.length === 0) return grid;
-    return [...city, ...grid];
-  }, [surface.data, heatmap.data, sampled]);
+    const all = [...city, ...region, ...grid];
+    return all.length === 0 ? NO_CELLS : all;
+  }, [surface.data, regionSurface.data, heatmap.data, sampled, regional]);
   // Crash clusters near the point being explored (none outside New York).
   const hotspots = useHotspots(point);
   const trend = useTrend(point, state.day);
@@ -139,11 +153,16 @@ function AppFrame() {
   const nearest = useNearestSafe(point, exploring);
   const locationAlerts = useLocationAlerts(point, exploring);
   const compare = useCompare(point, state.compare ?? point, time, exploring && Boolean(state.compare));
+  // Held in memory on purpose: the check-in is never stored or sent anywhere.
+  const [checkIn, setCheckIn] = useState<CheckIn>(EMPTY_CHECK_IN);
+  const [drive, setDrive] = useState<DriveTrip | null>(null);
+  const endDrive = useCallback(() => setDrive(null), []);
   const route = useSafeRoute(
     state.origin,
     state.destination,
     time,
     state.run && state.panel === "plan",
+    drive !== null,
   );
 
   const routeCount = route.data?.routes.length ?? 1;
@@ -156,6 +175,20 @@ function AppFrame() {
       ? { routeIndex: selectedRoute, segmentIndex: state.segmentIndex }
       : null;
 
+  // A live refresh can reorder the list. The road you picked stays picked.
+  const shownRoutes = useRef<{ data: typeof route.data; index: number | null }>({
+    data: undefined,
+    index: null,
+  });
+  useEffect(() => {
+    const previous = shownRoutes.current;
+    shownRoutes.current = { data: route.data, index: state.routeIndex };
+    const picked = previous.index === null ? undefined : previous.data?.routes[previous.index];
+    if (!picked || !route.data || previous.data === route.data || previous.index !== state.routeIndex) return;
+    const moved = route.data.routes.findIndex((item) => routeKey(item) === routeKey(picked));
+    if (moved >= 0 && moved !== state.routeIndex) update({ route: moved, seg: null });
+  }, [route.data, state.routeIndex, update]);
+
   const fitRoutesKey =
     state.panel === "plan" && route.data
       ? `${route.data.route_id}:${selectedRoute}:${state.hour}:${state.day}`
@@ -167,7 +200,7 @@ function AppFrame() {
         ? "Method — S.O.B.E.R."
         : state.panel === "plan"
           ? "Plan a safer route — S.O.B.E.R."
-          : "S.O.B.E.R. — safer routing for New York City";
+          : "S.O.B.E.R. — crash risk and safer routes";
   }, [state.panel]);
 
   useEffect(() => {
@@ -258,6 +291,28 @@ function AppFrame() {
         route: null,
         seg: null,
       });
+      return;
+    }
+    if (step === 8) {
+      loadScenario(true);
+      return;
+    }
+    if (step === 7) {
+      const dubai = { lat: 25.1972, lon: 55.2744 };
+      goTo("explore", {
+        lat: dubai.lat,
+        lon: dubai.lon,
+        pname: "Downtown Dubai",
+        hour: 23,
+        day: 5,
+        cell: null,
+        run: null,
+        route: null,
+        seg: null,
+      });
+      // Half a world away: fly there rather than wait for the map to follow.
+      revealKeyRef.current += 1;
+      setReveal({ key: revealKeyRef.current, ...dubai, zoom: EXPLORE_REVEAL_ZOOM });
     }
   }
 
@@ -274,7 +329,12 @@ function AppFrame() {
   }
 
   return (
-    <div className="app-shell" data-present={state.present || undefined}>
+    <div
+      className="app-shell"
+      data-present={state.present || undefined}
+      data-sheet={sheetOpen ? undefined : "closed"}
+      data-driving={drive ? "" : undefined}
+    >
       <div className="map-stage">
         <MapCanvas
           point={point}
@@ -312,8 +372,11 @@ function AppFrame() {
           fitRoutesKey={fitRoutesKey}
           expectRoute={state.panel === "plan" && Boolean(state.run)}
           sunTime={sunTime}
+          drive={drive}
+          onDriveEnd={endDrive}
           reveal={reveal}
           exploreMode={state.panel === "explore"}
+          dangerLayer={dangerLayer}
         />
       </div>
 
@@ -336,8 +399,21 @@ function AppFrame() {
         />
       )}
 
+      {state.panel !== "method" && (
+        <button
+          type="button"
+          className="sheet-toggle"
+          aria-expanded={sheetOpen}
+          aria-label={sheetOpen ? "Hide panel" : "Show panel"}
+          onClick={() => setSheetOpen((open) => !open)}
+        >
+          {sheetOpen ? <ChevronDown size={15} /> : <ChevronUp size={15} />}
+        </button>
+      )}
+
       {state.panel === "explore" && (
         <ExplorePanel
+          flaggedDangers={activeGroups(checkIn)}
           point={point}
           hour={state.hour}
           day={state.day}
@@ -348,6 +424,9 @@ function AppFrame() {
           onRetryRisk={() => void risk.refetch()}
           heatmap={sampled ? heatmap.data : undefined}
           surface={surface.data}
+          regionSurface={regional ? regionSurface.data : undefined}
+          dangerLayer={state.dangerLayer}
+          onDangerLayer={(layer) => update({ layer })}
           placeName={state.placeName}
           onExplorePlace={exploreTo}
           onPlanFromHere={(name) => {
@@ -408,6 +487,26 @@ function AppFrame() {
           run={state.run}
           route={route.data}
           routeLoading={route.isLoading}
+          checkIn={checkIn}
+          onCheckIn={setCheckIn}
+          onStartDrive={(item, index) => {
+            if (state.origin && state.destination) {
+              setDrive({
+                route: item,
+                routeIndex: index,
+                origin: { lat: state.origin.lat, lon: state.origin.lon },
+                destination: { lat: state.destination.lat, lon: state.destination.lon },
+                time,
+                driverGroups: activeGroups(checkIn),
+              });
+            }
+          }}
+          trafficNote={trafficNote(
+            route.data?.traffic,
+            route.data?.routes ?? NO_ROUTES,
+            formatDateFor(state.day, state.hour),
+            formatHour(state.hour),
+          )}
           routeError={route.error}
           onRetry={() => void route.refetch()}
           onRun={() => update({ run: "1", route: null, seg: null })}
@@ -425,6 +524,7 @@ function AppFrame() {
           }}
           scenario={state.scenario}
           onScenario={handleScenario}
+          onDeparture={(hour, day) => update({ hour, day, seg: null })}
           onPanel={handlePanel}
           selectedRoute={selectedRoute}
           selectedSegment={selectedSegment}
@@ -455,28 +555,50 @@ function AppFrame() {
             onSunMode={(mode) => update({ sun: mode === "dock" ? "dock" : null })}
           />
 
-          <div className="map-legend" aria-label="Risk legend">
-            {(["LOW", "MEDIUM", "HIGH", "CRITICAL"] as const).map((level) => (
-              <span key={level} className="legend-row">
+          {dangerLayer ? (
+            <div className="map-legend" aria-label={`${DANGER_META[dangerLayer]?.label ?? "Danger"} legend`}>
+              <span className="legend-row legend-title">
+                {DANGER_META[dangerLayer]?.short ?? dangerLayer} vs a typical NYC hour
+              </span>
+              {LAYER_STEPS.map((step) => (
+                <span key={step.label} className="legend-row">
+                  <span className="legend-swatch" style={{ background: step.color }} />
+                  {step.label}
+                </span>
+              ))}
+              <span className="legend-row">
+                <span className="legend-swatch" style={{ background: "#4d5a6b" }} />
+                NOT ENOUGH DATA
+              </span>
+              <span className="legend-row legend-note">
+                <Info size={9} />
+                expected rate of this kind of crash
+              </span>
+            </div>
+          ) : (
+            <div className="map-legend" aria-label="Risk legend">
+              {(["LOW", "MEDIUM", "HIGH", "CRITICAL"] as const).map((level) => (
+                <span key={level} className="legend-row">
+                  <span
+                    className="legend-swatch"
+                    style={{ background: RISK_COLORS[level] }}
+                  />
+                  {level}
+                </span>
+              ))}
+              <span className="legend-row">
                 <span
                   className="legend-swatch"
-                  style={{ background: RISK_COLORS[level] }}
+                  style={{ background: "#4d5a6b" }}
                 />
-                {level}
+                NO MODEL
               </span>
-            ))}
-            <span className="legend-row">
-              <span
-                className="legend-swatch"
-                style={{ background: "#4d5a6b" }}
-              />
-              NO MODEL
-            </span>
-            <span className="legend-row legend-note">
-              <Info size={9} />
-              hex = modeled cell-hour
-            </span>
-          </div>
+              <span className="legend-row legend-note">
+                <Info size={9} />
+                hex = modeled cell-hour
+              </span>
+            </div>
+          )}
         </>
       )}
     </div>

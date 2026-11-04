@@ -11,6 +11,19 @@ Usage:
     python fetch_crashes_rich.py                 # 2020-01-01 onwards
     python fetch_crashes_rich.py --max-rows 5000 # smoke test
     python fetch_crashes_rich.py --since 2023-01-01T00:00:00
+    python fetch_crashes_rich.py --until 2026-06-12T00:00:00 --out other.csv.gz
+
+Column order (fixed 2026-11-03)
+-------------------------------
+The API returns JSON records and leaves out every field that is empty. Each
+page used to be built with ``pd.DataFrame(rows)``, whose columns follow the
+order in which keys first appear on *that page*, and pages after the first were
+appended without a header. A page whose first record had no borough therefore
+shifted every later value one column to the left under the first page's header:
+nine of thirteen pages in the 2026-10-25 download had vehicle types sitting in
+the contributing-factor columns, and two had longitudes in the latitude column.
+Every page is now written in one fixed column order, and the finished file is
+checked before it is kept (``check_alignment``).
 """
 
 import argparse
@@ -40,8 +53,42 @@ WANTED = [
     "number_of_persons_injured",
     "number_of_persons_killed",
 ]
-WANTED += [f"vehicle_type_code{i}" for i in range(1, 6)]
+# The dataset's own spelling: the first two vehicle columns have no underscore
+# before the number, the last three do. A guessed spelling is silently skipped.
+WANTED += ["vehicle_type_code1", "vehicle_type_code2"]
+WANTED += [f"vehicle_type_code_{i}" for i in range(3, 6)]
 WANTED += [f"contributing_factor_vehicle_{i}" for i in range(1, 6)]
+
+BOROUGHS = {"BRONX", "BROOKLYN", "MANHATTAN", "QUEENS", "STATEN ISLAND"}
+# Values that are vehicle types, never contributing factors.
+VEHICLE_HINT = (
+    r"^(sedan|station wagon|taxi|bike|bus|pick-?up|box truck|motorcycle|e-bike|"
+    r"e-scooter|moped|tractor truck|ambulance|garbage|dump|flat bed|convertible)"
+)
+
+
+def check_alignment(frame):
+    """Return a list of problems if any column holds another column's values.
+
+    A misaligned page shows up as latitudes outside New York, boroughs that are
+    not boroughs, or vehicle types in the contributing-factor columns.
+    """
+    problems = []
+    lat = pd.to_numeric(frame.get("latitude"), errors="coerce")
+    present = frame.get("latitude").notna()
+    outside = present & ~(lat.between(40.4, 41.0) | (lat == 0))
+    if outside.mean() > 0.001:
+        problems.append(f"latitude outside NYC in {outside.mean():.1%} of rows")
+    borough = frame.get("borough")
+    if borough is not None:
+        wrong = borough.notna() & ~borough.isin(BOROUGHS)
+        if wrong.mean() > 0.001:
+            problems.append(f"borough not a borough in {wrong.mean():.1%} of rows")
+    for column in [c for c in frame.columns if c.startswith("contributing_factor")]:
+        values = frame[column].dropna().astype(str)
+        if len(values) and values.str.match(VEHICLE_HINT, case=False).mean() > 0.001:
+            problems.append(f"vehicle types inside {column}")
+    return problems
 
 
 def available_columns():
@@ -76,8 +123,11 @@ def fetch_page(offset, select, where, attempts=5):
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--since", default="2020-01-01T00:00:00")
+    parser.add_argument("--until", default=None, help="exclusive upper bound on crash_date")
+    parser.add_argument("--out", default=OUT_PATH, help="output .csv.gz path")
     parser.add_argument("--max-rows", type=int, default=0)
     args = parser.parse_args()
+    out_path = os.path.abspath(args.out)
 
     print("checking dataset schema...", flush=True)
     real = available_columns()
@@ -88,6 +138,8 @@ def main():
         print(f"  not in dataset (skipped): {missing}")
 
     where = f"crash_date >= '{args.since}'"
+    if args.until:
+        where += f" AND crash_date < '{args.until}'"
 
     if os.path.exists(TMP_PATH):
         os.remove(TMP_PATH)
@@ -100,7 +152,8 @@ def main():
         rows = fetch_page(offset, select, where)
         if not rows:
             break
-        frame = pd.DataFrame(rows)
+        # One fixed column order for every page (see the module docstring).
+        frame = pd.DataFrame(rows).reindex(columns=select)
         frame.to_csv(
             TMP_PATH,
             mode="a",
@@ -118,14 +171,19 @@ def main():
         time.sleep(0.3)
 
     print(f"\nread {total:,} rows; converting to gzip...", flush=True)
-    frame = pd.read_csv(TMP_PATH, low_memory=False)
+    frame = pd.read_csv(TMP_PATH, low_memory=False, dtype=str)
     if args.max_rows:
         frame = frame.head(args.max_rows)
-    frame.to_csv(OUT_PATH, index=False, compression="gzip")
+    problems = check_alignment(frame)
+    if problems:
+        # Keep the partial file for inspection; never ship a misaligned file.
+        print("ALIGNMENT CHECK FAILED: " + "; ".join(problems), flush=True)
+        return 1
+    frame.to_csv(out_path, index=False, compression="gzip")
     os.remove(TMP_PATH)
 
-    size_mb = os.path.getsize(OUT_PATH) / (1024 * 1024)
-    print(f"saved {len(frame):,} rows -> {OUT_PATH} ({size_mb:.1f} MB)", flush=True)
+    size_mb = os.path.getsize(out_path) / (1024 * 1024)
+    print(f"saved {len(frame):,} rows -> {out_path} ({size_mb:.1f} MB)", flush=True)
     print("columns:", list(frame.columns), flush=True)
 
     injured = pd.to_numeric(frame.get("number_of_persons_injured"), errors="coerce").fillna(0)

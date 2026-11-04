@@ -10,9 +10,9 @@ import {
 
 import { Disclosure } from "@/components/Disclosure";
 import { ErrorBlock, LoadingBlock, Notice } from "@/components/DataState";
-import { RiskPill } from "@/components/RiskPill";
 import { TrendStrip } from "@/components/TrendStrip";
 import { ComparePanel } from "@/features/explore/ComparePanel";
+import { DangerProfileCard } from "@/features/explore/DangerProfileCard";
 import { NearbyStops } from "@/features/explore/NearbyStops";
 import { SeverityLab } from "@/features/explore/SeverityLab";
 import { PlaceSearch } from "@/features/plan/PlaceSearch";
@@ -27,22 +27,52 @@ import type {
   RiskTrendResponse,
   SafeStop,
   SurfaceResponse,
+  GlobalSurfaceResponse,
 } from "@/lib/contract";
 import type { Place, Point } from "@/lib/api";
-import { NYC_SHORTCUTS, WORLD_SHORTCUTS, inNycBox, samePoint } from "@/lib/places";
+import type { DangerLayer } from "@/lib/danger";
+import { SHORTCUT_GROUPS, inNycBox, samePoint } from "@/lib/places";
 import {
-  COVERAGE_LABEL,
-  DAY_SHORT,
+  formatDateFor,
   RISK_COLORS,
   formatHour,
   formatPercent,
-  formatRate,
   weatherLabel,
 } from "@/lib/risk";
 import type { Panel } from "@/lib/use-url-state";
 
 function formatMetres(metres: number): string {
   return metres < 1000 ? `${Math.round(metres / 10) * 10} m` : `${(metres / 1000).toFixed(1)} km`;
+}
+
+/**
+ * "1 injury crash every 38 h": the cell-hour rate in a form people can picture
+ * (how often one would happen here if every hour were like this one).
+ */
+function onceEvery(rate: number | null | undefined): string | null {
+  if (rate === null || rate === undefined || !(rate > 0)) return null;
+  const hours = 1 / rate;
+  if (hours < 1.5) return "1 injury crash an hour";
+  if (hours < 72) return `1 injury crash every ${Math.round(hours)} h`;
+  const days = hours / 24;
+  if (days < 60) return `1 injury crash every ${Math.round(days)} days`;
+  return `1 injury crash every ${Math.round(days / 30)} months`;
+}
+
+/**
+ * Warnings the panel already shows elsewhere: coverage (the notice at the
+ * top), nightlife (the bar's caption) and weather (the data line).
+ */
+const SHOWN_ELSEWHERE = [
+  /^Outside the NYC crash model/,
+  /^No learned crash surface/,
+  /^Nightlife data unavailable/,
+  /^Live weather unavailable/,
+  /^Weather refresh failed/,
+];
+
+function extraWarnings(warnings: string[]): string[] {
+  return warnings.filter((warning) => !SHOWN_ELSEWHERE.some((pattern) => pattern.test(warning)));
 }
 
 type ExplorePanelProps = {
@@ -57,10 +87,17 @@ type ExplorePanelProps = {
   heatmap: HeatmapResponse | undefined;
   /** The whole-city model surface, when the map is drawing it. */
   surface: SurfaceResponse | undefined;
+  /** The global crash model's cells around the point (the UAE), when drawn. */
+  regionSurface?: GlobalSurfaceResponse;
+  /** Map layer: one kind of crash, or null for overall risk. */
+  dangerLayer: DangerLayer | null;
+  onDangerLayer: (layer: DangerLayer | null) => void;
   /** Name of the point when it came from search or a shortcut. */
   placeName: string | null;
   /** Go to a searched or shortcut place. */
   onExplorePlace: (place: Place) => void;
+  /** Kinds of crash the driver's check-in points to. */
+  flaggedDangers: string[];
   /** Open the planner with this place as the origin. */
   onPlanFromHere: (name: string) => void;
   trend: RiskTrendResponse | undefined;
@@ -91,6 +128,7 @@ type ExplorePanelProps = {
 };
 
 export function ExplorePanel({
+  flaggedDangers,
   point,
   hour,
   day,
@@ -101,6 +139,9 @@ export function ExplorePanel({
   onRetryRisk,
   heatmap,
   surface,
+  regionSurface,
+  dangerLayer,
+  onDangerLayer,
   placeName,
   onExplorePlace,
   onPlanFromHere,
@@ -137,11 +178,17 @@ export function ExplorePanel({
     ? { id: `named-${point.lat.toFixed(5)},${point.lon.toFixed(5)}`, name: placeName, detail: "", lat: point.lat, lon: point.lon }
     : null;
   const bars = risk?.features?.bars;
+  const dangerCheck = (health?.checks as { danger_types?: { validated?: string[] } } | undefined)
+    ?.danger_types;
+  const validatedDanger = dangerCheck?.validated ?? null;
   const model = health?.checks.crash_risk_model;
   // Outside the trained area with nothing else to go on there is no signal at
   // all, and a green "LOW 0" would read as a confident all-clear.
   // Outside NYC the API answers with a labelled global estimate, not the model.
   const estimated = risk?.coverage === "context";
+  // The global crash model (the UAE): learned from six cities' crash records,
+  // as against the hand-set estimate used everywhere else outside New York.
+  const learned = risk?.context?.method === "global_model";
   const noSignal =
     risk?.coverage === "rule_based_only" &&
     risk.model_points === 0 &&
@@ -160,30 +207,41 @@ export function ExplorePanel({
               if (place) onExplorePlace(place);
             }}
           />
-          <div className="explore-shortcuts" role="group" aria-label="Jump to a place">
-            {[...NYC_SHORTCUTS, ...WORLD_SHORTCUTS].map((place) => (
-              <button
-                key={place.id}
-                type="button"
-                className="chip demo-city"
-                data-active={samePoint(place, point) || undefined}
-                title={`${place.name}, ${place.detail}`}
-                onClick={() => onExplorePlace(place)}
-              >
-                {place.id.startsWith("q-") && WORLD_SHORTCUTS.includes(place) ? place.detail : place.name}
-              </button>
-            ))}
-          </div>
+          {SHORTCUT_GROUPS.map((group) => (
+            <div key={group.label} className="explore-shortcut-group">
+              <span className="explore-shortcut-label" title={group.title}>
+                {group.label}
+              </span>
+              <div className="explore-shortcuts" role="group" aria-label={`Jump to a place: ${group.title}`}>
+                {group.places.map((place) => (
+                  <button
+                    key={place.id}
+                    type="button"
+                    className="chip demo-city"
+                    data-active={samePoint(place, point) || undefined}
+                    title={`${place.name}, ${place.detail}`}
+                    onClick={() => onExplorePlace(place)}
+                  >
+                    {group.short(place)}
+                  </button>
+                ))}
+              </div>
+            </div>
+          ))}
           <p className="explore-hint">Or click anywhere on the map. Hover a hex to read it.</p>
         </div>
         <div className="flex items-start justify-between gap-3">
           <div>
             <div className="eyebrow">
               {risk?.coverage === "context"
-                ? "Global estimate"
+                ? learned
+                  ? "Global crash model"
+                  : "Global estimate"
                 : risk?.coverage === "model"
                   ? "NYC crash model"
-                  : "Selected location"}
+                  : risk
+                    ? "Outside model coverage"
+                    : "Selected location"}
             </div>
             <h1 className="panel-title">{title}</h1>
             <p className="panel-subtitle">
@@ -196,11 +254,10 @@ export function ExplorePanel({
               <span className="mono" title={selectedCell ?? risk?.cell ?? undefined}>{coords}</span>
               <span className="dot-separator">·</span>
               <span className="mono">
-                {formatHour(hour)} / {DAY_SHORT[day]}
+                {formatHour(hour)} / {formatDateFor(day, hour)}
               </span>
             </p>
           </div>
-          {risk && !noSignal && <RiskPill level={risk.risk_level} />}
         </div>
 
         {risk && noSignal && (
@@ -209,11 +266,10 @@ export function ExplorePanel({
               —
             </div>
             <div className="score-meta">
-              <span className="eyebrow">Composite score / 100</span>
+              <span className="eyebrow">Score / 100</span>
               <span className="score-band" style={{ color: "var(--color-ink-dim, #8a97a8)" }}>
-                No model coverage
+                No crash data here
               </span>
-              <span className="score-coverage">{COVERAGE_LABEL[risk.coverage]}</span>
             </div>
           </div>
         )}
@@ -224,11 +280,10 @@ export function ExplorePanel({
               {Math.round(risk.risk_score)}
             </div>
             <div className="score-meta">
-              <span className="eyebrow">Composite score / 100</span>
+              <span className="eyebrow">Score / 100</span>
               <span className="score-band" style={{ color: RISK_COLORS[risk.risk_level] }}>
-                {risk.risk_level} exposure
+                {risk.risk_level}
               </span>
-              <span className="score-coverage">{COVERAGE_LABEL[risk.coverage]}</span>
             </div>
           </div>
         )}
@@ -253,11 +308,24 @@ export function ExplorePanel({
 
         {risk && (
           <div className="space-y-5">
-            {estimated && (
+            {estimated && !learned && (
               <Notice tone="info">
-                New York&apos;s crash model has no data here, so this is a global estimate from
-                the country&apos;s road-death rate, the road, the hour, live weather and nightlife.
-                It is not a trained crash model.
+                A global estimate, not a trained crash model: it ranks places and hours, it does
+                not count crashes.
+              </Notice>
+            )}
+            {learned && (
+              <Notice tone="info">
+                Learned from {risk.context?.trained_on ?? "six cities' crash records"}. It ranks
+                places and hours here; it does not count crashes.
+              </Notice>
+            )}
+
+            {alerts.data && alerts.data.total_alerts > 0 && (
+              <Notice tone="warn">
+                {alerts.data.alerts[0]?.message ??
+                  `${alerts.data.total_alerts} active weather alert${alerts.data.total_alerts === 1 ? "" : "s"}`}
+                {alerts.data.total_alerts > 1 ? ` (+${alerts.data.total_alerts - 1} more)` : ""}
               </Notice>
             )}
 
@@ -273,15 +341,23 @@ export function ExplorePanel({
             <div>
               <div className="section-heading">
                 <span>What contributes</span>
-                <span className="mono">{Math.round(risk.risk_score)} / 100</span>
               </div>
               <div className="space-y-3">
                 <BreakdownBar
-                  label={estimated ? "Road, time & weather" : "Crash model"}
+                  label={learned ? "Crash model (global)" : estimated ? "Road, time & weather" : "Crash model"}
                   detail={
-                    estimated
+                    learned
+                      ? `${formatPercent(risk.percentile, 1)} percentile of places and hours in Dubai's city area`
+                      : estimated
                       ? `estimate · ${Math.round(risk.percentile ?? 0)} / 100 on the global scale`
-                      : `${formatPercent(risk.percentile, 1)} percentile`
+                      : [
+                          `${formatPercent(risk.percentile, 1)} percentile`,
+                          onceEvery(risk.expected_rate)
+                            ? `${onceEvery(risk.expected_rate)} in this hex at this rate`
+                            : null,
+                        ]
+                          .filter(Boolean)
+                          .join(" · ")
                   }
                   points={risk.model_points}
                   max={60}
@@ -304,59 +380,37 @@ export function ExplorePanel({
             </div>
             )}
 
-            {estimated && risk.context && (
-              <div className="rate-grid">
-                <div>
-                  <span className="eyebrow">Country baseline</span>
-                  <strong className="mono">
-                    {risk.context.deaths_per_100k ?? "—"}
-                  </strong>
-                  <span className="metric-note">
-                    road deaths per 100k · {risk.context.country_name ?? "world median"}
-                  </span>
-                </div>
-                <div>
-                  <span className="eyebrow">Road here</span>
-                  <strong>{(risk.context.road_class ?? "unknown").replaceAll("_", " ")}</strong>
-                  <span className="metric-note">{risk.context.road_name ?? "OpenStreetMap"}</span>
-                </div>
+            <DangerProfileCard
+              profile={risk.danger_types}
+              coverage={risk.coverage}
+              layer={dangerLayer}
+              onLayer={onDangerLayer}
+              validated={validatedDanger}
+              flagged={flaggedDangers}
+            />
+
+            {(estimated || !noSignal) && (
+              <div className="reason-block">
+                {/* The crash model's reasons restate the numbers above; the
+                    global estimate's are its inputs, so only those are listed. */}
+                {estimated && (
+                  <>
+                    <div className="section-heading">
+                      <span>{learned ? "Why here, now" : "What the estimate uses"}</span>
+                    </div>
+                    <ul className="reason-list">
+                      {risk.reasons.slice(0, 6).map((reason) => (
+                        <li key={reason}>
+                          <span className="reason-mark" />
+                          {reason}
+                        </li>
+                      ))}
+                    </ul>
+                  </>
+                )}
+                {!noSignal && <p className="action-line">{risk.action}</p>}
               </div>
             )}
-
-            {!noSignal && !estimated && (
-            <div className="rate-grid">
-              <div>
-                <span className="eyebrow">Expected rate</span>
-                <strong className="mono">{formatRate(risk.expected_rate)}</strong>
-                <span className="metric-note">injury / fatal crashes per cell-hour</span>
-              </div>
-              <div>
-                <span className="eyebrow">Area rate</span>
-                <strong className="mono">
-                  {risk.expected_rate_per_km2_hour === null
-                    ? "—"
-                    : risk.expected_rate_per_km2_hour.toFixed(4)}
-                </strong>
-                <span className="metric-note">per km² per hour</span>
-              </div>
-            </div>
-            )}
-
-            <div className="reason-block">
-              <div className="section-heading">
-                <span>Why this score</span>
-                <span className="mono">{risk.reasons.length} signals</span>
-              </div>
-              <ul className="reason-list">
-                {risk.reasons.slice(0, estimated ? 6 : 4).map((reason) => (
-                  <li key={reason}>
-                    <span className="reason-mark" />
-                    {reason}
-                  </li>
-                ))}
-              </ul>
-              {!noSignal && <p className="action-line">{risk.action}</p>}
-            </div>
 
             <div className="divider" />
 
@@ -375,17 +429,17 @@ export function ExplorePanel({
               )}
             </div>
 
-            <div className="divider" />
+            {inNyc && <div className="divider" />}
 
+            {inNyc && (
             <div>
               <div className="section-heading">
                 <span>Crash clusters near here</span>
                 <span className="mono">within 2 km</span>
               </div>
               <p className="section-note">
-                {inNyc
-                  ? "Busiest spots in a 50,000-crash sample of NYC records (2012–2025), not the live model. Select one to score it."
-                  : "Crash records cover New York City only, so there are no clusters to show here."}
+                Busiest spots in a 50,000-crash sample of NYC records (2012–2025), not the live
+                model. Select one to score it.
               </p>
               <div className="hotspot-list">
                 {(hotspots?.hotspots ?? []).slice(0, showAllHotspots ? 20 : 5).map((spot) => (
@@ -411,7 +465,7 @@ export function ExplorePanel({
                   </button>
                 ))}
                 {!hotspots && <LoadingBlock lines={3} />}
-                {inNyc && hotspots && hotspots.hotspots.length === 0 && (
+                {hotspots && hotspots.hotspots.length === 0 && (
                   <p className="section-note">No clusters within 2 km in the crash sample.</p>
                 )}
               </div>
@@ -427,44 +481,11 @@ export function ExplorePanel({
                 </button>
               )}
             </div>
+            )}
 
             <div className="divider" />
 
-            <div className="support-grid">
-              <div className="support-card">
-                <span className="eyebrow">Nearest safe stop</span>
-                {nearest.data ? (
-                  <>
-                    <strong>{nearest.data.nearest_stop.name}</strong>
-                    <span className="mono">
-                      {nearest.data.nearest_stop.type} · {nearest.data.nearest_stop.distance_km} km
-                    </span>
-                  </>
-                ) : nearest.isError ? (
-                  <span className="metric-note">Unavailable in this build</span>
-                ) : (
-                  <span className="metric-note">Searching…</span>
-                )}
-              </div>
-              <div className="support-card">
-                <span className="eyebrow">Weather</span>
-                {alerts.data ? (
-                  <>
-                    <strong>
-                      {alerts.data.total_alerts > 0
-                        ? `${alerts.data.total_alerts} active alert${alerts.data.total_alerts === 1 ? "" : "s"}`
-                        : "No active alerts"}
-                    </strong>
-                    <span className="mono">{weatherLabel(alerts.data.weather_source)}</span>
-                    {alerts.data.alerts[0] && (
-                      <span className="metric-note">{alerts.data.alerts[0].message}</span>
-                    )}
-                  </>
-                ) : (
-                  <span className="metric-note">Weather check unavailable</span>
-                )}
-              </div>
-            </div>
+            <div className="divider" />
 
             <div className="tool-stack">
               <Disclosure
@@ -504,25 +525,20 @@ export function ExplorePanel({
                 />
               </Disclosure>
 
-              <Disclosure
-                title="If a crash happened here"
-                icon={<FlaskConical size={13} aria-hidden="true" />}
-                meta="research only"
-              >
-                {inNyc ? (
+              {inNyc && (
+                <Disclosure
+                  title="If a crash happened here"
+                  icon={<FlaskConical size={13} aria-hidden="true" />}
+                  meta="research only"
+                >
                   <SeverityLab point={point} time={{ hour, day }} />
-                ) : (
-                  <p className="section-note">
-                    The severity model was trained on New York crashes only, so it has
-                    nothing to say about this place.
-                  </p>
-                )}
-              </Disclosure>
+                </Disclosure>
+              )}
             </div>
 
-            {risk.warnings.length > 0 && (
+            {extraWarnings(risk.warnings).length > 0 && (
               <div className="warning-list">
-                {risk.warnings.map((warning) => (
+                {extraWarnings(risk.warnings).map((warning) => (
                   <Notice key={warning} tone="warn">
                     {warning}
                   </Notice>
@@ -532,7 +548,13 @@ export function ExplorePanel({
           </div>
         )}
 
-        {surface && (
+        {learned && regionSurface && (
+          <p className="surface-footnote">
+            Map: {regionSurface.cell_count.toLocaleString()} cells of the global crash model within{" "}
+            {regionSurface.radius_km} km, at {formatHour(regionSurface.hour)}
+          </p>
+        )}
+        {surface && !learned && (
           <p className="surface-footnote">
             Map: all {surface.cell_count.toLocaleString()} modelled NYC cells at{" "}
             {formatHour(surface.hour)}

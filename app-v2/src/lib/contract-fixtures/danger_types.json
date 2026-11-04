@@ -1,0 +1,567 @@
+{
+  "bands": {
+    "weekday_afternoon": "Weekday afternoon (Mon-Fri 12:00-17:59)",
+    "weekday_evening": "Weekday evening (Mon-Fri 18:00-19:59, Sun-Thu 20:00-23:59)",
+    "weekday_late": "Weekday small hours (Mon-Fri 00:00-05:59)",
+    "weekday_morning": "Weekday morning (Mon-Fri 06:00-11:59)",
+    "weekend_day": "Weekend day (Sat-Sun 06:00-19:59)",
+    "weekend_night": "Weekend night (Fri-Sat 20:00-23:59, Sat-Sun 00:00-05:59)"
+  },
+  "city_share": {
+    "distracted": 0.285946768396216,
+    "drowsy": 0.005556903129065691,
+    "failure_to_yield": 0.12481421861562549,
+    "impaired": 0.017923217711526163,
+    "speeding": 0.050395819091931464
+  },
+  "created_at": "2026-11-03T15:36:54.026805+00:00",
+  "data": {
+    "file": "nyc_crashes_rich.csv.gz",
+    "injury_crashes": 226745,
+    "source": "NYC Open Data h9gi-nx95, re-downloaded 2026-11-03 with aligned columns",
+    "split": {
+      "test": 15256,
+      "train": 175036,
+      "train_end": "2025-01-01",
+      "validation": 36453,
+      "validation_end": "2026-01-01"
+    },
+    "window": [
+      "2020-01-01 00:00:00",
+      "2026-06-11 23:35:00"
+    ]
+  },
+  "definitions": {
+    "distracted": [
+      "Driver Inattention/Distraction",
+      "Cell Phone (hand-Held)",
+      "Cell Phone (hand-held)",
+      "Cell Phone (hands-free)",
+      "Texting",
+      "Using On Board Navigation Device",
+      "Other Electronic Device",
+      "Passenger Distraction",
+      "Outside Car Distraction",
+      "Eating or Drinking",
+      "Listening/Using Headphones"
+    ],
+    "drowsy": [
+      "Fell Asleep",
+      "Fatigued/Drowsy"
+    ],
+    "failure_to_yield": [
+      "Failure to Yield Right-of-Way"
+    ],
+    "impaired": [
+      "Alcohol Involvement",
+      "Drugs (illegal)"
+    ],
+    "speeding": [
+      "Unsafe Speed"
+    ]
+  },
+  "gate_rules": {
+    "area_beats_time_only": "an area level is kept only if it beats time-only on test",
+    "beats_city_constant": "test log-loss below one citywide share",
+    "top_decile_lift_at_least_1_5": "top-decile lift on test >= 1.5"
+  },
+  "groups": {
+    "distracted": {
+      "gate": {
+        "area_beats_time_only": true,
+        "beats_city_constant": true,
+        "top_decile_lift_at_least_1_5": false
+      },
+      "level": "neighbourhood",
+      "status": "not_validated",
+      "test": {
+        "borough": {
+          "crashes": 15256,
+          "events": 4298,
+          "log_loss": 0.5939238723008524,
+          "top_decile_lift": 1.1149103280977046
+        },
+        "city": {
+          "crashes": 15256,
+          "events": 4298,
+          "log_loss": 0.5946256663359237,
+          "top_decile_lift": 1.0124968532828842
+        },
+        "neighbourhood": {
+          "crashes": 15256,
+          "events": 4298,
+          "log_loss": 0.5912438535437887,
+          "top_decile_lift": 1.33370275156573
+        },
+        "time": {
+          "crashes": 15256,
+          "events": 4298,
+          "log_loss": 0.5944352431877105,
+          "top_decile_lift": 1.0218071691751405
+        }
+      },
+      "test_deciles": [
+        {
+          "decile": 1,
+          "lift": 0.9211172620140307,
+          "observed_share": 0.2595019659239843,
+          "predicted_share": 0.19048165735117165
+        },
+        {
+          "decile": 2,
+          "lift": 0.8094666848002087,
+          "observed_share": 0.22804718217562253,
+          "predicted_share": 0.2232191390578734
+        },
+        {
+          "decile": 3,
+          "lift": 0.8536617049473466,
+          "observed_share": 0.24049803407601572,
+          "predicted_share": 0.24027747660899834
+        },
+        {
+          "decile": 4,
+          "lift": 0.8652919734071197,
+          "observed_share": 0.2437745740498034,
+          "predicted_share": 0.2542667836007853
+        },
+        {
+          "decile": 5,
+          "lift": 0.9071609398623028,
+          "observed_share": 0.25557011795543905,
+          "predicted_share": 0.2690702666016086
+        },
+        {
+          "decile": 6,
+          "lift": 0.8978567250944844,
+          "observed_share": 0.2529488859764089,
+          "predicted_share": 0.285414203974
+        },
+        {
+          "decile": 7,
+          "lift": 1.0311174850673968,
+          "observed_share": 0.2904918032786885,
+          "predicted_share": 0.30528902122028406
+        },
+        {
+          "decile": 8,
+          "lift": 1.1661170655051147,
+          "observed_share": 0.3285245901639344,
+          "predicted_share": 0.32744134103096767
+        },
+        {
+          "decile": 9,
+          "lift": 1.2149962239394607,
+          "observed_share": 0.3422950819672131,
+          "predicted_share": 0.3523474939307722
+        },
+        {
+          "decile": 10,
+          "lift": 1.33370275156573,
+          "observed_share": 0.37573770491803277,
+          "predicted_share": 0.41355101404681693
+        }
+      ],
+      "validation_choice": "neighbourhood"
+    },
+    "drowsy": {
+      "gate": {
+        "area_beats_time_only": true,
+        "beats_city_constant": true,
+        "top_decile_lift_at_least_1_5": true
+      },
+      "level": "borough",
+      "status": "validated",
+      "test": {
+        "borough": {
+          "crashes": 15256,
+          "events": 61,
+          "log_loss": 0.02533498848459867,
+          "top_decile_lift": 3.2799785004031174
+        },
+        "city": {
+          "crashes": 15256,
+          "events": 61,
+          "log_loss": 0.02634602051590568,
+          "top_decile_lift": 0.8199946251007794
+        },
+        "neighbourhood": {
+          "crashes": 15256,
+          "events": 61,
+          "log_loss": 0.025318759886888507,
+          "top_decile_lift": 3.115979575382962
+        },
+        "time": {
+          "crashes": 15256,
+          "events": 61,
+          "log_loss": 0.02585481136429376,
+          "top_decile_lift": 2.1319860252620266
+        }
+      },
+      "test_deciles": [
+        {
+          "decile": 1,
+          "lift": 0.49167436564037553,
+          "observed_share": 0.001965923984272608,
+          "predicted_share": 0.001676353336170728
+        },
+        {
+          "decile": 2,
+          "lift": 0.32778291042691704,
+          "observed_share": 0.001310615989515072,
+          "predicted_share": 0.0026492812908518763
+        },
+        {
+          "decile": 3,
+          "lift": 0.49167436564037553,
+          "observed_share": 0.001965923984272608,
+          "predicted_share": 0.003160090471744459
+        },
+        {
+          "decile": 4,
+          "lift": 1.1472401864942097,
+          "observed_share": 0.0045871559633027525,
+          "predicted_share": 0.0036577946763969946
+        },
+        {
+          "decile": 5,
+          "lift": 0.32778291042691704,
+          "observed_share": 0.001310615989515072,
+          "predicted_share": 0.004382887322703557
+        },
+        {
+          "decile": 6,
+          "lift": 0.32778291042691704,
+          "observed_share": 0.001310615989515072,
+          "predicted_share": 0.0046842106172042585
+        },
+        {
+          "decile": 7,
+          "lift": 0.8199946251007794,
+          "observed_share": 0.003278688524590164,
+          "predicted_share": 0.00525281195880123
+        },
+        {
+          "decile": 8,
+          "lift": 1.311991400161247,
+          "observed_share": 0.005245901639344262,
+          "predicted_share": 0.006167273148553334
+        },
+        {
+          "decile": 9,
+          "lift": 1.4759903251814028,
+          "observed_share": 0.005901639344262295,
+          "predicted_share": 0.009087974120681377
+        },
+        {
+          "decile": 10,
+          "lift": 3.2799785004031174,
+          "observed_share": 0.013114754098360656,
+          "predicted_share": 0.014396775951352367
+        }
+      ],
+      "validation_choice": "borough"
+    },
+    "failure_to_yield": {
+      "gate": {
+        "area_beats_time_only": true,
+        "beats_city_constant": true,
+        "top_decile_lift_at_least_1_5": true
+      },
+      "level": "neighbourhood",
+      "status": "validated",
+      "test": {
+        "borough": {
+          "crashes": 15256,
+          "events": 1775,
+          "log_loss": 0.35855304266337995,
+          "top_decile_lift": 1.2399242669129533
+        },
+        "city": {
+          "crashes": 15256,
+          "events": 1775,
+          "log_loss": 0.3599680369183055,
+          "top_decile_lift": 0.9186711613945971
+        },
+        "neighbourhood": {
+          "crashes": 15256,
+          "events": 1775,
+          "log_loss": 0.3537481278096417,
+          "top_decile_lift": 1.7697100900484877
+        },
+        "time": {
+          "crashes": 15256,
+          "events": 1775,
+          "log_loss": 0.3586089736918161,
+          "top_decile_lift": 1.10465980143154
+        }
+      },
+      "test_deciles": [
+        {
+          "decile": 1,
+          "lift": 0.57449725878205,
+          "observed_share": 0.06684141546526867,
+          "predicted_share": 0.06543611549754412
+        },
+        {
+          "decile": 2,
+          "lift": 0.7209377365108081,
+          "observed_share": 0.08387942332896461,
+          "predicted_share": 0.08543433202716964
+        },
+        {
+          "decile": 3,
+          "lift": 0.7547316929097522,
+          "observed_share": 0.08781127129750983,
+          "predicted_share": 0.09647412493358917
+        },
+        {
+          "decile": 4,
+          "lift": 0.8561135621065845,
+          "observed_share": 0.09960681520314547,
+          "predicted_share": 0.10598059607217268
+        },
+        {
+          "decile": 5,
+          "lift": 0.8899075185055286,
+          "observed_share": 0.10353866317169069,
+          "predicted_share": 0.11398191164466627
+        },
+        {
+          "decile": 6,
+          "lift": 0.9856570616358704,
+          "observed_share": 0.11467889908256881,
+          "predicted_share": 0.12256212229121001
+        },
+        {
+          "decile": 7,
+          "lift": 0.969395335950127,
+          "observed_share": 0.11278688524590164,
+          "predicted_share": 0.1343210079990503
+        },
+        {
+          "decile": 8,
+          "lift": 1.200472131147541,
+          "observed_share": 0.13967213114754098,
+          "predicted_share": 0.1489417725044527
+        },
+        {
+          "decile": 9,
+          "lift": 1.2793764026783652,
+          "observed_share": 0.14885245901639343,
+          "predicted_share": 0.16831813566423295
+        },
+        {
+          "decile": 10,
+          "lift": 1.7697100900484877,
+          "observed_share": 0.20590163934426228,
+          "predicted_share": 0.2249282328024477
+        }
+      ],
+      "validation_choice": "neighbourhood"
+    },
+    "impaired": {
+      "gate": {
+        "area_beats_time_only": true,
+        "beats_city_constant": true,
+        "top_decile_lift_at_least_1_5": true
+      },
+      "level": "neighbourhood",
+      "status": "validated",
+      "test": {
+        "borough": {
+          "crashes": 15256,
+          "events": 281,
+          "log_loss": 0.08437888406873885,
+          "top_decile_lift": 3.0973035412169656
+        },
+        "city": {
+          "crashes": 15256,
+          "events": 281,
+          "log_loss": 0.09182849319360893,
+          "top_decile_lift": 0.8900297532232659
+        },
+        "neighbourhood": {
+          "crashes": 15256,
+          "events": 281,
+          "log_loss": 0.08427225166132543,
+          "top_decile_lift": 3.0973035412169656
+        },
+        "time": {
+          "crashes": 15256,
+          "events": 281,
+          "log_loss": 0.08435993796992321,
+          "top_decile_lift": 2.8836964004433816
+        }
+      },
+      "test_deciles": [
+        {
+          "decile": 1,
+          "lift": 0.32020074345974636,
+          "observed_share": 0.005897771952817824,
+          "predicted_share": 0.004658284435058208
+        },
+        {
+          "decile": 2,
+          "lift": 0.21346716230649757,
+          "observed_share": 0.003931847968545216,
+          "predicted_share": 0.005101402449845353
+        },
+        {
+          "decile": 3,
+          "lift": 0.35577860384416266,
+          "observed_share": 0.00655307994757536,
+          "predicted_share": 0.005509030682371045
+        },
+        {
+          "decile": 4,
+          "lift": 0.2846228830753301,
+          "observed_share": 0.005242463958060288,
+          "predicted_share": 0.005990017818773747
+        },
+        {
+          "decile": 5,
+          "lift": 0.32020074345974636,
+          "observed_share": 0.005897771952817824,
+          "predicted_share": 0.00882868521539313
+        },
+        {
+          "decile": 6,
+          "lift": 0.7115572076883253,
+          "observed_share": 0.01310615989515072,
+          "predicted_share": 0.01425329574570743
+        },
+        {
+          "decile": 7,
+          "lift": 1.0324345137389885,
+          "observed_share": 0.01901639344262295,
+          "predicted_share": 0.016518897820433705
+        },
+        {
+          "decile": 8,
+          "lift": 0.9612321334811271,
+          "observed_share": 0.017704918032786884,
+          "predicted_share": 0.019253276386934165
+        },
+        {
+          "decile": 9,
+          "lift": 2.7056904497987286,
+          "observed_share": 0.049836065573770495,
+          "predicted_share": 0.037680524910581624
+        },
+        {
+          "decile": 10,
+          "lift": 3.0973035412169656,
+          "observed_share": 0.057049180327868855,
+          "predicted_share": 0.054981122662096635
+        }
+      ],
+      "validation_choice": "neighbourhood"
+    },
+    "speeding": {
+      "gate": {
+        "area_beats_time_only": true,
+        "beats_city_constant": true,
+        "top_decile_lift_at_least_1_5": true
+      },
+      "level": "neighbourhood",
+      "status": "validated",
+      "test": {
+        "borough": {
+          "crashes": 15256,
+          "events": 579,
+          "log_loss": 0.16110810380958607,
+          "top_decile_lift": 1.8660188567060223
+        },
+        "city": {
+          "crashes": 15256,
+          "events": 579,
+          "log_loss": 0.16338349356335594,
+          "top_decile_lift": 1.0539550949913645
+        },
+        "neighbourhood": {
+          "crashes": 15256,
+          "events": 579,
+          "log_loss": 0.1599350642600437,
+          "top_decile_lift": 1.8314629519522072
+        },
+        "time": {
+          "crashes": 15256,
+          "events": 579,
+          "log_loss": 0.1619813671081655,
+          "top_decile_lift": 1.4167920949064245
+        }
+      },
+      "test_deciles": [
+        {
+          "decile": 1,
+          "lift": 0.4316657499145497,
+          "observed_share": 0.0163826998689384,
+          "predicted_share": 0.024813039787755207
+        },
+        {
+          "decile": 2,
+          "lift": 0.4489323799111317,
+          "observed_share": 0.01703800786369594,
+          "predicted_share": 0.031135463501557003
+        },
+        {
+          "decile": 3,
+          "lift": 0.8287982398359353,
+          "observed_share": 0.03145478374836173,
+          "predicted_share": 0.03485455628861132
+        },
+        {
+          "decile": 4,
+          "lift": 0.9151313898188453,
+          "observed_share": 0.03473132372214941,
+          "predicted_share": 0.03883210801145405
+        },
+        {
+          "decile": 5,
+          "lift": 0.9323980198154272,
+          "observed_share": 0.035386631716906945,
+          "predicted_share": 0.04364982148921918
+        },
+        {
+          "decile": 6,
+          "lift": 0.7942649798427714,
+          "observed_share": 0.03014416775884666,
+          "predicted_share": 0.04798098426272846
+        },
+        {
+          "decile": 7,
+          "lift": 1.1576228092528102,
+          "observed_share": 0.043934426229508196,
+          "predicted_share": 0.05405665145944655
+        },
+        {
+          "decile": 8,
+          "lift": 1.1403448568759027,
+          "observed_share": 0.043278688524590166,
+          "predicted_share": 0.061847088040888794
+        },
+        {
+          "decile": 9,
+          "lift": 1.52045980916787,
+          "observed_share": 0.057704918032786885,
+          "predicted_share": 0.07389290706952903
+        },
+        {
+          "decile": 10,
+          "lift": 1.8314629519522072,
+          "observed_share": 0.06950819672131148,
+          "predicted_share": 0.0957330325076976
+        }
+      ],
+      "validation_choice": "neighbourhood"
+    }
+  },
+  "inputs": [
+    "area (2020 NTA or borough of the H3 cell)",
+    "band of the week (6 bands)"
+  ],
+  "schema_version": "1.0.0",
+  "target": "share of injury-or-fatal crashes whose recorded contributing factors include the group",
+  "version": "danger-types-2026.11.03-2"
+}

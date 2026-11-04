@@ -1,0 +1,77 @@
+{
+  "action": "Drive with extreme caution. Avoid high-risk areas.",
+  "cell": "88537369abfffff",
+  "context": {
+    "baseline_factor": 1.552,
+    "basis": "estimate from road, time, weather, nightlife and country data",
+    "country": "SA",
+    "country_name": "Saudi Arabia",
+    "deaths_per_100k": 35.9,
+    "index": 2.825,
+    "maneuvers": [],
+    "road_class": "primary",
+    "road_factor": 1.3,
+    "road_name": "\u0637\u0631\u064a\u0642 \u0627\u0644\u0639\u0631\u0648\u0628\u0629",
+    "time_factor": 1.4,
+    "weather_factor": 1.0
+  },
+  "coverage": "context",
+  "coverage_reason": "outside_model_area_context_estimate",
+  "danger_types": null,
+  "data_quality": {
+    "bars": "fallback",
+    "model": "live",
+    "weather": "live"
+  },
+  "expected_rate": 0.011300182810186044,
+  "expected_rate_per_km2_hour": 0.015332676811649992,
+  "features": {
+    "bars": 0,
+    "cell": "88537369abfffff",
+    "day_of_week": 5,
+    "hour": 23,
+    "is_weekend": true,
+    "latitude": 24.7136,
+    "longitude": 46.6753,
+    "rain": 0,
+    "temperature": 23.2,
+    "wind_speed": 4.1
+  },
+  "local_time": {
+    "day_of_week": 5,
+    "hour": 23,
+    "is_weekend": true
+  },
+  "model_points": 57.1,
+  "model_version": "context-2",
+  "nightlife_points": 0,
+  "percentile": 95.1,
+  "place": {
+    "area": "Saudi Arabia",
+    "name": "\u0637\u0631\u064a\u0642 \u0627\u0644\u0639\u0631\u0648\u0628\u0629",
+    "source": "road"
+  },
+  "reasons": [
+    "Saudi Arabia: 35.9 road deaths per 100k people (2019), above the world median of 14.9",
+    "Primary road - \u0637\u0631\u064a\u0642 \u0627\u0644\u0639\u0631\u0648\u0628\u0629",
+    "23:00 Saturday: late night, when fatigue and impairment peak",
+    "Live weather: dry, 23 \u00b0C (open-meteo)"
+  ],
+  "risk_breakdown": {
+    "expected_rate": 0.011300182810186044,
+    "expected_rate_per_km2_hour": 0.015332676811649992,
+    "model": 57.1,
+    "model_max": 60,
+    "nightlife": 0,
+    "nightlife_max": 40,
+    "percentile": 95.1,
+    "total": 57.1
+  },
+  "risk_level": "HIGH",
+  "risk_score": 57.1,
+  "schema_version": "1.0.0",
+  "warnings": [
+    "Nightlife data unavailable - bars treated as 0",
+    "Outside the NYC crash model: this is an estimate from road, time, weather, nightlife and country data, not a trained crash model"
+  ]
+}

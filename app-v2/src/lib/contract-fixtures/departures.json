@@ -1,0 +1,85 @@
+{
+  "available": true,
+  "basis": "expected_injury_crashes",
+  "model_version": "2026.11.03-1",
+  "note": "Compares how many crashes these roads usually see at each hour, which also reflects how busy they are. It is not your personal odds. Drive time and today's weather are held the same at every hour.",
+  "recommended": null,
+  "reduction_percent": 0.0,
+  "route_index": 0,
+  "schema_version": "1.0.0",
+  "slots": [
+    {
+      "change_percent": 17.9,
+      "day_of_week": 5,
+      "expected_crashes_total": 0.139629,
+      "hour": 20,
+      "is_chosen": false,
+      "is_recommended": false,
+      "offset_hours": -3,
+      "small_hours": false
+    },
+    {
+      "change_percent": 10.7,
+      "day_of_week": 5,
+      "expected_crashes_total": 0.131049,
+      "hour": 21,
+      "is_chosen": false,
+      "is_recommended": false,
+      "offset_hours": -2,
+      "small_hours": false
+    },
+    {
+      "change_percent": 3.0,
+      "day_of_week": 5,
+      "expected_crashes_total": 0.12199,
+      "hour": 22,
+      "is_chosen": false,
+      "is_recommended": false,
+      "offset_hours": -1,
+      "small_hours": false
+    },
+    {
+      "change_percent": 0.0,
+      "day_of_week": 5,
+      "expected_crashes_total": 0.118422,
+      "hour": 23,
+      "is_chosen": true,
+      "is_recommended": false,
+      "offset_hours": 0,
+      "small_hours": false
+    },
+    {
+      "change_percent": 18.8,
+      "day_of_week": 6,
+      "expected_crashes_total": 0.140704,
+      "hour": 0,
+      "is_chosen": false,
+      "is_recommended": false,
+      "offset_hours": 1,
+      "small_hours": true
+    },
+    {
+      "change_percent": -15.9,
+      "day_of_week": 6,
+      "expected_crashes_total": 0.099586,
+      "hour": 1,
+      "is_chosen": false,
+      "is_recommended": false,
+      "offset_hours": 2,
+      "small_hours": true
+    },
+    {
+      "change_percent": -27.7,
+      "day_of_week": 6,
+      "expected_crashes_total": 0.085664,
+      "hour": 2,
+      "is_chosen": false,
+      "is_recommended": false,
+      "offset_hours": 3,
+      "small_hours": true
+    }
+  ],
+  "text": "Only the small hours look lower, and that mostly reflects empty roads, so no change of time is advised.",
+  "threshold_percent": 15,
+  "verdict": "only_small_hours"
+}

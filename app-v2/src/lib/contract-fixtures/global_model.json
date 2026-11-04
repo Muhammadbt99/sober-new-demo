@@ -1,0 +1,453 @@
+{
+  "best_on_training_cities": "mapped",
+  "created_at": "2026-11-04T03:49:22.218926+00:00",
+  "dubai_validation": {
+    "all_collisions": 101551,
+    "all_collisions_cell_spearman": 0.7105372262346833,
+    "all_collisions_top_decile_lift": 3.0564656434822925,
+    "baseline_cell_spearman": 0.4516611213898618,
+    "baseline_top_decile_lift": 1.8880730377032815,
+    "cell_spearman": 0.6577964461441527,
+    "cells": 1552,
+    "crashes": 17844,
+    "deviance": 0.3460989209569649,
+    "protocol": "five cities 2021-2023 -> Dubai 2024-2025; nothing tuned on Dubai",
+    "retrain": {
+      "adopted": true,
+      "later_years": {
+        "after": {
+          "cell_spearman": 0.8359479112666502,
+          "cells": 1552,
+          "crashes": 17844,
+          "deviance": 0.3125161677999332,
+          "top10_cells_capture": 0.35939251288948665,
+          "top_decile_lift": 3.979020055711872
+        },
+        "before": {
+          "cell_spearman": 0.6577964461441527,
+          "cells": 1552,
+          "crashes": 17844,
+          "deviance": 0.3460989209569649,
+          "top10_cells_capture": 0.2665321676754091,
+          "top_decile_lift": 2.8772237980316553
+        }
+      },
+      "rules": {
+        "later_years": true,
+        "six_city_gate": true,
+        "unseen_districts": true,
+        "untouched_2026": true
+      },
+      "unseen_districts": {
+        "after": {
+          "cell_spearman": 0.7263107718807041,
+          "cells": 1552,
+          "crashes": 17844,
+          "deviance": 0.3353950890188074,
+          "top10_cells_capture": 0.2931517596951356,
+          "top_decile_lift": 3.319399407039637
+        },
+        "before": {
+          "cell_spearman": 0.6577964461441527,
+          "cells": 1552,
+          "crashes": 17844,
+          "deviance": 0.3460989209569649,
+          "top10_cells_capture": 0.2665321676754091,
+          "top_decile_lift": 2.8772237980316553
+        }
+      },
+      "untouched_2026": {
+        "after": {
+          "cell_spearman": 0.8081149259776857,
+          "cells": 1552,
+          "crashes": 8238,
+          "deviance": 0.189391993596445,
+          "top10_cells_capture": 0.3396455450352027,
+          "top_decile_lift": 3.845682086675293
+        },
+        "before": {
+          "cell_spearman": 0.6232010158721134,
+          "cells": 1552,
+          "crashes": 8238,
+          "deviance": 0.2045099741363534,
+          "top10_cells_capture": 0.26232095168730274,
+          "top_decile_lift": 2.8757641614058618
+        }
+      },
+      "version": "global-2026.11.04-1"
+    },
+    "top10_cells_capture": 0.2665321676754091,
+    "top_decile_lift": 2.8772237980316553
+  },
+  "feature_set": "roads",
+  "gate": {
+    "baseline": {
+      "berlin": {
+        "cell_spearman": 0.5467317674006402,
+        "cells": 1128,
+        "crashes": 25640,
+        "deviance": 0.5169225813207204,
+        "top10_cells_capture": 0.24426677067082683,
+        "top_decile_lift": 3.2578690782459794
+      },
+      "chicago": {
+        "cell_spearman": 0.5299999429619455,
+        "cells": 856,
+        "crashes": 36057,
+        "deviance": 0.7635566426911102,
+        "top10_cells_capture": 0.1556424550018027,
+        "top_decile_lift": 2.207183827275798
+      },
+      "dubai": {
+        "cell_spearman": 0.4516611213898618,
+        "cells": 1552,
+        "crashes": 17844,
+        "deviance": 0.37107467437831837,
+        "top10_cells_capture": 0.14368975566016587,
+        "top_decile_lift": 1.8880730377032815
+      },
+      "london": {
+        "cell_spearman": 0.6505160989523163,
+        "cells": 2296,
+        "crashes": 41851,
+        "deviance": 0.44215740119446584,
+        "top10_cells_capture": 0.24919356765668682,
+        "top_decile_lift": 3.326632278395938
+      },
+      "nyc": {
+        "cell_spearman": 0.7467906453718094,
+        "cells": 1100,
+        "crashes": 73179,
+        "deviance": 0.8937070953402295,
+        "top10_cells_capture": 0.20400661391929378,
+        "top_decile_lift": 2.6727613113051554
+      },
+      "paris": {
+        "cell_spearman": 0.6109873212526122,
+        "cells": 1121,
+        "crashes": 21581,
+        "deviance": 0.47133407384037035,
+        "top10_cells_capture": 0.2023539224317687,
+        "top_decile_lift": 2.713613256130103
+      }
+    },
+    "best": {},
+    "best_summary": null,
+    "checks": {
+      "beats_baseline": true,
+      "mean_cell_spearman": true,
+      "mean_top_decile_lift": true,
+      "min_top_decile_lift": true,
+      "passed": true
+    },
+    "held_out": {
+      "berlin": {
+        "cell_spearman": 0.8277186267148056,
+        "cells": 1128,
+        "crashes": 25640,
+        "deviance": 0.45520092848234295,
+        "top10_cells_capture": 0.3372854914196568,
+        "top_decile_lift": 4.407269314519282
+      },
+      "chicago": {
+        "cell_spearman": 0.7323460691464843,
+        "cells": 856,
+        "crashes": 36057,
+        "deviance": 0.7213326995539925,
+        "top10_cells_capture": 0.21008403361344538,
+        "top_decile_lift": 2.6295941023375025
+      },
+      "dubai": {
+        "cell_spearman": 0.6577964461441527,
+        "cells": 1552,
+        "crashes": 17844,
+        "deviance": 0.3460989209569649,
+        "top10_cells_capture": 0.2665321676754091,
+        "top_decile_lift": 2.8772237980316553
+      },
+      "london": {
+        "cell_spearman": 0.8473798443326122,
+        "cells": 2296,
+        "crashes": 41851,
+        "deviance": 0.40881085834802927,
+        "top10_cells_capture": 0.3222623115337746,
+        "top_decile_lift": 3.8926997879146836
+      },
+      "nyc": {
+        "cell_spearman": 0.8356935851621168,
+        "cells": 1100,
+        "crashes": 73179,
+        "deviance": 0.8464362531229216,
+        "top10_cells_capture": 0.2235477391054811,
+        "top_decile_lift": 2.8740485658453925
+      },
+      "paris": {
+        "cell_spearman": 0.7864170085458085,
+        "cells": 1121,
+        "crashes": 21581,
+        "deviance": 0.4472843979637075,
+        "top10_cells_capture": 0.24971039340160325,
+        "top_decile_lift": 3.1904418149685383
+      }
+    },
+    "summary": {
+      "beats_baseline_in": 6,
+      "mean_cell_spearman": 0.7812252633409967,
+      "mean_deviance_gain_vs_baseline": 0.07022386497086781,
+      "mean_top_decile_lift": 3.3118795639361753,
+      "min_top_decile_lift": 2.6295941023375025
+    },
+    "time_only": {
+      "berlin": {
+        "cell_spearman": null,
+        "cells": 1128,
+        "crashes": 25640,
+        "deviance": 0.5670709557449045,
+        "top10_cells_capture": 0.03603744149765991,
+        "top_decile_lift": 2.156441773449302
+      },
+      "chicago": {
+        "cell_spearman": null,
+        "cells": 856,
+        "crashes": 36057,
+        "deviance": 0.7990106413411625,
+        "top10_cells_capture": 0.031200599051501788,
+        "top_decile_lift": 1.8513385331824521
+      },
+      "dubai": {
+        "cell_spearman": null,
+        "cells": 1552,
+        "crashes": 17844,
+        "deviance": 0.38035640315715236,
+        "top10_cells_capture": 0.07195696032279758,
+        "top_decile_lift": 1.425722115736761
+      },
+      "london": {
+        "cell_spearman": null,
+        "cells": 2296,
+        "crashes": 41851,
+        "deviance": 0.4883843577445203,
+        "top10_cells_capture": 0.08066712862297197,
+        "top_decile_lift": 2.108953921068995
+      },
+      "nyc": {
+        "cell_spearman": null,
+        "cells": 1100,
+        "crashes": 73179,
+        "deviance": 1.060546454675168,
+        "top10_cells_capture": 0.06668579783817762,
+        "top_decile_lift": 1.6702879241312398
+      },
+      "paris": {
+        "cell_spearman": null,
+        "cells": 1121,
+        "crashes": 21581,
+        "deviance": 0.5067275716022471,
+        "top10_cells_capture": 0.037301329873499836,
+        "top_decile_lift": 1.690910992421234
+      }
+    }
+  },
+  "mapping_check": {
+    "features": {
+      "bus_stops": {
+        "share_of_least_mapped_city": 0.035988210559278845,
+        "usable": false
+      },
+      "crossings": {
+        "share_of_least_mapped_city": 0.295177598073322,
+        "usable": false
+      },
+      "food": {
+        "share_of_least_mapped_city": 0.21261624295495896,
+        "usable": false
+      },
+      "fuel": {
+        "share_of_least_mapped_city": 0.44100879491743616,
+        "usable": false
+      },
+      "km_cycle": {
+        "share_of_least_mapped_city": 0.37674168588993995,
+        "usable": false
+      },
+      "km_walk": {
+        "share_of_least_mapped_city": 0.22661696842519757,
+        "usable": false
+      },
+      "nightlife": {
+        "share_of_least_mapped_city": 0.037998885239201016,
+        "usable": false
+      },
+      "parking": {
+        "share_of_least_mapped_city": 0.4061275476290501,
+        "usable": false
+      },
+      "roundabouts": {
+        "share_of_least_mapped_city": 8.143101843451829,
+        "usable": true
+      },
+      "schools": {
+        "share_of_least_mapped_city": 0.11508636526074781,
+        "usable": false
+      },
+      "shops": {
+        "share_of_least_mapped_city": 0.4597118781799815,
+        "usable": false
+      },
+      "signals": {
+        "share_of_least_mapped_city": 0.09777461897200511,
+        "usable": false
+      },
+      "stations": {
+        "share_of_least_mapped_city": 0.10434361562019255,
+        "usable": false
+      }
+    },
+    "region": "uae",
+    "rule": "a tagged feature is usable when the region has at least 0.5x the least-mapped training city's count per street junction"
+  },
+  "protocol": {
+    "baseline": "population",
+    "gate": "other cities 2021-2023 -> held-out city 2024-2025 (six cities)",
+    "gate_rules": {
+      "beats_baseline_in_at_least": 4,
+      "mean_cell_spearman": 0.6,
+      "mean_top_decile_lift": 2.0,
+      "min_top_decile_lift": 1.5
+    },
+    "selection": "other cities 2021-2022 -> held-out city 2023"
+  },
+  "regions": {
+    "uae": {
+      "cells": 33989,
+      "name": "United Arab Emirates",
+      "reference_cells": 1552
+    }
+  },
+  "schema_version": "1.0.0",
+  "selection": {
+    "full": {
+      "beats_baseline_in": 5,
+      "mean_cell_spearman": 0.8202417464676699,
+      "mean_deviance_gain_vs_baseline": 0.05932677628111525,
+      "mean_top_decile_lift": 3.6222862475352713,
+      "min_top_decile_lift": 2.818141865037232
+    },
+    "mapped": {
+      "beats_baseline_in": 5,
+      "mean_cell_spearman": 0.8201766717730671,
+      "mean_deviance_gain_vs_baseline": 0.05689196244750849,
+      "mean_top_decile_lift": 3.620653565723356,
+      "min_top_decile_lift": 2.8127316097502573
+    },
+    "roads": {
+      "beats_baseline_in": 5,
+      "mean_cell_spearman": 0.7874998174655522,
+      "mean_deviance_gain_vs_baseline": 0.03641747764496206,
+      "mean_top_decile_lift": 3.442624802085812,
+      "min_top_decile_lift": 2.5518370770228347
+    }
+  },
+  "static_features": [
+    "population",
+    "ring_population",
+    "km_motorway",
+    "km_trunk",
+    "km_primary",
+    "km_secondary",
+    "km_tertiary",
+    "km_local",
+    "km_service",
+    "junctions",
+    "ring_km_motorway",
+    "ring_km_trunk",
+    "ring_km_primary",
+    "ring_km_secondary",
+    "ring_km_tertiary",
+    "ring_km_local",
+    "ring_km_service",
+    "ring_junctions"
+  ],
+  "target": "crashes per H3 res-8 cell-hour, relative to the training city's mean",
+  "training": {
+    "berlin": {
+      "cells": 1128,
+      "country": "DE",
+      "crashes": 61547,
+      "name": "Berlin",
+      "years": [
+        2021,
+        2022,
+        2023,
+        2024,
+        2025
+      ]
+    },
+    "chicago": {
+      "cells": 856,
+      "country": "US",
+      "crashes": 84833,
+      "name": "Chicago",
+      "years": [
+        2021,
+        2022,
+        2023,
+        2024,
+        2025
+      ]
+    },
+    "dubai": {
+      "cells": 1552,
+      "country": "AE",
+      "crashes": 32550,
+      "name": "Dubai",
+      "years": [
+        2021,
+        2022,
+        2023,
+        2024,
+        2025
+      ]
+    },
+    "london": {
+      "cells": 2296,
+      "country": "GB",
+      "crashes": 111341,
+      "name": "London",
+      "years": [
+        2021,
+        2022,
+        2023,
+        2024,
+        2025
+      ]
+    },
+    "nyc": {
+      "cells": 1100,
+      "country": "US",
+      "crashes": 180880,
+      "name": "New York",
+      "years": [
+        2021,
+        2022,
+        2023,
+        2024,
+        2025
+      ]
+    },
+    "paris": {
+      "cells": 1121,
+      "country": "FR",
+      "crashes": 59216,
+      "name": "Paris",
+      "years": [
+        2021,
+        2022,
+        2023,
+        2024,
+        2025
+      ]
+    }
+  },
+  "version": "global-2026.11.04-1"
+}

@@ -57,6 +57,136 @@ export const PlaceName = z
   .optional();
 export type PlaceName = z.infer<typeof PlaceName>;
 
+/**
+ * One danger group (impaired, drowsy, speeding, failure to yield, distracted)
+ * at a place and band of the week. Shares are of injury crashes whose recorded
+ * factors include the group; `rate_ratio` compares the expected rate of that
+ * kind of crash here and now with a typical NYC cell-hour.
+ */
+export const DangerGroup = z.object({
+  id: z.string(),
+  label: z.string(),
+  short: z.string().optional(),
+  status: z.enum(["ok", "too_thin", "not_validated"]),
+  share: z.number().optional(),
+  share_low: z.number().optional(),
+  share_high: z.number().optional(),
+  city_share: z.number().optional(),
+  city_band_share: z.number().optional(),
+  share_ratio: z.number().optional(),
+  /** Share here against the city's in the same band of the week. */
+  band_share_ratio: z.number().optional(),
+  rate_ratio: z.number().optional(),
+  evidence: z.enum(["neighbourhood", "borough", "citywide"]).optional(),
+  evidence_crashes: z.number().optional(),
+  reason: z.string().optional(),
+});
+export type DangerGroup = z.infer<typeof DangerGroup>;
+
+export const DangerProfile = z.object({
+  version: z.string(),
+  band: z.object({ id: z.string(), label: z.string() }),
+  area: z.object({
+    neighbourhood: z.string().nullable(),
+    borough: z.string().nullable(),
+  }),
+  basis: z.string(),
+  note: z.string(),
+  groups: z.array(DangerGroup),
+});
+export type DangerProfile = z.infer<typeof DangerProfile>;
+
+/** The per-segment form: ratios and status only. */
+export const DangerCompact = z.object({ band: z.string(), groups: z.array(DangerGroup) });
+export type DangerCompact = z.infer<typeof DangerCompact>;
+
+const DangerTest = z
+  .object({
+    log_loss: z.number(),
+    top_decile_lift: z.number().nullable(),
+    events: z.number(),
+    crashes: z.number(),
+  })
+  .passthrough();
+
+/** `/danger_types`: definitions, gate and held-out metrics, straight from the artifact. */
+export const DangerTypesCard = z
+  .object({
+    schema_version: z.string(),
+    version: z.string(),
+    created_at: z.string(),
+    target: z.string(),
+    inputs: z.array(z.string()),
+    data: z
+      .object({
+        window: z.array(z.string()),
+        injury_crashes: z.number(),
+        split: z.object({ train: z.number(), validation: z.number(), test: z.number() }).passthrough(),
+      })
+      .passthrough(),
+    bands: z.record(z.string(), z.string()),
+    definitions: z.record(z.string(), z.array(z.string())),
+    city_share: z.record(z.string(), z.number()),
+    groups: z.record(
+      z.string(),
+      z
+        .object({
+          status: z.enum(["validated", "not_validated"]),
+          level: z.enum(["time", "borough", "neighbourhood"]),
+          gate: z.record(z.string(), z.boolean()),
+          test: z.object({
+            city: DangerTest,
+            time: DangerTest,
+            borough: DangerTest,
+            neighbourhood: DangerTest,
+          }),
+        })
+        .passthrough(),
+    ),
+  })
+  .passthrough();
+export type DangerTypesCard = z.infer<typeof DangerTypesCard>;
+
+const ModelSplit = z
+  .object({
+    poisson_deviance: z.number(),
+    baseline_deviance: z.number(),
+    top_decile_lift: z.number(),
+    baseline_top_decile_lift: z.number().nullable(),
+    monotonic_deciles: z.boolean(),
+    deciles: z.array(
+      z.object({
+        decile: z.number(),
+        predicted_rate: z.number(),
+        observed_rate: z.number(),
+        lift: z.number(),
+      }),
+    ),
+  })
+  .passthrough();
+
+/** `/model_card`: the crash model's validation numbers, read from its metadata. */
+export const ModelCard = z
+  .object({
+    schema_version: z.string(),
+    version: z.string(),
+    created_at: z.string(),
+    target: z.string(),
+    gate: z.record(z.string(), z.boolean()),
+    training_window: z.object({
+      start: z.string(),
+      end: z.string(),
+      crashes: z.number(),
+    }),
+    holdout_borough: z.string(),
+    temporal_test: ModelSplit,
+    holdout: ModelSplit,
+    cells: z.number(),
+    prior_rate: z.number(),
+  })
+  .passthrough();
+export type ModelCard = z.infer<typeof ModelCard>;
+
 export const RiskBreakdown = z.object({
   model: z.number(),
   nightlife: z.number(),
@@ -92,6 +222,15 @@ export const RiskResponse = z.object({
       road_class: z.string().nullable().optional(),
       road_name: z.string().nullable().optional(),
       index: z.number().optional(),
+      /** "global_model" where the global crash model scored the point (the UAE). */
+      method: z.string().optional(),
+      region: z.string().optional(),
+      region_name: z.string().optional(),
+      /** The global model's rate; 1.0 = a training city's average cell-hour. */
+      relative_rate: z.number().optional(),
+      /** This hour against the place's average hour of the week. */
+      time_ratio: z.number().optional(),
+      trained_on: z.string().optional(),
     })
     .passthrough()
     .nullable()
@@ -99,6 +238,8 @@ export const RiskResponse = z.object({
   model_version: z.string().nullable(),
   cell: z.string().nullable(),
   place: PlaceName,
+  /** What kind of injury crash is over-represented here now (model cells only). */
+  danger_types: DangerProfile.nullable().optional(),
   local_time: LocalTime,
   data_quality: DataQuality,
   warnings: z.array(z.string()),
@@ -142,11 +283,18 @@ export const SurfaceCell = z.object({
   risk_score: z.number(),
   risk_level: RiskLevel,
   coverage: Coverage,
+  /** With `?danger=`: this cell's expected rate of that kind of crash vs a typical cell-hour. */
+  danger_rate_ratio: z.number().nullable().optional(),
+  danger_status: z.string().optional(),
 });
 export type SurfaceCell = z.infer<typeof SurfaceCell>;
 
 export const SurfaceResponse = z.object({
   schema_version: z.string(),
+  danger_layer: z
+    .object({ group: z.string(), status: z.string() })
+    .nullable()
+    .optional(),
   hour: z.number(),
   day_of_week: z.number(),
   is_weekend: z.boolean(),
@@ -158,6 +306,82 @@ export const SurfaceResponse = z.object({
   cells: z.array(SurfaceCell),
 });
 export type SurfaceResponse = z.infer<typeof SurfaceResponse>;
+
+/** `/surface/global`: the global crash model's cells around a point (the UAE). */
+export const GlobalSurfaceResponse = SurfaceResponse.extend({
+  region: z.string(),
+  region_name: z.string(),
+  centre: z.object({ lat: z.number(), lon: z.number() }),
+  radius_km: z.number(),
+});
+export type GlobalSurfaceResponse = z.infer<typeof GlobalSurfaceResponse>;
+
+const GlobalHeldOut = z
+  .object({
+    deviance: z.number(),
+    top_decile_lift: z.number(),
+    cell_spearman: z.number().nullable(),
+    top10_cells_capture: z.number(),
+    crashes: z.number(),
+    cells: z.number(),
+  })
+  .passthrough();
+
+/** `/global_model`: training cities, protocol and leave-one-city-out results. */
+export const GlobalModelCard = z
+  .object({
+    schema_version: z.string(),
+    version: z.string(),
+    created_at: z.string(),
+    target: z.string(),
+    feature_set: z.string(),
+    best_on_training_cities: z.string().nullable().optional(),
+    static_features: z.array(z.string()),
+    mapping_check: z
+      .object({
+        region: z.string().nullable().optional(),
+        rule: z.string().nullable().optional(),
+        features: z.record(
+          z.string(),
+          z.object({ share_of_least_mapped_city: z.number().nullable(), usable: z.boolean() }),
+        ),
+      })
+      .optional(),
+    training: z.record(
+      z.string(),
+      z.object({ name: z.string(), country: z.string(), cells: z.number(), crashes: z.number() }).passthrough(),
+    ),
+    protocol: z.object({ selection: z.string(), gate: z.string(), baseline: z.string() }).passthrough(),
+    gate: z.object({
+      summary: z.record(z.string(), z.number()),
+      checks: z.record(z.string(), z.boolean()),
+      held_out: z.record(z.string(), GlobalHeldOut),
+      baseline: z.record(z.string(), GlobalHeldOut),
+      time_only: z.record(z.string(), GlobalHeldOut).optional(),
+      best: z.record(z.string(), GlobalHeldOut).nullable().optional(),
+      best_summary: z.record(z.string(), z.number()).nullable().optional(),
+    }),
+    dubai_validation: GlobalHeldOut.extend({
+      baseline_top_decile_lift: z.number().optional(),
+      retrain: z
+        .object({
+          adopted: z.boolean(),
+          unseen_districts: z.object({ after: GlobalHeldOut }),
+          untouched_2026: z.object({ after: GlobalHeldOut }),
+        })
+        .passthrough()
+        .nullable()
+        .optional(),
+    })
+      .nullable()
+      .optional(),
+    regions: z.record(
+      z.string(),
+      z.object({ name: z.string(), cells: z.number(), reference_cells: z.number().optional() }),
+    ),
+  })
+  .passthrough();
+export type GlobalModelCard = z.infer<typeof GlobalModelCard>;
 
 export const HeatmapResponse = z.object({
   schema_version: z.string(),
@@ -277,6 +501,9 @@ export const RouteSegment = z.object({
   action: z.string().optional(),
   model_points: z.number().optional(),
   nightlife_points: z.number().optional(),
+  danger_types: DangerCompact.optional(),
+  /** Which model scored a stretch outside NYC ("global_model" in the UAE). */
+  method: z.string().optional(),
 });
 export type RouteSegment = z.infer<typeof RouteSegment>;
 
@@ -293,6 +520,10 @@ export const RouteWaypoint = z.object({
 export type RouteWaypoint = z.infer<typeof RouteWaypoint>;
 
 export const Route = z.object({
+  /** Minutes lost to traffic against empty roads. */
+  traffic_min_added: z.number().optional(),
+  /** A road TomTom chose for the traffic, not one of the routers'. */
+  live_reroute: z.boolean().optional(),
   rank: z.number(),
   route_type: z.string(),
   synthetic: z.boolean(),
@@ -357,8 +588,83 @@ export const ViaAlternatives = z.object({
 });
 export type ViaAlternatives = z.infer<typeof ViaAlternatives>;
 
+/** Asked for with `live=1` or a date. `available: false` carries only `reason`. */
+export const RouteTraffic = z.object({
+  available: z.boolean(),
+  reason: z.string().optional(),
+  mode: z.enum(["live", "typical"]).optional(),
+  source: z.string().optional(),
+  depart: z.string().optional(),
+  checked_at: z.string().optional(),
+});
+export type RouteTraffic = z.infer<typeof RouteTraffic>;
+
+export const NightStep = z.object({
+  kind: z.enum(["now", "danger", "best", "when", "care", "drive", "stop", "arrive", "pickup"]),
+  /** On a drive step: the worst risk on that part of the road. */
+  level: z.string().nullable().optional(),
+  title: z.string(),
+  detail: z.string(),
+});
+export type NightStep = z.infer<typeof NightStep>;
+
+export const NightOption = z.object({
+  route_index: z.number(),
+  label: z.string(),
+  is_best: z.boolean(),
+  minutes: z.number(),
+  km: z.number(),
+  risk: z.number(),
+  critical_km: z.number(),
+  high_km: z.number(),
+  why: z.string(),
+});
+export type NightOption = z.infer<typeof NightOption>;
+
+export const NightPlanResponse = z.object({
+  schema_version: z.string(),
+  applies: z.boolean(),
+  best_index: z.number().optional(),
+  scanned: z.number().optional(),
+  options: z.array(NightOption),
+  steps: z.array(NightStep),
+  pickup: z
+    .object({
+      walk_m: z.number(),
+      direction: z.string(),
+      lat: z.number(),
+      lon: z.number(),
+      percentile: z.number(),
+      from_percentile: z.number(),
+    })
+    .nullable()
+    .optional(),
+});
+export type NightPlanResponse = z.infer<typeof NightPlanResponse>;
+
+export const GuidanceStep = z.object({
+  /** Metres from the start of the route, as TomTom measured it. */
+  offset_m: z.number(),
+  message: z.string(),
+  maneuver: z.string(),
+  street: z.string().nullable().optional(),
+});
+export type GuidanceStep = z.infer<typeof GuidanceStep>;
+
+/** `available: false` carries only `reason`: the drive still runs, without turns. */
+export const GuidanceResponse = z.object({
+  schema_version: z.string(),
+  available: z.boolean(),
+  reason: z.string().optional(),
+  source: z.string().optional(),
+  length_m: z.number().optional(),
+  instructions: z.array(GuidanceStep).optional(),
+});
+export type GuidanceResponse = z.infer<typeof GuidanceResponse>;
+
 export const SafeRouteResponse = z.object({
   schema_version: z.string(),
+  traffic: RouteTraffic.optional(),
   route_id: z.string(),
   origin: z.object({ lat: z.number(), lon: z.number() }),
   destination: z.object({ lat: z.number(), lon: z.number() }),
@@ -383,6 +689,44 @@ export const SafeRouteResponse = z.object({
   routes: z.array(Route),
 });
 export type SafeRouteResponse = z.infer<typeof SafeRouteResponse>;
+
+/** One departure hour for a route: the same stretches, scored at that hour. */
+export const DepartureSlot = z.object({
+  offset_hours: z.number(),
+  hour: z.number(),
+  day_of_week: z.number(),
+  expected_crashes_total: z.number(),
+  change_percent: z.number(),
+  is_chosen: z.boolean(),
+  is_recommended: z.boolean(),
+  small_hours: z.boolean(),
+  /** Earlier than now on a live trip: on the chart, never suggested. */
+  is_past: z.boolean().optional(),
+  city_change_percent: z.number().optional(),
+  adjusted_change_percent: z.number().optional(),
+});
+export type DepartureSlot = z.infer<typeof DepartureSlot>;
+
+/** `available: false` carries only `reason`: the trip has no learned time curve. */
+export const DeparturesResponse = z.object({
+  schema_version: z.string(),
+  available: z.boolean(),
+  reason: z.string().optional(),
+  slots: z.array(DepartureSlot),
+  basis: z.string().optional(),
+  verdict: z
+    .enum(["move", "little_difference", "only_small_hours", "busy_hours_only", "already_best"])
+    .optional(),
+  text: z.string().optional(),
+  recommended: DepartureSlot.nullable().optional(),
+  reduction_percent: z.number().optional(),
+  adjusted_reduction_percent: z.number().nullable().optional(),
+  threshold_percent: z.number().optional(),
+  note: z.string().optional(),
+  route_index: z.number().optional(),
+  model_version: z.string().nullable().optional(),
+});
+export type DeparturesResponse = z.infer<typeof DeparturesResponse>;
 
 export const Hotspot = z.object({
   rank: z.number(),
@@ -498,6 +842,16 @@ export const HealthResponse = z.object({
       error: z.string().nullable().optional(),
     }),
     severity_model: z.string(),
+    /** The global crash model (the UAE); absent from older APIs. */
+    global_model: z
+      .object({
+        available: z.boolean(),
+        error: z.string().nullable().optional(),
+        version: z.string().nullable().optional(),
+        gate_passed: z.boolean().optional(),
+        regions: z.record(z.string(), z.object({ name: z.string(), cells: z.number() })).optional(),
+      })
+      .optional(),
     indexes: z.object({
       crash: z.string(),
       bars: z.string(),

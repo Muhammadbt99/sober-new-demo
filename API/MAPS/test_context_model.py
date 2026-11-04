@@ -4,6 +4,8 @@ from __future__ import annotations
 import pytest
 
 import context_model as cm
+import gazetteer
+import providers
 from route_engine import annotate_segments, current_route_hint, plan_routes, score_geometry
 
 DRY = {"temperature_c": 20.0, "precipitation_mm": 0.0, "rain": False, "snow": False,
@@ -324,6 +326,25 @@ def test_place_search_falls_back_to_the_offline_list(monkeypatch, client):
     assert first["name"] == "Bangkok" and first["source"] == "offline"
     # Nothing online and nothing offline: an explicit 503, not an empty success.
     assert client.get("/geocode?q=Qqzzxx&limit=6").status_code == 503
+
+
+def test_a_city_and_its_province_do_not_show_as_two_identical_rows():
+    online = [
+        {"name": "Mecca", "type": "province", "lat": "21.420847", "lon": "39.826869", "display_name": "Mecca, Saudi Arabia"},
+        {"name": "Mecca", "type": "state", "lat": "21.6698063", "lon": "41.4996029", "display_name": "Mecca, Saudi Arabia"},
+        {"name": "Mecca", "type": "city", "lat": "33.57", "lon": "-116.07", "display_name": "Mecca, California, United States"},
+    ]
+    ranked = providers._rank_places("Mecca", online, 6)
+    assert [place["lat"] for place in ranked] == ["21.420847", "33.57"]
+
+
+def test_another_spelling_of_a_major_city_finds_it():
+    online = [
+        {"name": "Makkah", "type": "neighbourhood", "lat": "27.14", "lon": "49.55", "display_name": "Makkah, Eastern Province, Saudi Arabia"},
+    ]
+    first = providers._rank_places("Makkah", online, 6)[0]
+    assert first["display_name"] == "Mecca, Saudi Arabia"
+    assert gazetteer.search("madinah")[0]["name"] == "Medina"
 
 
 def test_place_search_prefers_a_live_geocoder(monkeypatch, client):

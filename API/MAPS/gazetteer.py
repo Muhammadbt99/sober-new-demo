@@ -67,6 +67,7 @@ CITIES: list[tuple[str, str, str, float, float]] = [
     ("Riyadh", "SA", "Saudi Arabia", 24.7136, 46.6753),
     ("Jeddah", "SA", "Saudi Arabia", 21.4858, 39.1925),
     ("Mecca", "SA", "Saudi Arabia", 21.3891, 39.8579),
+    ("Medina", "SA", "Saudi Arabia", 24.4672, 39.6024),
     ("Kuwait City", "KW", "Kuwait", 29.3759, 47.9774),
     ("Manama", "BH", "Bahrain", 26.2285, 50.5860),
     ("Muscat", "OM", "Oman", 23.5880, 58.3829),
@@ -96,10 +97,27 @@ CITIES: list[tuple[str, str, str, float, float]] = [
 ]
 
 
+#: Other spellings of a listed city: open map data often has only one of them.
+ALIASES = {
+    "makkah": "mecca",
+    "makka": "mecca",
+    "makkah al mukarramah": "mecca",
+    "madinah": "medina",
+    "al madinah": "medina",
+    "al madinah al munawwarah": "medina",
+}
+
+
 def _fold(text: str) -> str:
     """Lower case, accents removed, whitespace collapsed."""
     plain = unicodedata.normalize("NFKD", text).encode("ascii", "ignore").decode("ascii")
     return " ".join(plain.lower().split())
+
+
+def canonical(text: str) -> str:
+    """The folded name, with another spelling of a listed city resolved."""
+    query = _fold(text)
+    return ALIASES.get(query, query)
 
 
 def search(text: str, limit: int = 6) -> list[dict]:
@@ -108,7 +126,7 @@ def search(text: str, limit: int = 6) -> list[dict]:
     Results have the shape the app reads from Nominatim, marked ``"source":
     "offline"`` so nobody mistakes them for a live geocoder answer.
     """
-    query = _fold(text)
+    query = canonical(text)
     if len(query) < 2:
         return []
     found = []

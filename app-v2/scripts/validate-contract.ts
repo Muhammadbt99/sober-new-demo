@@ -15,7 +15,10 @@ import { fileURLToPath } from "node:url";
 
 import {
   AlertsResponse,
+  DeparturesResponse,
   ErrorResponse,
+  GuidanceResponse,
+  NightPlanResponse,
   HealthResponse,
   HeatmapResponse,
   HotspotsResponse,
@@ -27,6 +30,10 @@ import {
   SafeRouteResponse,
   StatsResponse,
   SurfaceResponse,
+  DangerTypesCard,
+  ModelCard,
+  GlobalModelCard,
+  GlobalSurfaceResponse,
 } from "../src/lib/contract";
 
 const HERE = fileURLToPath(new URL(".", import.meta.url));
@@ -40,11 +47,15 @@ const SCHEMAS: Record<
   health_deep: { schema: HealthResponse, label: "HealthResponse" },
   risk_times_square: { schema: RiskResponse, label: "RiskResponse" },
   risk_out_of_area: { schema: RiskResponse, label: "RiskResponse" },
+  risk_context: { schema: RiskResponse, label: "RiskResponse" },
   heatmap: { schema: HeatmapResponse, label: "HeatmapResponse" },
   risk_trend: { schema: RiskTrendResponse, label: "RiskTrendResponse" },
   risk_compare: { schema: RiskCompareResponse, label: "RiskCompareResponse" },
   safe_route: { schema: SafeRouteResponse, label: "SafeRouteResponse" },
   safe_route_single: { schema: SafeRouteResponse, label: "SafeRouteResponse" },
+  departures: { schema: DeparturesResponse, label: "DeparturesResponse" },
+  guidance: { schema: GuidanceResponse, label: "GuidanceResponse" },
+  night_plan: { schema: NightPlanResponse, label: "NightPlanResponse" },
   hotspots: { schema: HotspotsResponse, label: "HotspotsResponse" },
   nearest_safe: { schema: NearestSafeResponse, label: "NearestSafeResponse" },
   alerts: { schema: AlertsResponse, label: "AlertsResponse" },
@@ -54,6 +65,10 @@ const SCHEMAS: Record<
   },
   stats: { schema: StatsResponse, label: "StatsResponse" },
   surface: { schema: SurfaceResponse, label: "SurfaceResponse" },
+  danger_types: { schema: DangerTypesCard, label: "DangerTypesCard" },
+  model_card: { schema: ModelCard, label: "ModelCard" },
+  global_model: { schema: GlobalModelCard, label: "GlobalModelCard" },
+  surface_global: { schema: GlobalSurfaceResponse, label: "GlobalSurfaceResponse" },
 };
 
 let failures = 0;
@@ -110,6 +125,23 @@ for (const file of readdirSync(FIXTURES)) {
     failures += 1;
     console.log(`FAIL  ${file.padEnd(24)} stale fixture with no schema mapping`);
   }
+}
+
+// A very long trip drops the notes on calm stretches. What is left must still
+// satisfy the contract, or the whole trip is refused in the browser.
+{
+  const safe = JSON.parse(readFileSync(join(FIXTURES, "safe_route.json"), "utf8"));
+  for (const route of safe.routes) {
+    for (const segment of route.segments) {
+      for (const field of ["reasons", "action", "model_points", "nightlife_points", "danger_types"]) {
+        delete segment[field];
+      }
+    }
+  }
+  const parsed = SafeRouteResponse.safeParse(safe);
+  checked += 1;
+  if (!parsed.success) failures += 1;
+  console.log(`${parsed.success ? "  ok" : "FAIL"}  slimmed long trip`);
 }
 
 console.log(`\n${checked} fixtures checked, ${failures} failed`);

@@ -133,7 +133,9 @@ def main_capture():
     app_module.app.config["TESTING"] = True
     with app_module.app.test_client() as client:
         write(client, "risk_times_square", "/risk?lat=40.7580&lon=-73.9855&hour=23&day=5")
+        # Dubai: the global crash model. Riyadh: outside every region, the estimate.
         write(client, "risk_out_of_area", "/risk?lat=25.2048&lon=55.2708&hour=23&day=5")
+        write(client, "risk_context", "/risk?lat=24.7136&lon=46.6753&hour=23&day=5")
         write(
             client,
             "heatmap",
@@ -151,6 +153,11 @@ def main_capture():
         )
         write(client, "health", "/health")
         write(client, "stats", "/stats")
+        write(client, "surface", "/surface?hour=23&day=5&danger=impaired")
+        write(client, "danger_types", "/danger_types")
+        write(client, "model_card", "/model_card")
+        write(client, "global_model", "/global_model")
+        write(client, "surface_global", "/surface/global?lat=25.1972&lon=55.2744&radius_km=2&hour=23&day=5")
         write(client, "hotspots", "/hotspots?top_k=10")
         write(client, "nearest_safe", "/nearest_safe?lat=40.7580&lon=-73.9855&radius=3000")
         write(client, "alerts", "/alerts")
@@ -161,6 +168,13 @@ def main_capture():
         )
 
         safe_route(client, "safe_route", fake_two, TIMES_SQUARE, BARCLAYS)
+        write(
+            client,
+            "departures",
+            "/safe_route/departures"
+            f"?olat={TIMES_SQUARE[0]}&olon={TIMES_SQUARE[1]}"
+            f"&dlat={BARCLAYS[0]}&dlon={BARCLAYS[1]}&hour=23&day=5",
+        )
         safe_route(
             client,
             "safe_route_single",

@@ -12,20 +12,25 @@ import {
 } from "lucide-react";
 
 import { ErrorBlock, LoadingBlock, Notice } from "@/components/DataState";
-import { RiskPill } from "@/components/RiskPill";
 import { PlaceSearch } from "@/features/plan/PlaceSearch";
+import { DepartureStrip } from "@/features/plan/DepartureStrip";
+import { DriverCheckIn } from "@/features/plan/DriverCheckIn";
+import { NightPlan } from "@/features/plan/NightPlan";
 import { RouteCard } from "@/features/plan/RouteCard";
+import type { CheckIn } from "@/lib/checkin";
+import type { Route } from "@/lib/contract";
 import type { Place } from "@/lib/api";
 import {
   BUCKET_COLORS,
   BUCKET_LABELS,
-  DAY_SHORT,
+  formatDateFor,
   formatCrashes,
   formatDistance,
   formatHour,
   formatPercent,
   formatRate,
 } from "@/lib/risk";
+import { dangerMeta, formatRatio } from "@/lib/danger";
 import { fastestRoute } from "@/lib/routes";
 import type { SafeRouteResponse, RouteSegment } from "@/lib/contract";
 import { DEMO_TRIPS, type Panel } from "@/lib/use-url-state";
@@ -40,6 +45,10 @@ type PlanPanelProps = {
   run: boolean;
   route: SafeRouteResponse | undefined;
   routeLoading: boolean;
+  onStartDrive: (route: Route, index: number) => void;
+  checkIn: CheckIn;
+  onCheckIn: (value: CheckIn) => void;
+  trafficNote: { text: string; title: string; kind: string };
   routeError: unknown;
   onRetry: () => void;
   onRun: () => void;
@@ -55,6 +64,7 @@ type PlanPanelProps = {
   selectedSegment: SegmentSelection;
   onSelectRoute: (index: number) => void;
   onSelectSegment: (selection: SegmentSelection) => void;
+  onDeparture: (hour: number, day: number) => void;
 };
 
 export function PlanPanel({
@@ -65,6 +75,10 @@ export function PlanPanel({
   run,
   route,
   routeLoading,
+  onStartDrive,
+  checkIn,
+  onCheckIn,
+  trafficNote,
   routeError,
   onRetry,
   onRun,
@@ -78,13 +92,40 @@ export function PlanPanel({
   selectedSegment,
   onSelectRoute,
   onSelectSegment,
+  onDeparture,
 }: PlanPanelProps) {
   const [segmentOrder, setSegmentOrder] = useState<"worst" | "route">("worst");
   const [editingTrip, setEditingTrip] = useState(false);
+  const [slowRoute, setSlowRoute] = useState(false);
+  // Held here because the strip unmounts while the new hour's routes load. It
+  // applies only while the dock still shows the hour that was taken.
+  const [takenDeparture, setTakenDeparture] = useState<{
+    trip: string;
+    from: { hour: number; day: number };
+    to: { hour: number; day: number };
+  } | null>(null);
+  const tripKey = `${origin?.lat},${origin?.lon}>${destination?.lat},${destination?.lon}`;
+  const departureFrom =
+    takenDeparture &&
+    takenDeparture.trip === tripKey &&
+    takenDeparture.to.hour === hour &&
+    takenDeparture.to.day === day
+      ? takenDeparture.from
+      : null;
   const bodyRef = useRef<HTMLDivElement | null>(null);
   const detailRef = useRef<HTMLDivElement | null>(null);
   const canRun = Boolean(origin && destination);
   const showForm = !route || routeLoading || Boolean(routeError) || editingTrip;
+  useEffect(() => {
+    // A country-crossing trip takes a while. Say so, or it looks stuck.
+    if (!routeLoading) return;
+    const id = window.setTimeout(() => setSlowRoute(true), 4000);
+    return () => {
+      window.clearTimeout(id);
+      setSlowRoute(false);
+    };
+  }, [routeLoading]);
+
   const selectedSegmentKey = selectedSegment
     ? `${selectedSegment.routeIndex}:${selectedSegment.segmentIndex}`
     : null;
@@ -184,9 +225,9 @@ export function PlanPanel({
 
           <div className="planner-form-foot">
             <span className="planner-time">
-              {DAY_SHORT[day]} {formatHour(hour)} is set in the scrubber below
+              {formatDateFor(day, hour)}, {formatHour(hour)} is set in the bar below
               <span className="mono">
-                {hour.toString().padStart(2, "0")}:00 / {DAY_SHORT[day]}
+                {hour.toString().padStart(2, "0")}:00 / {formatDateFor(day, hour)}
               </span>
             </span>
             <button type="submit" className="solid-button" disabled={!canRun || routeLoading}>
@@ -205,7 +246,7 @@ export function PlanPanel({
                 {destination?.name ?? "Destination"}
               </strong>
               <span className="mono">
-                {hour.toString().padStart(2, "0")}:00 / {DAY_SHORT[day]}
+                {hour.toString().padStart(2, "0")}:00 / {formatDateFor(day, hour)}
               </span>
             </div>
             <button
@@ -249,6 +290,11 @@ export function PlanPanel({
 
         {routeLoading && (
           <div className="space-y-3 pt-4">
+            {slowRoute && (
+              <p className="route-slow-note" role="status">
+                Still working. Very long trips can take up to a minute.
+              </p>
+            )}
             <LoadingBlock lines={2} />
             <div className="grid grid-cols-2 gap-3">
               <LoadingBlock lines={4} />
@@ -285,6 +331,27 @@ export function PlanPanel({
               <p>{route.recommendation.text}</p>
             </div>
 
+            <NightPlan
+              origin={route.origin}
+              destination={route.destination}
+              hour={hour}
+              day={day}
+              routeIndex={selectedRoute}
+              checkIn={checkIn}
+              onTryTonight={() => onDeparture(23, day)}
+              onUseRoute={(index) => {
+                onSelectRoute(index);
+                onSelectSegment(null);
+              }}
+            />
+
+            <DriverCheckIn
+              value={checkIn}
+              onChange={onCheckIn}
+              route={selected}
+              origin={route.origin}
+            />
+
             <div>
               <div className="section-heading">
                 <span>Routes</span>
@@ -292,6 +359,9 @@ export function PlanPanel({
                   {route.coverage === "context" ? "lowest estimated risk first" : "lowest expected crashes first"}
                 </span>
               </div>
+              <p className={`traffic-note is-${trafficNote.kind} mono`} title={trafficNote.title}>
+                {trafficNote.text}
+              </p>
               <div className="route-list">
                 {route.routes.map((item, index) => (
                   <RouteCard
@@ -300,6 +370,7 @@ export function PlanPanel({
                     selected={index === selectedRoute}
                     fastest={fastest}
                     maxExpected={maxExpected}
+                    recommended={index === route.recommended_route}
                     onSelect={() => {
                       onSelectRoute(index);
                       onSelectSegment(null);
@@ -308,6 +379,37 @@ export function PlanPanel({
                 ))}
               </div>
             </div>
+
+            {selected && (
+              <button
+                type="button"
+                className="solid-button drive-start"
+                onClick={() => onStartDrive(selected, selectedRoute)}
+              >
+                <Play size={13} aria-hidden="true" />
+                Start road simulation
+              </button>
+            )}
+
+            <DepartureStrip
+              origin={route.origin}
+              destination={route.destination}
+              hour={hour}
+              day={day}
+              routeIndex={selectedRoute}
+              from={departureFrom}
+              onDeparture={(nextHour, nextDay) => {
+                setTakenDeparture({
+                  trip: tripKey,
+                  from: { hour, day },
+                  to: { hour: nextHour, day: nextDay },
+                });
+                onDeparture(nextHour, nextDay);
+              }}
+              onBack={() => {
+                if (departureFrom) onDeparture(departureFrom.hour, departureFrom.day);
+              }}
+            />
 
             {selected && (
               <div>
@@ -334,10 +436,8 @@ export function PlanPanel({
                   </div>
                 </div>
                 <p className="section-note">
-                  The route is cut wherever it enters a new risk area (cells of about
-                  0.7 km²). Each row is one stretch: its street, where it is on the trip,
-                  and how risky it is at this hour. Green is low, red is extreme, and the
-                  line on the map uses the same colours. Select a row to find it on the map.
+                  One row per map cell the route crosses (about 0.7 km²), coloured as on the
+                  map. Select a row to find it.
                 </p>
                 {selectedSegment && (
                   <div ref={detailRef}>
@@ -497,8 +597,16 @@ function SegmentDetail({
   // stretch to the next (speed, junctions, turns) matter more than the country
   // line every stretch shares, which the estimate lists first.
   const estimated = segment.coverage === "context";
+  // Scored by the global crash model (the UAE) rather than the estimate.
+  const learned = segment.method === "global_model";
   const reasons = segment.reasons ?? [];
-  const shown = estimated ? [...reasons.slice(1), ...reasons.slice(0, 1)].slice(0, 6) : reasons.slice(0, 3);
+  // The crash model's reasons restate the figures above, so only the global
+  // estimate's inputs are listed.
+  const shown = learned
+    ? reasons.slice(0, 6)
+    : estimated
+      ? [...reasons.slice(1), ...reasons.slice(0, 1)].slice(0, 6)
+      : [];
   return (
     <div className="segment-detail" role="region" aria-label={`Segment ${index + 1} detail`}>
       <div className="segment-detail-head">
@@ -513,7 +621,6 @@ function SegmentDetail({
             {BUCKET_LABELS[segment.bucket]} exposure
           </strong>
         </div>
-        <RiskPill level={segment.risk_level} />
         <button type="button" className="icon-button" onClick={onClose} aria-label="Close segment detail">
           <X size={13} />
         </button>
@@ -524,9 +631,13 @@ function SegmentDetail({
       {estimated ? (
         <div className="segment-detail-grid">
           <div>
-            <span className="eyebrow">Global scale</span>
-            <strong className="mono">{Math.round(segment.percentile ?? 0)} / 100</strong>
-            <span className="metric-note">50 = a typical road</span>
+            <span className="eyebrow">{learned ? "Percentile" : "Global scale"}</span>
+            <strong className="mono">
+              {learned ? formatPercent(segment.percentile, 1) : `${Math.round(segment.percentile ?? 0)} / 100`}
+            </strong>
+            <span className="metric-note">
+              {learned ? "of places and hours in Dubai's city area" : "50 = a typical road"}
+            </span>
           </div>
           <div>
             <span className="eyebrow">This stretch</span>
@@ -562,7 +673,7 @@ function SegmentDetail({
       <div className="segment-detail-bars">
         <div>
           <span className="breakdown-label">
-            <span>{estimated ? "Road, time & weather" : "Crash model"}</span>
+            <span>{learned ? "Crash model (global)" : estimated ? "Road, time & weather" : "Crash model"}</span>
             <span className="mono">{Math.round(segment.model_points ?? 0)} / 60</span>
           </span>
           <div className="risk-bar">
@@ -590,26 +701,54 @@ function SegmentDetail({
         </div>
       </div>
 
-      <ul className="reason-list segment-reasons">
-        {shown.map((reason) => (
-          <li key={reason}>
-            <span className="reason-mark" />
-            {reason}
-          </li>
-        ))}
-        {(!segment.reasons || segment.reasons.length === 0) && (
-          <li>
-            <span className="reason-mark" />
-            Expected rate is in the {formatPercent(segment.percentile, 1)} percentile
-            for this hour.
-          </li>
-        )}
-      </ul>
+      {segment.danger_types && <SegmentDangers groups={segment.danger_types.groups} />}
+
+      {shown.length > 0 && (
+        <ul className="reason-list segment-reasons">
+          {shown.map((reason) => (
+            <li key={reason}>
+              <span className="reason-mark" />
+              {reason}
+            </li>
+          ))}
+        </ul>
+      )}
 
       <p className="segment-coord mono">
         H3 {segment.cell ?? "unavailable"} · {segment.midpoint[0].toFixed(5)},{" "}
         {segment.midpoint[1].toFixed(5)}
       </p>
+    </div>
+  );
+}
+
+/**
+ * Which kinds of crash stand out on this stretch now: each validated group's
+ * expected rate against a typical NYC hour, highest first. A group whose share
+ * of local crashes is well above the city's at the same time of week is marked.
+ */
+function SegmentDangers({ groups }: { groups: NonNullable<RouteSegment["danger_types"]>["groups"] }) {
+  const shown = groups
+    .filter((group) => group.status === "ok" && group.rate_ratio !== undefined)
+    .sort((a, b) => (b.rate_ratio ?? 0) - (a.rate_ratio ?? 0));
+  if (shown.length === 0) return null;
+  return (
+    <div className="segment-dangers" aria-label="Kinds of crash on this stretch">
+      {shown.map((group) => {
+        const meta = dangerMeta(group.id);
+        const Icon = meta.icon;
+        return (
+          <span
+            key={group.id}
+            className="segment-danger"
+            data-high={(group.band_share_ratio ?? group.share_ratio ?? 0) >= 1.5 || undefined}
+            title={`${meta.label}: about ${formatRatio(group.rate_ratio)} the crashes of this kind in a typical NYC hour; ${formatRatio(group.band_share_ratio ?? group.share_ratio)} its usual share of crashes at this time of week`}
+          >
+            <Icon size={11} style={{ color: meta.color }} aria-hidden="true" />
+            {meta.short} {formatRatio(group.rate_ratio)}
+          </span>
+        );
+      })}
     </div>
   );
 }

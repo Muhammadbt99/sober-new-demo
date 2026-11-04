@@ -1,6 +1,6 @@
 {
   "model": "HistGradientBoostingClassifier",
-  "model_configuration": "hist_gb_fatal30",
+  "model_configuration": "hist_gb_fatal30_deep",
   "status": "research only - needs post-crash attributes, so it is excluded from /risk",
   "experimental": true,
   "target": "crash_severity",
@@ -61,127 +61,127 @@
   "dataset": {
     "source": "NYC Open Data h9gi-nx95 - Motor Vehicle Collisions - Crashes",
     "file": "nyc_crashes_rich.csv.gz",
-    "rows_used": 496392,
+    "rows_used": 589512,
     "date_range": [
       "2020-01-01",
       "2026-06-11"
     ],
     "class_counts": {
-      "property_damage_only": 304173,
-      "injury_likely": 191037,
-      "fatal_risk": 1182
+      "property_damage_only": 362767,
+      "injury_likely": 225280,
+      "fatal_risk": 1465
     },
     "class_share": {
-      "property_damage_only": 0.612768,
-      "injury_likely": 0.384851,
-      "fatal_risk": 0.002381
+      "property_damage_only": 0.615368,
+      "injury_likely": 0.382147,
+      "fatal_risk": 0.002485
     }
   },
   "split": {
-    "train": 347473,
-    "validation": 49640,
-    "test": 99279,
-    "train_final": 397113
+    "train": 412657,
+    "validation": 58952,
+    "test": 117903,
+    "train_final": 471609
   },
-  "training_records": 397113,
+  "training_records": 471609,
   "n_folds": 5,
-  "cv_accuracy_mean": 0.6809,
+  "cv_accuracy_mean": 0.7192,
   "cv_accuracy_std": 0.0009,
   "cv_scores_per_fold": [
-    0.6803,
-    0.6825,
-    0.6801,
-    0.6807,
-    0.6811
+    0.7199,
+    0.7175,
+    0.7198,
+    0.7191,
+    0.7195
   ],
-  "cv_macro_f1_mean": 0.4159,
-  "cv_macro_f1_std": 0.0032,
+  "cv_macro_f1_mean": 0.4496,
+  "cv_macro_f1_std": 0.0049,
   "cv_macro_f1_per_fold": [
-    0.4099,
-    0.4154,
-    0.4186,
-    0.418,
-    0.4177
+    0.4469,
+    0.4516,
+    0.4584,
+    0.4461,
+    0.4452
   ],
-  "cv_fatal_recall_mean": 0.044,
-  "accuracy": 0.6811,
-  "balanced_accuracy": 0.4332,
-  "macro_f1": 0.4223,
-  "baseline_accuracy": 0.6128,
-  "baseline_macro_f1": 0.2533,
-  "majority_class_share": 0.6128,
-  "roc_auc_macro": 0.7315,
-  "fatal_pr_auc": 0.0161,
-  "brier_score": 0.41761,
+  "cv_fatal_recall_mean": 0.0181,
+  "accuracy": 0.719,
+  "balanced_accuracy": 0.4729,
+  "macro_f1": 0.4686,
+  "baseline_accuracy": 0.6154,
+  "baseline_macro_f1": 0.254,
+  "majority_class_share": 0.6154,
+  "roc_auc_macro": 0.7844,
+  "fatal_pr_auc": 0.0355,
+  "brier_score": 0.38196,
   "per_class_recall": {
-    "property_damage_only": 0.9144,
-    "injury_likely": 0.3133,
-    "fatal_risk": 0.072
+    "property_damage_only": 0.9138,
+    "injury_likely": 0.4095,
+    "fatal_risk": 0.0956
   },
   "per_class_precision": {
-    "property_damage_only": 0.6802,
-    "injury_likely": 0.6998,
-    "fatal_risk": 0.0433
+    "property_damage_only": 0.7145,
+    "injury_likely": 0.7484,
+    "fatal_risk": 0.061
   },
   "per_class_f1": {
-    "property_damage_only": 0.7801,
-    "injury_likely": 0.4328,
-    "fatal_risk": 0.0541
+    "property_damage_only": 0.8019,
+    "injury_likely": 0.5293,
+    "fatal_risk": 0.0745
   },
   "confusion_matrix": [
     [
-      55628,
-      5060,
-      147
+      66299,
+      6085,
+      170
     ],
     [
-      26009,
-      11970,
-      229
+      26345,
+      18450,
+      261
     ],
     [
-      144,
-      75,
-      17
+      147,
+      118,
+      28
     ]
   ],
   "candidate_comparison": [
     {
       "name": "dummy_majority",
-      "accuracy": 0.6128,
+      "accuracy": 0.6154,
       "balanced_accuracy": 0.3333,
-      "macro_f1": 0.2533,
+      "macro_f1": 0.254,
       "roc_auc_macro": 0.5,
-      "fatal_pr_auc": 0.0024,
-      "brier_score": 0.77446,
+      "fatal_pr_auc": 0.0025,
+      "brier_score": 0.76927,
       "per_class_recall": {
         "property_damage_only": 1.0,
         "injury_likely": 0.0,
         "fatal_risk": 0.0
       },
       "per_class_precision": {
-        "property_damage_only": 0.6128,
+        "property_damage_only": 0.6154,
         "injury_likely": 0.0,
         "fatal_risk": 0.0
       },
       "per_class_f1": {
-        "property_damage_only": 0.7599,
+        "property_damage_only": 0.7619,
         "injury_likely": 0.0,
         "fatal_risk": 0.0
       },
       "confusion_matrix": [
         [
-          30418,
+          36277,
           0,
           0
         ],
         [
-          19104,
+          22528,
           0,
           0
         ],
         [
-          118,
+          147,
           0,
           0
         ]
@@ -191,582 +191,664 @@
     },
     {
       "name": "logreg_balanced",
-      "accuracy": 0.4924,
-      "balanced_accuracy": 0.5242,
-      "macro_f1": 0.3575,
-      "roc_auc_macro": 0.6803,
-      "fatal_pr_auc": 0.0476,
-      "brier_score": 0.59666,
+      "accuracy": 0.5603,
+      "balanced_accuracy": 0.5514,
+      "macro_f1": 0.3906,
+      "roc_auc_macro": 0.7169,
+      "fatal_pr_auc": 0.0507,
+      "brier_score": 0.56738,
       "per_class_recall": {
-        "property_damage_only": 0.5572,
-        "injury_likely": 0.3882,
-        "fatal_risk": 0.6271
+        "property_damage_only": 0.6889,
+        "injury_likely": 0.3529,
+        "fatal_risk": 0.6122
       },
       "per_class_precision": {
-        "property_damage_only": 0.7029,
-        "injury_likely": 0.5,
-        "fatal_risk": 0.0069
+        "property_damage_only": 0.73,
+        "injury_likely": 0.6122,
+        "fatal_risk": 0.0077
       },
       "per_class_f1": {
-        "property_damage_only": 0.6217,
-        "injury_likely": 0.4371,
-        "fatal_risk": 0.0137
+        "property_damage_only": 0.7089,
+        "injury_likely": 0.4478,
+        "fatal_risk": 0.0152
       },
       "confusion_matrix": [
         [
-          16950,
-          7402,
-          6066
+          24992,
+          5007,
+          6278
         ],
         [
-          7135,
-          7417,
-          4552
+          9216,
+          7951,
+          5361
         ],
         [
+          28,
           29,
-          15,
-          74
+          90
         ]
       ],
-      "predict_seconds": 0.05,
-      "fit_seconds": 1.8
+      "predict_seconds": 0.04,
+      "fit_seconds": 1.5
     },
     {
       "name": "random_forest_balanced",
-      "accuracy": 0.6588,
-      "balanced_accuracy": 0.4257,
-      "macro_f1": 0.4277,
-      "roc_auc_macro": 0.7203,
+      "accuracy": 0.7104,
+      "balanced_accuracy": 0.4563,
+      "macro_f1": 0.462,
+      "roc_auc_macro": 0.7637,
       "fatal_pr_auc": 0.0199,
-      "brier_score": 0.43453,
+      "brier_score": 0.39752,
       "per_class_recall": {
-        "property_damage_only": 0.7485,
-        "injury_likely": 0.5199,
-        "fatal_risk": 0.0085
+        "property_damage_only": 0.8249,
+        "injury_likely": 0.5305,
+        "fatal_risk": 0.0136
       },
       "per_class_precision": {
-        "property_damage_only": 0.712,
-        "injury_likely": 0.5639,
-        "fatal_risk": 0.0217
+        "property_damage_only": 0.7382,
+        "injury_likely": 0.6502,
+        "fatal_risk": 0.0667
       },
       "per_class_f1": {
-        "property_damage_only": 0.7298,
-        "injury_likely": 0.541,
-        "fatal_risk": 0.0122
+        "property_damage_only": 0.7791,
+        "injury_likely": 0.5843,
+        "fatal_risk": 0.0226
       },
       "confusion_matrix": [
         [
-          22769,
-          7623,
-          26
+          29925,
+          6336,
+          16
         ],
         [
-          9152,
-          9933,
-          19
+          10564,
+          11952,
+          12
         ],
         [
-          57,
-          60,
-          1
+          50,
+          95,
+          2
         ]
       ],
-      "predict_seconds": 1.93,
-      "fit_seconds": 23.9
+      "predict_seconds": 2.83,
+      "fit_seconds": 30.7
     },
     {
       "name": "extra_trees_balanced",
-      "accuracy": 0.6449,
-      "balanced_accuracy": 0.4452,
-      "macro_f1": 0.4288,
-      "roc_auc_macro": 0.6987,
-      "fatal_pr_auc": 0.0179,
-      "brier_score": 0.44966,
+      "accuracy": 0.6971,
+      "balanced_accuracy": 0.4679,
+      "macro_f1": 0.4591,
+      "roc_auc_macro": 0.7619,
+      "fatal_pr_auc": 0.0123,
+      "brier_score": 0.40842,
       "per_class_recall": {
-        "property_damage_only": 0.7164,
-        "injury_likely": 0.5344,
-        "fatal_risk": 0.0847
+        "property_damage_only": 0.7994,
+        "injury_likely": 0.5363,
+        "fatal_risk": 0.068
       },
       "per_class_precision": {
-        "property_damage_only": 0.7147,
-        "injury_likely": 0.5498,
-        "fatal_risk": 0.0173
+        "property_damage_only": 0.739,
+        "injury_likely": 0.6296,
+        "fatal_risk": 0.0193
       },
       "per_class_f1": {
-        "property_damage_only": 0.7155,
-        "injury_likely": 0.542,
-        "fatal_risk": 0.0288
+        "property_damage_only": 0.768,
+        "injury_likely": 0.5792,
+        "fatal_risk": 0.0301
       },
       "confusion_matrix": [
         [
-          21792,
-          8311,
-          315
+          29001,
+          7013,
+          263
         ],
         [
-          8642,
-          10210,
-          252
+          10202,
+          12082,
+          244
         ],
         [
-          58,
-          50,
+          42,
+          95,
           10
         ]
       ],
-      "predict_seconds": 2.46,
-      "fit_seconds": 35.7
+      "predict_seconds": 4.9,
+      "fit_seconds": 55.9
     },
     {
       "name": "hist_gb_unweighted",
-      "accuracy": 0.6849,
-      "balanced_accuracy": 0.4184,
-      "macro_f1": 0.4188,
-      "roc_auc_macro": 0.7167,
-      "fatal_pr_auc": 0.0161,
-      "brier_score": 0.40973,
+      "accuracy": 0.7213,
+      "balanced_accuracy": 0.4457,
+      "macro_f1": 0.4499,
+      "roc_auc_macro": 0.7713,
+      "fatal_pr_auc": 0.027,
+      "brier_score": 0.37752,
       "per_class_recall": {
-        "property_damage_only": 0.9135,
-        "injury_likely": 0.3249,
-        "fatal_risk": 0.0169
+        "property_damage_only": 0.913,
+        "injury_likely": 0.4173,
+        "fatal_risk": 0.0068
       },
       "per_class_precision": {
-        "property_damage_only": 0.6818,
-        "injury_likely": 0.699,
-        "fatal_risk": 0.2857
+        "property_damage_only": 0.7152,
+        "injury_likely": 0.7438,
+        "fatal_risk": 0.1429
       },
       "per_class_f1": {
-        "property_damage_only": 0.7809,
-        "injury_likely": 0.4436,
-        "fatal_risk": 0.032
+        "property_damage_only": 0.8021,
+        "injury_likely": 0.5346,
+        "fatal_risk": 0.013
       },
       "confusion_matrix": [
         [
-          27788,
-          2627,
+          33120,
+          3154,
           3
         ],
         [
-          12896,
-          6206,
-          2
+          13125,
+          9400,
+          3
         ],
         [
-          70,
-          46,
-          2
+          63,
+          83,
+          1
         ]
       ],
-      "predict_seconds": 1.22,
-      "fit_seconds": 11.4
+      "predict_seconds": 1.41,
+      "fit_seconds": 8.3
     },
     {
       "name": "hist_gb_balanced",
-      "accuracy": 0.5907,
-      "balanced_accuracy": 0.5116,
-      "macro_f1": 0.4062,
-      "roc_auc_macro": 0.7005,
-      "fatal_pr_auc": 0.0179,
-      "brier_score": 0.51286,
+      "accuracy": 0.6525,
+      "balanced_accuracy": 0.5431,
+      "macro_f1": 0.4423,
+      "roc_auc_macro": 0.7545,
+      "fatal_pr_auc": 0.042,
+      "brier_score": 0.45902,
       "per_class_recall": {
-        "property_damage_only": 0.6539,
-        "injury_likely": 0.4912,
-        "fatal_risk": 0.3898
+        "property_damage_only": 0.7483,
+        "injury_likely": 0.5,
+        "fatal_risk": 0.381
       },
       "per_class_precision": {
-        "property_damage_only": 0.7176,
-        "injury_likely": 0.5401,
-        "fatal_risk": 0.0101
+        "property_damage_only": 0.7457,
+        "injury_likely": 0.6259,
+        "fatal_risk": 0.0123
       },
       "per_class_f1": {
-        "property_damage_only": 0.6843,
-        "injury_likely": 0.5145,
-        "fatal_risk": 0.0197
+        "property_damage_only": 0.747,
+        "injury_likely": 0.556,
+        "fatal_risk": 0.0238
       },
       "confusion_matrix": [
         [
-          19891,
-          7955,
-          2572
+          27146,
+          6673,
+          2458
         ],
         [
-          7790,
-          9383,
-          1931
+          9224,
+          11265,
+          2039
         ],
         [
-          37,
-          35,
-          46
+          32,
+          59,
+          56
         ]
       ],
-      "predict_seconds": 0.47,
-      "fit_seconds": 5.9
+      "predict_seconds": 0.62,
+      "fit_seconds": 5.5
     },
     {
       "name": "hist_gb_fatal10",
-      "accuracy": 0.6843,
-      "balanced_accuracy": 0.4203,
-      "macro_f1": 0.4187,
-      "roc_auc_macro": 0.7233,
-      "fatal_pr_auc": 0.0263,
-      "brier_score": 0.4113,
+      "accuracy": 0.7212,
+      "balanced_accuracy": 0.4472,
+      "macro_f1": 0.4515,
+      "roc_auc_macro": 0.7709,
+      "fatal_pr_auc": 0.0181,
+      "brier_score": 0.37895,
       "per_class_recall": {
         "property_damage_only": 0.9161,
-        "injury_likely": 0.3194,
-        "fatal_risk": 0.0254
+        "injury_likely": 0.4119,
+        "fatal_risk": 0.0136
       },
       "per_class_precision": {
-        "property_damage_only": 0.6812,
-        "injury_likely": 0.703,
-        "fatal_risk": 0.0588
+        "property_damage_only": 0.7144,
+        "injury_likely": 0.7494,
+        "fatal_risk": 0.0377
       },
       "per_class_f1": {
-        "property_damage_only": 0.7813,
-        "injury_likely": 0.4392,
-        "fatal_risk": 0.0355
+        "property_damage_only": 0.8028,
+        "injury_likely": 0.5316,
+        "fatal_risk": 0.02
       },
       "confusion_matrix": [
         [
-          27866,
-          2535,
-          17
+          33232,
+          3026,
+          19
         ],
         [
-          12972,
-          6101,
-          31
+          13216,
+          9280,
+          32
         ],
         [
-          72,
-          43,
-          3
+          67,
+          78,
+          2
         ]
       ],
-      "predict_seconds": 0.93,
-      "fit_seconds": 8.2
+      "predict_seconds": 1.16,
+      "fit_seconds": 7.7
     },
     {
       "name": "hist_gb_fatal30",
-      "accuracy": 0.6807,
-      "balanced_accuracy": 0.4451,
-      "macro_f1": 0.4303,
-      "roc_auc_macro": 0.7236,
-      "fatal_pr_auc": 0.0325,
-      "brier_score": 0.41824,
+      "accuracy": 0.7182,
+      "balanced_accuracy": 0.4672,
+      "macro_f1": 0.4633,
+      "roc_auc_macro": 0.7711,
+      "fatal_pr_auc": 0.0312,
+      "brier_score": 0.38503,
       "per_class_recall": {
-        "property_damage_only": 0.9168,
-        "injury_likely": 0.3085,
-        "fatal_risk": 0.1102
+        "property_damage_only": 0.9159,
+        "injury_likely": 0.4041,
+        "fatal_risk": 0.0816
       },
       "per_class_precision": {
-        "property_damage_only": 0.6792,
-        "injury_likely": 0.7032,
-        "fatal_risk": 0.065
+        "property_damage_only": 0.7134,
+        "injury_likely": 0.7495,
+        "fatal_risk": 0.0508
       },
       "per_class_f1": {
-        "property_damage_only": 0.7803,
-        "injury_likely": 0.4288,
-        "fatal_risk": 0.0818
+        "property_damage_only": 0.8021,
+        "injury_likely": 0.5251,
+        "fatal_risk": 0.0627
       },
       "confusion_matrix": [
         [
-          27886,
-          2457,
-          75
+          33225,
+          2971,
+          81
         ],
         [
-          13099,
-          5893,
-          112
+          13282,
+          9103,
+          143
         ],
         [
-          75,
-          30,
-          13
+          63,
+          72,
+          12
         ]
       ],
-      "predict_seconds": 0.81,
-      "fit_seconds": 7.6
+      "predict_seconds": 0.96,
+      "fit_seconds": 7.9
     },
     {
       "name": "hist_gb_fatal30_slow",
-      "accuracy": 0.6804,
-      "balanced_accuracy": 0.4442,
-      "macro_f1": 0.4286,
-      "roc_auc_macro": 0.719,
-      "fatal_pr_auc": 0.0265,
-      "brier_score": 0.41784,
+      "accuracy": 0.7189,
+      "balanced_accuracy": 0.4589,
+      "macro_f1": 0.4595,
+      "roc_auc_macro": 0.7729,
+      "fatal_pr_auc": 0.034,
+      "brier_score": 0.38282,
       "per_class_recall": {
-        "property_damage_only": 0.9198,
-        "injury_likely": 0.3027,
-        "fatal_risk": 0.1102
+        "property_damage_only": 0.915,
+        "injury_likely": 0.4074,
+        "fatal_risk": 0.0544
       },
       "per_class_precision": {
-        "property_damage_only": 0.678,
-        "injury_likely": 0.7079,
-        "fatal_risk": 0.0644
+        "property_damage_only": 0.7136,
+        "injury_likely": 0.7485,
+        "fatal_risk": 0.0447
       },
       "per_class_f1": {
-        "property_damage_only": 0.7806,
-        "injury_likely": 0.424,
-        "fatal_risk": 0.0813
+        "property_damage_only": 0.8019,
+        "injury_likely": 0.5276,
+        "fatal_risk": 0.0491
       },
       "confusion_matrix": [
         [
-          27979,
-          2355,
-          84
+          33193,
+          3011,
+          73
         ],
         [
-          13217,
-          5782,
-          105
+          13253,
+          9177,
+          98
         ],
         [
-          74,
-          31,
-          13
+          66,
+          73,
+          8
         ]
       ],
-      "predict_seconds": 1.25,
-      "fit_seconds": 11.1
+      "predict_seconds": 1.79,
+      "fit_seconds": 13.0
     },
     {
       "name": "hist_gb_fatal30_deep",
-      "accuracy": 0.6811,
-      "balanced_accuracy": 0.423,
-      "macro_f1": 0.4169,
-      "roc_auc_macro": 0.7175,
-      "fatal_pr_auc": 0.0153,
-      "brier_score": 0.41509,
+      "accuracy": 0.7192,
+      "balanced_accuracy": 0.4607,
+      "macro_f1": 0.4639,
+      "roc_auc_macro": 0.762,
+      "fatal_pr_auc": 0.0235,
+      "brier_score": 0.38187,
       "per_class_recall": {
-        "property_damage_only": 0.9169,
-        "injury_likely": 0.3096,
-        "fatal_risk": 0.0424
+        "property_damage_only": 0.9187,
+        "injury_likely": 0.4023,
+        "fatal_risk": 0.0612
       },
       "per_class_precision": {
-        "property_damage_only": 0.6786,
-        "injury_likely": 0.7027,
-        "fatal_risk": 0.0397
+        "property_damage_only": 0.7122,
+        "injury_likely": 0.7533,
+        "fatal_risk": 0.0692
       },
       "per_class_f1": {
-        "property_damage_only": 0.78,
-        "injury_likely": 0.4299,
-        "fatal_risk": 0.041
+        "property_damage_only": 0.8024,
+        "injury_likely": 0.5245,
+        "fatal_risk": 0.065
       },
       "confusion_matrix": [
         [
-          27890,
-          2461,
-          67
+          33326,
+          2895,
+          56
         ],
         [
-          13135,
-          5915,
-          54
+          13401,
+          9062,
+          65
         ],
         [
+          66,
           72,
-          41,
-          5
+          9
         ]
       ],
-      "predict_seconds": 1.49,
-      "fit_seconds": 14.5
+      "predict_seconds": 0.97,
+      "fit_seconds": 10.2
     }
   ],
   "ablation_context_only": {
     "name": "context_only",
-    "accuracy": 0.4567,
-    "balanced_accuracy": 0.4091,
-    "macro_f1": 0.3312,
-    "roc_auc_macro": 0.5738,
-    "fatal_pr_auc": 0.0047,
-    "brier_score": 0.61296,
+    "accuracy": 0.4234,
+    "balanced_accuracy": 0.4279,
+    "macro_f1": 0.3175,
+    "roc_auc_macro": 0.5765,
+    "fatal_pr_auc": 0.0055,
+    "brier_score": 0.62672,
     "per_class_recall": {
-      "property_damage_only": 0.4433,
-      "injury_likely": 0.4789,
-      "fatal_risk": 0.3051
+      "property_damage_only": 0.3951,
+      "injury_likely": 0.4688,
+      "fatal_risk": 0.4198
     },
     "per_class_precision": {
-      "property_damage_only": 0.6638,
-      "injury_likely": 0.4299,
-      "fatal_risk": 0.0045
+      "property_damage_only": 0.664,
+      "injury_likely": 0.4282,
+      "fatal_risk": 0.0048
     },
     "per_class_f1": {
-      "property_damage_only": 0.5316,
-      "injury_likely": 0.4531,
-      "fatal_risk": 0.0088
+      "property_damage_only": 0.4954,
+      "injury_likely": 0.4476,
+      "fatal_risk": 0.0096
     },
     "confusion_matrix": [
       [
-        26971,
-        24180,
-        9684
+        28669,
+        28115,
+        15770
       ],
       [
-        13579,
-        18298,
-        6331
+        14435,
+        21123,
+        9498
       ],
       [
-        79,
-        85,
-        72
+        73,
+        97,
+        123
       ]
     ],
-    "predict_seconds": 0.68
+    "predict_seconds": 0.59
+  },
+  "calibration": {
+    "per_class": {
+      "property_damage_only": {
+        "mean_predicted": 0.60099,
+        "observed_rate": 0.61537,
+        "ratio": 0.98
+      },
+      "injury_likely": {
+        "mean_predicted": 0.36716,
+        "observed_rate": 0.38214,
+        "ratio": 0.96
+      },
+      "fatal_risk": {
+        "mean_predicted": 0.03185,
+        "observed_rate": 0.00249,
+        "ratio": 12.82
+      }
+    },
+    "fatal_reliability": [
+      {
+        "decile": 1,
+        "rows": 11791,
+        "mean_predicted": 0.00491,
+        "observed_fatal_rate": 0.0
+      },
+      {
+        "decile": 2,
+        "rows": 11791,
+        "mean_predicted": 0.0063,
+        "observed_fatal_rate": 0.00017
+      },
+      {
+        "decile": 3,
+        "rows": 11791,
+        "mean_predicted": 0.00751,
+        "observed_fatal_rate": 0.00042
+      },
+      {
+        "decile": 4,
+        "rows": 11790,
+        "mean_predicted": 0.00917,
+        "observed_fatal_rate": 0.00051
+      },
+      {
+        "decile": 5,
+        "rows": 11790,
+        "mean_predicted": 0.01187,
+        "observed_fatal_rate": 0.00068
+      },
+      {
+        "decile": 6,
+        "rows": 11790,
+        "mean_predicted": 0.01577,
+        "observed_fatal_rate": 0.00119
+      },
+      {
+        "decile": 7,
+        "rows": 11790,
+        "mean_predicted": 0.02153,
+        "observed_fatal_rate": 0.00153
+      },
+      {
+        "decile": 8,
+        "rows": 11790,
+        "mean_predicted": 0.03157,
+        "observed_fatal_rate": 0.00204
+      },
+      {
+        "decile": 9,
+        "rows": 11790,
+        "mean_predicted": 0.05272,
+        "observed_fatal_rate": 0.00424
+      },
+      {
+        "decile": 10,
+        "rows": 11790,
+        "mean_predicted": 0.15717,
+        "observed_fatal_rate": 0.01408
+      }
+    ],
+    "note": "Class weighting distorts absolute probabilities on purpose: it buys rare-class recall. Compare scenarios against each other or classes within a row; do not read fatal_risk as a real-world fatality rate."
   },
   "permutation_importance": {
     "hour": {
-      "mean": 0.003046,
-      "std": 0.005339
+      "mean": 0.000312,
+      "std": 0.002954
     },
     "is_weekend": {
-      "mean": 0.001343,
-      "std": 0.000522
+      "mean": 0.016751,
+      "std": 0.00536
     },
     "month": {
-      "mean": 0.007953,
-      "std": 0.002921
+      "mean": 0.005745,
+      "std": 0.003861
     },
     "is_night": {
-      "mean": 0.010735,
-      "std": 0.008288
+      "mean": -0.009521,
+      "std": 0.00333
     },
     "is_rush_hour": {
-      "mean": -0.000796,
-      "std": 0.000595
+      "mean": -0.001651,
+      "std": 0.000174
     },
     "lat": {
-      "mean": 0.010105,
-      "std": 0.004505
+      "mean": 0.004902,
+      "std": 0.003516
     },
     "lon": {
-      "mean": 0.002713,
-      "std": 0.005609
+      "mean": 0.010665,
+      "std": 0.013042
     },
     "borough_code": {
-      "mean": 0.00408,
-      "std": 0.005598
+      "mean": 0.002253,
+      "std": 0.001948
     },
     "n_vehicles": {
-      "mean": 0.011429,
-      "std": 0.005722
+      "mean": 0.039432,
+      "std": 0.004169
     },
     "n_factors": {
-      "mean": 0.00386,
-      "std": 0.00948
+      "mean": 0.006806,
+      "std": 0.001109
     },
     "is_bicycle": {
-      "mean": 0.033881,
-      "std": 0.005455
+      "mean": 0.055855,
+      "std": 0.000408
     },
     "is_ebike": {
-      "mean": -0.00057,
-      "std": 0.000232
+      "mean": 0.009464,
+      "std": 0.000124
     },
     "is_scooter": {
-      "mean": 0.009627,
-      "std": 0.000999
+      "mean": 0.012878,
+      "std": 0.001424
     },
     "is_motorcycle": {
-      "mean": 0.021747,
-      "std": 0.001356
+      "mean": 0.035636,
+      "std": 0.00168
     },
     "is_truck": {
-      "mean": 0.001925,
-      "std": 0.00133
+      "mean": 0.006757,
+      "std": 0.003892
     },
     "is_bus": {
-      "mean": 3.2e-05,
-      "std": 0.000736
+      "mean": -0.002295,
+      "std": 0.00447
     },
     "is_van": {
-      "mean": 0.00024,
-      "std": 0.000183
+      "mean": -0.000677,
+      "std": 0.000115
     },
     "is_taxi": {
-      "mean": 0.000972,
-      "std": 0.000691
+      "mean": 0.003,
+      "std": 0.000517
     },
     "is_suv": {
-      "mean": 0.000375,
-      "std": 0.004901
+      "mean": 0.005088,
+      "std": 0.004632
     },
     "is_sedan": {
-      "mean": -0.012737,
-      "std": 0.004492
+      "mean": 0.006301,
+      "std": 0.006146
     },
     "is_other": {
-      "mean": 0.024519,
-      "std": 0.001338
+      "mean": -0.001114,
+      "std": 0.000572
     },
     "factor_unsafe_speed": {
-      "mean": 0.00931,
-      "std": 0.000954
+      "mean": 0.017023,
+      "std": 0.001462
     },
     "factor_alcohol": {
-      "mean": 0.000143,
-      "std": 0.000285
+      "mean": 0.000212,
+      "std": 0.000227
     },
     "factor_distraction": {
-      "mean": 0.005404,
-      "std": 0.004251
+      "mean": 0.010717,
+      "std": 0.005126
     },
     "factor_failure_to_yield": {
-      "mean": 0.011411,
-      "std": 0.000714
+      "mean": 0.016348,
+      "std": 0.000891
     },
     "factor_following_too_closely": {
-      "mean": 0.003775,
-      "std": 0.004864
+      "mean": 0.004077,
+      "std": 0.004558
     },
     "factor_lane_usage": {
-      "mean": -0.006228,
-      "std": 0.005011
+      "mean": 0.002789,
+      "std": 0.004551
     },
     "factor_traffic_control": {
-      "mean": 0.002033,
-      "std": 0.0001
+      "mean": 0.003633,
+      "std": 0.001213
     },
     "factor_backing": {
-      "mean": 2.7e-05,
-      "std": 0.000316
+      "mean": 0.007375,
+      "std": 0.004213
     },
     "factor_turning": {
-      "mean": -0.000264,
-      "std": 0.000368
+      "mean": 0.00643,
+      "std": 0.004594
     },
     "factor_inexperience": {
-      "mean": 0.000241,
-      "std": 0.000349
+      "mean": -0.001378,
+      "std": 0.000232
     },
     "factor_view_obstructed": {
-      "mean": 0.000408,
-      "std": 0.000145
+      "mean": 0.000983,
+      "std": 0.00014
     },
     "factor_aggressive": {
-      "mean": -1.8e-05,
-      "std": 2.5e-05
+      "mean": -0.00011,
+      "std": 0.000433
     },
     "factor_slippery": {
-      "mean": -3.7e-05,
-      "std": 5.3e-05
+      "mean": 2.3e-05,
+      "std": 9.2e-05
     },
     "factor_asleep": {
-      "mean": -2.7e-05,
-      "std": 0.000308
+      "mean": 0.000516,
+      "std": 0.000292
     },
     "factor_brakes": {
-      "mean": -0.000199,
-      "std": 6.9e-05
+      "mean": 0.000244,
+      "std": 0.000134
     },
     "factor_pedestrian_error": {
-      "mean": 0.001296,
-      "std": 0.000336
+      "mean": 0.020978,
+      "std": 0.000637
     }
   },
   "importance_method": "permutation importance (drop in macro-F1)",
@@ -775,7 +857,7 @@
     "Contributing factors can be shaped by the outcome (an officer may record unsafe speed because the crash was severe), so the association is not causal.",
     "Injury and fatality counts are used only to build the label; no count is a feature.",
     "The ablation shows what context-only features achieve: that is the ceiling the previous model was working against.",
-    "Predicted probabilities are class-weighted, not calibrated: the fatal score averages 18.78x the observed fatality rate. The ranking is informative; the absolute value is not a real-world fatality rate."
+    "Predicted probabilities are class-weighted, not calibrated: the fatal score averages 12.82x the observed fatality rate. The ranking is informative; the absolute value is not a real-world fatality rate."
   ],
   "limitations": [
     "Trained only on NYC crash records; no non-crash examples.",
@@ -783,89 +865,7 @@
     "Severity labels describe crashes that already happened, not crash likelihood.",
     "The model is excluded from /risk scoring and is research-only."
   ],
-  "trained_at": "2026-10-25T13:43:20+00:00",
+  "trained_at": "2026-11-03T15:44:58+00:00",
   "sklearn_version": "1.9.0",
-  "dataset_file": "nyc_crashes_rich.csv.gz",
-  "calibration": {
-    "per_class": {
-      "property_damage_only": {
-        "mean_predicted": 0.58922,
-        "observed_rate": 0.61277,
-        "ratio": 0.96
-      },
-      "injury_likely": {
-        "mean_predicted": 0.36612,
-        "observed_rate": 0.38485,
-        "ratio": 0.95
-      },
-      "fatal_risk": {
-        "mean_predicted": 0.04465,
-        "observed_rate": 0.00238,
-        "ratio": 18.78
-      }
-    },
-    "fatal_reliability": [
-      {
-        "decile": 1,
-        "rows": 9928,
-        "mean_predicted": 0.005,
-        "observed_fatal_rate": 0.0002
-      },
-      {
-        "decile": 2,
-        "rows": 9928,
-        "mean_predicted": 0.01069,
-        "observed_fatal_rate": 0.0001
-      },
-      {
-        "decile": 3,
-        "rows": 9928,
-        "mean_predicted": 0.01536,
-        "observed_fatal_rate": 0.00101
-      },
-      {
-        "decile": 4,
-        "rows": 9928,
-        "mean_predicted": 0.01964,
-        "observed_fatal_rate": 0.00071
-      },
-      {
-        "decile": 5,
-        "rows": 9928,
-        "mean_predicted": 0.02417,
-        "observed_fatal_rate": 0.00151
-      },
-      {
-        "decile": 6,
-        "rows": 9928,
-        "mean_predicted": 0.02951,
-        "observed_fatal_rate": 0.00111
-      },
-      {
-        "decile": 7,
-        "rows": 9928,
-        "mean_predicted": 0.03695,
-        "observed_fatal_rate": 0.00181
-      },
-      {
-        "decile": 8,
-        "rows": 9928,
-        "mean_predicted": 0.04967,
-        "observed_fatal_rate": 0.00252
-      },
-      {
-        "decile": 9,
-        "rows": 9928,
-        "mean_predicted": 0.07483,
-        "observed_fatal_rate": 0.00463
-      },
-      {
-        "decile": 10,
-        "rows": 9927,
-        "mean_predicted": 0.18071,
-        "observed_fatal_rate": 0.01017
-      }
-    ],
-    "note": "Class weighting distorts absolute probabilities on purpose: it buys rare-class recall. Compare scenarios against each other or classes within a row; do not read fatal_risk as a real-world fatality rate."
-  }
+  "dataset_file": "nyc_crashes_rich.csv.gz"
 }

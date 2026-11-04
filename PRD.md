@@ -146,7 +146,7 @@ The result is a product a judge can understand in one sentence — *"it predicts
 - **Model component (0–60 points):** percentile tiers over the cell-hour rate: below P50 = 0, P50–P75 = 15, P75–P90 = 30, P90–P99 = 50, P99+ = 60.
 - **Nightlife component (0–40 points):** venue tiers within 1 km, using the existing calibrated bands: at or below P50 (2 venues) = 0, up to P75 (13) = 15, up to P90 (50) = 30, above P90 = 40.
 - **Total:** `min(100, model + nightlife)`. The 0–100 scale and existing bands are unchanged: LOW < 25, MEDIUM 25–49, HIGH 50–74, CRITICAL ≥ 75.
-- **Safety property:** model points alone max out at 60, so no location is CRITICAL on crash data alone; nightlife exposure must co-occur.
+- **Safety property:** model points alone max out at 60, so no location is CRITICAL on crash data alone; nightlife exposure must co-occur. **Exception (2026-11-04):** in the UAE, the 99th crash percentile and above scores at least 75, because mapped nightlife there is too sparse to carry the rule. NYC keeps it.
 - **Removed:** additive night, rush-hour, weekend, rain, wind, and heat points. Those effects now live inside the model. Weather and time remain visible as context.
 - **Breakdown:** the response returns model points, expected rate, percentile, nightlife points and venue count, total, band, coverage, data quality, model version, and reasons. Reasons are generated from the same numbers, not duplicated logic.
 - **Outside the model area:** `coverage: rule_based_only`, no crash-model points, a plain warning, and no confident band claim.

@@ -1,0 +1,121 @@
+.checkin {
+  display: grid;
+  gap: 8px;
+}
+
+.checkin-notice {
+  display: flex;
+  gap: 9px;
+  border: 1px solid var(--color-line);
+  border-left-width: 4px;
+  border-radius: 8px;
+  padding: 9px 11px;
+}
+
+.checkin-notice svg {
+  flex: none;
+  margin-top: 1px;
+}
+
+.checkin-notice strong {
+  display: block;
+  color: var(--color-ink);
+  font-size: 13px;
+  line-height: 1.3;
+}
+
+.checkin-notice p {
+  margin: 3px 0 0;
+  color: var(--color-muted);
+  font-size: 12px;
+  line-height: 1.4;
+}
+
+.checkin-notice.is-stop {
+  border-left-color: #ff5268;
+}
+
+.checkin-notice.is-stop svg {
+  color: #ff5268;
+}
+
+.checkin-notice.is-warn {
+  border-left-color: #ff9147;
+}
+
+.checkin-notice.is-warn svg {
+  color: #ff9147;
+}
+
+.checkin-notice.is-info svg {
+  color: var(--color-muted);
+}
+
+.checkin-rests,
+.checkin-note {
+  margin: 0;
+  color: var(--color-muted);
+  font-size: 11.5px;
+  line-height: 1.4;
+}
+
+.checkin-form {
+  display: grid;
+  gap: 10px;
+  padding-top: 4px;
+}
+
+.checkin-label {
+  display: block;
+  margin-bottom: 5px;
+  color: var(--color-ink);
+  font-size: 12.5px;
+}
+
+.checkin-options {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 5px;
+}
+
+.checkin-options button {
+  min-height: 34px;
+  border: 1px solid var(--color-line);
+  border-radius: 7px;
+  background: transparent;
+  color: var(--color-ink);
+  font-size: 12px;
+}
+
+.checkin-options button.is-active {
+  background: var(--color-ink);
+  color: #0a101a;
+}
+
+.checkin-toggle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 28px;
+  color: var(--color-ink);
+  font-size: 12.5px;
+}
+
+.danger-flag {
+  margin-left: 6px;
+  border: 1px solid currentcolor;
+  border-radius: 3px;
+  padding: 0 4px;
+  color: #ff9147;
+  font-size: 9.5px;
+  white-space: nowrap;
+}
+
+.drive-risk.is-driver {
+  border-left-color: #ff9147;
+}
+
+.drive-checkin {
+  color: #ffb27a;
+  font-size: 11.5px;
+}

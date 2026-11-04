@@ -695,6 +695,7 @@ def _rank_places(text: str, places: list[dict], limit: int) -> list[dict]:
     import gazetteer
 
     query = gazetteer._fold(text)
+    known = gazetteer.canonical(text)
 
     def bare(name: str) -> str:
         # "The Dubai Mall" is what someone typing "Dubai Mall" means.
@@ -706,13 +707,13 @@ def _rank_places(text: str, places: list[dict], limit: int) -> list[dict]:
         return (0 if exact else 1, _PLACE_RANK.get(str(place.get("type") or ""), 4))
 
     ranked = sorted(places, key=key)
-    major = [city for city in gazetteer.search(text, 3) if gazetteer._fold(city["name"]) == query]
+    major = [city for city in gazetteer.search(text, 3) if gazetteer._fold(city["name"]) == known]
     if major:
         city = major[0]
         lat, lon = float(city["lat"]), float(city["lon"])
         near = next(
             (place for place in ranked
-             if gazetteer._fold(str(place.get("name") or "")) == query
+             if gazetteer._fold(str(place.get("name") or "")) == known
              and haversine_km(lat, lon, float(place["lat"]), float(place["lon"])) <= 25.0),
             None,
         )
@@ -721,7 +722,16 @@ def _rank_places(text: str, places: list[dict], limit: int) -> list[dict]:
             ranked.insert(0, near)
         else:
             ranked.insert(0, city)
-    return ranked[:limit]
+    # A city and its province often share a name, so two rows would read the
+    # same and one drops a pin in the middle of the province. Keep the better.
+    seen: set[str] = set()
+    unique = []
+    for place in ranked:
+        label = gazetteer._fold(str(place.get("display_name") or place.get("name") or ""))
+        if label not in seen:
+            seen.add(label)
+            unique.append(place)
+    return unique[:limit]
 
 
 def haversine_km(lat1: float, lon1: float, lat2: float, lon2: float) -> float:

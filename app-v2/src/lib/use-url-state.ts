@@ -2,6 +2,7 @@ import { useCallback, useEffect, useMemo, useRef } from "react";
 import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
 
 import type { Place, Point } from "@/lib/api";
+import { isDangerLayer, type DangerLayer } from "@/lib/danger";
 
 export type Panel = "explore" | "plan" | "method";
 
@@ -54,6 +55,30 @@ export const DEMO_TRIPS: DemoTrip[] = [
     day: 5,
   },
   {
+    id: "dubai-friday",
+    city: "Dubai",
+    origin: place("demo-dubai-o", "Burj Khalifa", "Downtown Dubai", 25.1972, 55.2744),
+    destination: place("demo-dubai-d", "Dubai Marina", "Dubai", 25.0805, 55.1403),
+    hour: 22,
+    day: 4,
+  },
+  {
+    id: "sharjah-commute",
+    city: "Sharjah",
+    origin: place("demo-sharjah-o", "Al Wahda Street", "Sharjah", 25.3292, 55.3946),
+    destination: place("demo-sharjah-d", "Business Bay", "Dubai", 25.186, 55.265),
+    hour: 8,
+    day: 0,
+  },
+  {
+    id: "abu-dhabi-saturday",
+    city: "Abu Dhabi",
+    origin: place("demo-abudhabi-o", "Abu Dhabi Corniche", "Abu Dhabi", 24.472, 54.3433),
+    destination: place("demo-abudhabi-d", "Yas Island", "Abu Dhabi", 24.467, 54.608),
+    hour: 23,
+    day: 5,
+  },
+  {
     id: "london-friday",
     city: "London",
     origin: place("demo-london-o", "Trafalgar Square", "Westminster, London", 51.508, -0.1281),
@@ -68,14 +93,6 @@ export const DEMO_TRIPS: DemoTrip[] = [
     destination: place("demo-paris-d", "Gare de Lyon", "Paris 12e", 48.8443, 2.3744),
     hour: 23,
     day: 5,
-  },
-  {
-    id: "dubai-friday",
-    city: "Dubai",
-    origin: place("demo-dubai-o", "Burj Khalifa", "Downtown Dubai", 25.1972, 55.2744),
-    destination: place("demo-dubai-d", "Dubai Marina", "Dubai", 25.0805, 55.1403),
-    hour: 22,
-    day: 4,
   },
   {
     id: "riyadh-thursday",
@@ -95,8 +112,6 @@ export const DEMO_TRIPS: DemoTrip[] = [
   },
 ];
 
-export const DEFAULT_HOUR = 23;
-export const DEFAULT_DAY = 5;
 
 export type UrlState = {
   panel: Panel;
@@ -123,6 +138,8 @@ export type UrlState = {
    * (`live`, the default), or the time-dock hour (`dock`, via `sun=dock`).
    */
   sunMode: "live" | "dock";
+  /** Explore map layer: one kind of crash (`layer=impaired`), or null for overall risk. */
+  dangerLayer: DangerLayer | null;
 };
 
 function pointParam(value: string | null): Point | null {
@@ -188,8 +205,9 @@ export function useUrlState() {
       // The default point is Times Square; name it so a fresh load says so.
       placeName:
         searchParams.get("pname") ?? (searchParams.has("lat") ? null : "Times Square"),
-      hour: intParam(searchParams.get("hour"), DEFAULT_HOUR, 0, 23),
-      day: intParam(searchParams.get("day"), DEFAULT_DAY, 0, 6),
+      // No time in the link means now, so a new trip opens on live traffic.
+      hour: intParam(searchParams.get("hour"), new Date().getHours(), 0, 23),
+      day: intParam(searchParams.get("day"), (new Date().getDay() + 6) % 7, 0, 6),
       cell: searchParams.get("cell"),
       scenario: searchParams.get("scenario"),
       origin: placeParam("o", searchParams),
@@ -205,6 +223,9 @@ export function useUrlState() {
       compare: pointParam(searchParams.get("cmp")),
       picking: searchParams.get("pick") === "1",
       sunMode: searchParams.get("sun") === "dock" ? "dock" : "live",
+      dangerLayer: isDangerLayer(searchParams.get("layer"))
+        ? (searchParams.get("layer") as DangerLayer)
+        : null,
     };
   }, [location.pathname, searchParams]);
 

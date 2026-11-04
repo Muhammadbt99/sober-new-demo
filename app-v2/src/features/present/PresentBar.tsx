@@ -45,6 +45,18 @@ export const PRESENT_STEPS: PresentStep[] = [
     title: "Be honest outside NYC",
     caption: "Newark is outside the model. No crash points are invented; coverage is rule_based_only.",
   },
+  {
+    id: "uae",
+    title: "Beyond New York: the UAE",
+    caption:
+      "Downtown Dubai, scored by the global crash model: learned from six cities including Dubai, tested on Dubai districts and a year it never saw.",
+  },
+  {
+    id: "night",
+    title: "Get home safe",
+    caption:
+      "Times Square at Saturday 23:00: a plan, not just a route. Every line comes from the scored trip, and nothing is invented.",
+  },
 ];
 
 export function PresentBar({

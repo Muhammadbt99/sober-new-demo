@@ -1,0 +1,64 @@
+{
+  "version": "global-2026.11.04-1",
+  "adopted": true,
+  "rules": {
+    "later_years": true,
+    "unseen_districts": true,
+    "six_city_gate": true,
+    "untouched_2026": true
+  },
+  "later_years": {
+    "before": {
+      "deviance": 0.3460989209569649,
+      "top_decile_lift": 2.8772237980316553,
+      "cell_spearman": 0.6577964461441527,
+      "top10_cells_capture": 0.2665321676754091,
+      "crashes": 17844,
+      "cells": 1552
+    },
+    "after": {
+      "deviance": 0.3125161677999332,
+      "top_decile_lift": 3.979020055711872,
+      "cell_spearman": 0.8359479112666502,
+      "top10_cells_capture": 0.35939251288948665,
+      "crashes": 17844,
+      "cells": 1552
+    }
+  },
+  "unseen_districts": {
+    "before": {
+      "deviance": 0.3460989209569649,
+      "top_decile_lift": 2.8772237980316553,
+      "cell_spearman": 0.6577964461441527,
+      "top10_cells_capture": 0.2665321676754091,
+      "crashes": 17844,
+      "cells": 1552
+    },
+    "after": {
+      "deviance": 0.3353950890188074,
+      "top_decile_lift": 3.319399407039637,
+      "cell_spearman": 0.7263107718807041,
+      "top10_cells_capture": 0.2931517596951356,
+      "crashes": 17844,
+      "cells": 1552
+    }
+  },
+  "untouched_2026": {
+    "before": {
+      "deviance": 0.2045099741363534,
+      "top_decile_lift": 2.8757641614058618,
+      "cell_spearman": 0.6232010158721134,
+      "top10_cells_capture": 0.26232095168730274,
+      "crashes": 8238,
+      "cells": 1552
+    },
+    "after": {
+      "deviance": 0.189391993596445,
+      "top_decile_lift": 3.845682086675293,
+      "cell_spearman": 0.8081149259776857,
+      "top10_cells_capture": 0.3396455450352027,
+      "crashes": 8238,
+      "cells": 1552
+    }
+  }
+}

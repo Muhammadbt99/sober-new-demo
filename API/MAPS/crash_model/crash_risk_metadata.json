@@ -1,6 +1,6 @@
 {
-  "version": "2026.10.29-1",
-  "created_at": "2026-10-29T04:53:59.020353+00:00",
+  "version": "2026.11.03-1",
+  "created_at": "2026-11-03T15:32:23.728508+00:00",
   "status": "approved",
   "target": "expected injury-or-fatal crashes per km2 per hour",
   "resolution": 8,
@@ -22,309 +22,309 @@
   ],
   "training_window": {
     "start": "2020-01-01 00:00:00",
-    "end": "2026-06-11 13:00:00",
-    "crashes": 192219
+    "end": "2026-06-11 23:00:00",
+    "crashes": 226745
   },
   "split": {
     "train_end": "2025-01-01",
     "validation_end": "2026-01-01",
-    "train_rows": 1451754,
-    "validation_rows": 297944,
-    "test_rows": 130745,
+    "train_rows": 1484628,
+    "validation_rows": 298002,
+    "test_rows": 131395,
     "holdout_borough": "BROOKLYN"
   },
   "selected_config": {
-    "name": "poisson_deep",
+    "name": "poisson_base",
     "learning_rate": 0.05,
     "max_iter": 250,
-    "max_leaf_nodes": 63,
-    "min_samples_leaf": 20,
-    "l2_regularization": 2.0
+    "max_leaf_nodes": 31,
+    "min_samples_leaf": 40,
+    "l2_regularization": 1.0
   },
   "baseline": {
     "type": "empirical_bayes_cell_hour_of_week",
     "shrink_hours": 1.0,
     "temporal_test": {
       "name": "eb_shrink_1.0",
-      "poisson_deviance": 0.04669135315909034,
-      "mae": 0.006955013864783079,
+      "poisson_deviance": 0.045883937701224696,
+      "mae": 0.007933793212529837,
       "calibration": [
         {
           "decile": 1,
-          "predicted_rate": 1.409042304659209e-06,
-          "observed_rate": 0.0005451590848011317,
-          "lift": 0.15917918495131772
+          "predicted_rate": 1.888524333109367e-06,
+          "observed_rate": 0.0005287968234034277,
+          "lift": 0.15120710159815748
         },
         {
           "decile": 2,
-          "predicted_rate": 3.427792933178947e-06,
-          "observed_rate": 0.0009514882278937922,
-          "lift": 0.2778218777408019
+          "predicted_rate": 4.638146239043893e-06,
+          "observed_rate": 0.0009863562482717693,
+          "lift": 0.2820441856751141
         },
         {
           "decile": 3,
-          "predicted_rate": 6.149280223573493e-06,
-          "observed_rate": 0.0014920023492019624,
-          "lift": 0.4356447952766955
+          "predicted_rate": 8.333326779027347e-06,
+          "observed_rate": 0.0015041988821291733,
+          "lift": 0.43011898545468175
         },
         {
           "decile": 4,
-          "predicted_rate": 9.858676142871306e-06,
-          "observed_rate": 0.0020300422797176858,
-          "lift": 0.5927452820859702
+          "predicted_rate": 1.3644974520449518e-05,
+          "observed_rate": 0.001936343312580264,
+          "lift": 0.5536887648261521
         },
         {
           "decile": 5,
-          "predicted_rate": 1.567525854972704e-05,
-          "observed_rate": 0.0024923676822990533,
-          "lift": 0.7277381361297356
+          "predicted_rate": 2.396967896056199e-05,
+          "observed_rate": 0.0023827669804197564,
+          "lift": 0.6813416286697187
         },
         {
           "decile": 6,
-          "predicted_rate": 0.0006656629287124221,
-          "observed_rate": 0.0032128826303104035,
-          "lift": 0.9381188953745822
+          "predicted_rate": 0.002051225233882627,
+          "observed_rate": 0.0032470529810811415,
+          "lift": 0.9284803695395152
         },
         {
           "decile": 7,
-          "predicted_rate": 0.0034816145937974154,
-          "observed_rate": 0.003986815305683184,
-          "lift": 1.1640969188683516
+          "predicted_rate": 0.004274575645984561,
+          "observed_rate": 0.004061372473137756,
+          "lift": 1.1613314093325928
         },
         {
           "decile": 8,
-          "predicted_rate": 0.005434142433589925,
-          "observed_rate": 0.005101768386511138,
-          "lift": 1.4896483544275632
+          "predicted_rate": 0.006723863611093512,
+          "observed_rate": 0.0054472626530702745,
+          "lift": 1.557620547176129
         },
         {
           "decile": 9,
-          "predicted_rate": 0.008850590418392576,
-          "observed_rate": 0.007303172641689224,
-          "lift": 2.1324290488287927
+          "predicted_rate": 0.010891254039812923,
+          "observed_rate": 0.007155076876728248,
+          "lift": 2.045962434643216
         },
         {
           "decile": 10,
-          "predicted_rate": 0.022243700139800378,
-          "observed_rate": 0.009327826829962974,
-          "lift": 2.7236010800446953
+          "predicted_rate": 0.02758061820280215,
+          "observed_rate": 0.01021486301556792,
+          "lift": 2.920894682886304
         }
       ],
       "monotonic_deciles": true,
-      "top_decile_lift": 2.7236010800446953,
-      "base_rate": 0.003424813897419185
+      "top_decile_lift": 2.920894682886304,
+      "base_rate": 0.003497169232227855
     },
     "holdout": {
       "name": "eb_holdout",
-      "poisson_deviance": 0.05691732831388337,
-      "mae": 0.0076969205974572255,
+      "poisson_deviance": 0.055653539393121634,
+      "mae": 0.008265860754084923,
       "calibration": [
         {
           "decile": 1,
-          "predicted_rate": 0.0006719419790756888,
-          "observed_rate": 0.0012312655534251265,
-          "lift": 0.23268167671423362
+          "predicted_rate": 0.000816431184302013,
+          "observed_rate": 0.0012376119800839673,
+          "lift": 0.23456225851735327
         },
         {
           "decile": 2,
-          "predicted_rate": 0.0011080946107391316,
-          "observed_rate": 0.0021750922891048997,
-          "lift": 0.41104383975434994
+          "predicted_rate": 0.0013706851003309004,
+          "observed_rate": 0.002205579156318026,
+          "lift": 0.41801924720351746
         },
         {
           "decile": 3,
-          "predicted_rate": 0.0017162580117713615,
-          "observed_rate": 0.0036898103536037448,
-          "lift": 0.6972917072566079
+          "predicted_rate": 0.0021244992949568217,
+          "observed_rate": 0.003562585886469439,
+          "lift": 0.6752101669504065
         },
         {
           "decile": 4,
-          "predicted_rate": 0.0021133089365012432,
-          "observed_rate": 0.004806377703044102,
-          "lift": 0.9082979863727796
+          "predicted_rate": 0.0026371557067083355,
+          "observed_rate": 0.004852268588344291,
+          "lift": 0.9196412909138343
         },
         {
           "decile": 5,
-          "predicted_rate": 0.0024236086965831512,
-          "observed_rate": 0.00534259854766934,
-          "lift": 1.0096317440414175
+          "predicted_rate": 0.003018599983934212,
+          "observed_rate": 0.00533962925000445,
+          "lift": 1.012009835620199
         },
         {
           "decile": 6,
-          "predicted_rate": 0.0026424627922058985,
-          "observed_rate": 0.006054539087640785,
-          "lift": 1.1441725976376
+          "predicted_rate": 0.0033050455038348705,
+          "observed_rate": 0.005901980935092989,
+          "lift": 1.1185912872044492
         },
         {
           "decile": 7,
-          "predicted_rate": 0.0028886715795925547,
-          "observed_rate": 0.006307834895821346,
-          "lift": 1.1920398454365728
+          "predicted_rate": 0.00358768695166401,
+          "observed_rate": 0.006662122059239641,
+          "lift": 1.2626593971945137
         },
         {
           "decile": 8,
-          "predicted_rate": 0.0031875531273000165,
-          "observed_rate": 0.007040816970303649,
-          "lift": 1.3305570788778727
+          "predicted_rate": 0.003962286706844564,
+          "observed_rate": 0.006851349281786386,
+          "lift": 1.298523274894307
         },
         {
           "decile": 9,
-          "predicted_rate": 0.0035837065317031887,
-          "observed_rate": 0.007675322355091729,
-          "lift": 1.4504644184489364
+          "predicted_rate": 0.004486581770090364,
+          "observed_rate": 0.007526954719310301,
+          "lift": 1.4265694960382411
         },
         {
           "decile": 10,
-          "predicted_rate": 0.004190466839082746,
-          "observed_rate": 0.00897087502797404,
-          "lift": 1.6952949242316147
+          "predicted_rate": 0.0051777483872443315,
+          "observed_rate": 0.009005560721275853,
+          "lift": 1.7068068958530223
         }
       ],
       "monotonic_deciles": true,
-      "top_decile_lift": 1.6952949242316147,
-      "base_rate": 0.005291630913152206
+      "top_decile_lift": 1.7068068958530223,
+      "base_rate": 0.00527626220819496
     }
   },
   "model_metrics": {
     "temporal_test": {
-      "name": "poisson_deep",
-      "poisson_deviance": 0.03543602717403411,
-      "mae": 0.006479818075356072,
+      "name": "poisson_base",
+      "poisson_deviance": 0.03589062805170274,
+      "mae": 0.007022662847333231,
       "calibration": [
         {
           "decile": 1,
-          "predicted_rate": 7.493697432367385e-05,
-          "observed_rate": 9.868637470119958e-05,
-          "lift": 0.02881510577131389
+          "predicted_rate": 8.432466127531305e-05,
+          "observed_rate": 0.00010417100712529691,
+          "lift": 0.029787236535572303
         },
         {
           "decile": 2,
-          "predicted_rate": 0.0002904651108718728,
-          "observed_rate": 0.000390577119244441,
-          "lift": 0.11404331182455364
+          "predicted_rate": 0.00033950099666614145,
+          "observed_rate": 0.0003774948697828353,
+          "lift": 0.10794298036939837
         },
         {
           "decile": 3,
-          "predicted_rate": 0.0006327751034038455,
-          "observed_rate": 0.0007512647341883675,
-          "lift": 0.21935928686650485
+          "predicted_rate": 0.0007828850724451766,
+          "observed_rate": 0.0007675415664540418,
+          "lift": 0.21947509985528585
         },
         {
           "decile": 4,
-          "predicted_rate": 0.0010565678116102096,
-          "observed_rate": 0.001194525270584548,
-          "lift": 0.34878545414823814
+          "predicted_rate": 0.001298346605002147,
+          "observed_rate": 0.0012505891380803545,
+          "lift": 0.3576004062244573
         },
         {
           "decile": 5,
-          "predicted_rate": 0.0016763144861742449,
-          "observed_rate": 0.0020369660205031117,
-          "lift": 0.5947669220911813
+          "predicted_rate": 0.0020627394209395272,
+          "observed_rate": 0.0020222243769321417,
+          "lift": 0.5782460735089715
         },
         {
           "decile": 6,
-          "predicted_rate": 0.002581136782275736,
-          "observed_rate": 0.0029267585469504626,
-          "lift": 0.854574477508387
+          "predicted_rate": 0.0030440828616413573,
+          "observed_rate": 0.003053768476881549,
+          "lift": 0.8732115245495742
         },
         {
           "decile": 7,
-          "predicted_rate": 0.0037500753130632006,
-          "observed_rate": 0.004224543463416824,
-          "lift": 1.2335103716439266
+          "predicted_rate": 0.004345051078203742,
+          "observed_rate": 0.004190301106080041,
+          "lift": 1.1981979789438526
         },
         {
           "decile": 8,
-          "predicted_rate": 0.005145304567869052,
-          "observed_rate": 0.005936798609353673,
-          "lift": 1.7334660472580503
+          "predicted_rate": 0.006145233863965478,
+          "observed_rate": 0.005948114633153432,
+          "lift": 1.7008369450180176
         },
         {
           "decile": 9,
-          "predicted_rate": 0.007141679028292963,
-          "observed_rate": 0.008102897977629645,
-          "lift": 2.3659381853524053
+          "predicted_rate": 0.008531626288219333,
+          "observed_rate": 0.008179296939065557,
+          "lift": 2.3388336096777835
         },
         {
           "decile": 10,
-          "predicted_rate": 0.012731671392563043,
-          "observed_rate": 0.012783649052841474,
-          "lift": 3.732655097690057
+          "predicted_rate": 0.0138747400067787,
+          "observed_rate": 0.013651305102418188,
+          "lift": 3.9035300255463157
         }
       ],
       "monotonic_deciles": true,
-      "top_decile_lift": 3.732655097690057,
-      "base_rate": 0.003424813897419185
+      "top_decile_lift": 3.9035300255463157,
+      "base_rate": 0.003497169232227855
     },
     "holdout": {
-      "name": "poisson_deep_holdout",
-      "poisson_deviance": 0.05536796610667367,
-      "mae": 0.00833684433975499,
+      "name": "poisson_base_holdout",
+      "poisson_deviance": 0.05484193430140071,
+      "mae": 0.008387332283569523,
       "calibration": [
         {
           "decile": 1,
-          "predicted_rate": 0.0005900140211239006,
-          "observed_rate": 0.0010848541269079884,
-          "lift": 0.20501318869606205
+          "predicted_rate": 0.0005546638586139894,
+          "observed_rate": 0.0010157832520508725,
+          "lift": 0.19251947912542766
         },
         {
           "decile": 2,
-          "predicted_rate": 0.0010201601333984741,
-          "observed_rate": 0.0021968664538797185,
-          "lift": 0.4151586703485812
+          "predicted_rate": 0.0009535895934237654,
+          "observed_rate": 0.0018167866303628079,
+          "lift": 0.3443321348853777
         },
         {
           "decile": 3,
-          "predicted_rate": 0.0014055845933157044,
-          "observed_rate": 0.0027624765740150987,
-          "lift": 0.522046344379204
+          "predicted_rate": 0.0013311520269865095,
+          "observed_rate": 0.0025169760725081347,
+          "lift": 0.4770377159419465
         },
         {
           "decile": 4,
-          "predicted_rate": 0.0018171292537718718,
-          "observed_rate": 0.0037436335121444697,
-          "lift": 0.7074630815312098
+          "predicted_rate": 0.0017591990908977192,
+          "observed_rate": 0.0037120582196180922,
+          "lift": 0.7035393756308425
         },
         {
           "decile": 5,
-          "predicted_rate": 0.0023056672087713535,
-          "observed_rate": 0.005002618938897574,
-          "lift": 0.945383194898136
+          "predicted_rate": 0.002302442381763333,
+          "observed_rate": 0.004858733099095543,
+          "lift": 0.920866497413468
         },
         {
           "decile": 6,
-          "predicted_rate": 0.002889730726179294,
-          "observed_rate": 0.005787141977257876,
-          "lift": 1.093640518818894
+          "predicted_rate": 0.0029600729427316577,
+          "observed_rate": 0.005815316620913356,
+          "lift": 1.1021659636022543
         },
         {
           "decile": 7,
-          "predicted_rate": 0.0035468112281513736,
-          "observed_rate": 0.0061695239727387295,
-          "lift": 1.1659021715601032
+          "predicted_rate": 0.0036708489597799833,
+          "observed_rate": 0.006489800284821537,
+          "lift": 1.2299995771138401
         },
         {
           "decile": 8,
-          "predicted_rate": 0.0043589852615756545,
-          "observed_rate": 0.007335388323637797,
-          "lift": 1.3862244824002912
+          "predicted_rate": 0.004544858526216527,
+          "observed_rate": 0.007249895697255302,
+          "lift": 1.3740590234493926
         },
         {
           "decile": 9,
-          "predicted_rate": 0.0054879417429110535,
-          "observed_rate": 0.008883510968047053,
-          "lift": 1.6787850690733788
+          "predicted_rate": 0.005785326388434996,
+          "observed_rate": 0.008421071112590916,
+          "lift": 1.5960296854677762
         },
         {
           "decile": 10,
-          "predicted_rate": 0.007899611235079882,
-          "observed_rate": 0.010529291337971938,
-          "lift": 1.989800783686872
+          "predicted_rate": 0.008216903897611564,
+          "observed_rate": 0.011549415801394904,
+          "lift": 2.188938939284829
         }
       ],
       "monotonic_deciles": true,
-      "top_decile_lift": 1.989800783686872,
-      "base_rate": 0.005291630913152206
+      "top_decile_lift": 2.188938939284829,
+      "base_rate": 0.00527626220819496
     }
   },
   "gate": {
@@ -334,9 +334,9 @@
     "deciles_monotonic": true,
     "passed": true
   },
-  "prior_rate": 0.003037756113472523,
-  "cell_count": 1120,
-  "percentile_reference_size": 188160,
+  "prior_rate": 0.0035770044042216743,
+  "cell_count": 1122,
+  "percentile_reference_size": 188496,
   "density_source": {
     "provider": "NYC Open Data",
     "dataset": "Housing Database by 2020 NTA (kyz5-72x5)",

@@ -8,9 +8,9 @@
     "attempted": true,
     "best_detour_expected_crashes": null,
     "candidate_count": 0,
-    "fastest_expected_crashes": 0.161982,
+    "fastest_expected_crashes": 0.170116,
     "highest_risk_cell": "882a1072cbfffff",
-    "highest_risk_percentile": 99.78103741496598,
+    "highest_risk_percentile": 99.91034292504881,
     "improved": false,
     "reason": "fewer_than_two_distinct_routes",
     "scored_count": 0
@@ -20,7 +20,7 @@
     "hour": 23,
     "is_weekend": true
   },
-  "model_version": "2026.10.29-1",
+  "model_version": "2026.11.03-1",
   "origin": {
     "lat": 40.758,
     "lon": -73.9855
@@ -38,8 +38,8 @@
   "route_id": "40.758_-73.986_40.683_-73.978_23_5",
   "routes": [
     {
-      "average_percentile": 91.2,
-      "average_risk": 82.9,
+      "average_percentile": 90.7,
+      "average_risk": 81.4,
       "bars": "offline",
       "coverage": "model",
       "covered_length_m": 8602.6,
@@ -48,14 +48,14 @@
         "coverage_ratio": 1.0,
         "model": "live",
         "rain": 0,
-        "temperature": 20,
-        "weather": "fallback",
-        "wind_speed": 0
+        "temperature": 14.1,
+        "weather": "live",
+        "wind_speed": 8.2
       },
       "distance_km": 8.6,
       "duration_min": 26.0,
-      "expected_crashes_per_10km": 0.188294,
-      "expected_crashes_total": 0.161982,
+      "expected_crashes_per_10km": 0.197749,
+      "expected_crashes_total": 0.170116,
       "geometry": [
         [
           40.758,
@@ -87,24 +87,71 @@
         "bucket": "extreme",
         "cell": "882a1072cbfffff",
         "coverage": "model",
+        "danger_types": {
+          "band": "weekend_night",
+          "groups": [
+            {
+              "band_share_ratio": 0.95,
+              "id": "impaired",
+              "label": "Impaired driving",
+              "rate_ratio": 22.04,
+              "share_ratio": 2.89,
+              "short": "Impaired",
+              "status": "ok"
+            },
+            {
+              "band_share_ratio": 0.38,
+              "id": "drowsy",
+              "label": "Drowsy driving",
+              "rate_ratio": 5.23,
+              "share_ratio": 0.67,
+              "short": "Drowsy",
+              "status": "ok"
+            },
+            {
+              "id": "distracted",
+              "label": "Distracted driving",
+              "status": "not_validated"
+            },
+            {
+              "band_share_ratio": 0.62,
+              "id": "speeding",
+              "label": "Speeding",
+              "rate_ratio": 7.57,
+              "share_ratio": 0.99,
+              "short": "Speeding",
+              "status": "ok"
+            },
+            {
+              "band_share_ratio": 1.28,
+              "id": "failure_to_yield",
+              "label": "Failure to yield",
+              "rate_ratio": 6.83,
+              "share_ratio": 0.9,
+              "short": "Not yielding",
+              "status": "ok"
+            }
+          ]
+        },
         "end": [
           40.716667,
           -73.990444
         ],
-        "expected_crashes": 0.02670921,
-        "expected_rate": 0.02701969055706416,
-        "expected_rate_per_km2_hour": 0.03647221228377218,
+        "expected_crashes": 0.02959521,
+        "expected_rate": 0.0299392445561818,
+        "expected_rate_per_km2_hour": 0.04041313799514807,
+        "from_km": 3.86,
         "length_m": 850.8,
         "midpoint": [
-          40.717083,
-          -73.990556
+          40.720417,
+          -73.991444
         ],
         "model_points": 60.0,
         "nightlife_points": 40,
-        "percentile": 99.78103741496598,
+        "percentile": 99.91034292504881,
         "reasons": [
-          "0.02702 expected injury/fatal crashes per cell-hour (100th percentile)",
-          "0.0365 expected injury/fatal crashes per km2 per hour",
+          "0.02994 expected injury/fatal crashes per cell-hour (100th percentile)",
+          "0.0404 expected injury/fatal crashes per km2 per hour",
           "Top-decile learned crash risk for this hex and hour",
           "Nightlife density contributes 40 of 40 points"
         ],
@@ -113,14 +160,15 @@
         "start": [
           40.724167,
           -73.992444
-        ]
+        ],
+        "to_km": 4.71
       },
       "is_balanced": true,
       "is_fastest": true,
       "is_safest": true,
-      "max_percentile": 99.78103741496598,
+      "max_percentile": 99.91034292504881,
       "max_waypoint_risk": 100.0,
-      "model_version": "2026.10.29-1",
+      "model_version": "2026.11.03-1",
       "provider": "captured-fake-one",
       "provider_distance_km": 8.7,
       "rank": 1,
@@ -132,24 +180,71 @@
           "bucket": "extreme",
           "cell": "882a100d67fffff",
           "coverage": "model",
+          "danger_types": {
+            "band": "weekend_night",
+            "groups": [
+              {
+                "band_share_ratio": 0.83,
+                "id": "impaired",
+                "label": "Impaired driving",
+                "rate_ratio": 17.31,
+                "share_ratio": 2.53,
+                "short": "Impaired",
+                "status": "ok"
+              },
+              {
+                "band_share_ratio": 0.38,
+                "id": "drowsy",
+                "label": "Drowsy driving",
+                "rate_ratio": 4.71,
+                "share_ratio": 0.67,
+                "short": "Drowsy",
+                "status": "ok"
+              },
+              {
+                "id": "distracted",
+                "label": "Distracted driving",
+                "status": "not_validated"
+              },
+              {
+                "band_share_ratio": 0.65,
+                "id": "speeding",
+                "label": "Speeding",
+                "rate_ratio": 7.17,
+                "share_ratio": 1.04,
+                "short": "Speeding",
+                "status": "ok"
+              },
+              {
+                "band_share_ratio": 1.08,
+                "id": "failure_to_yield",
+                "label": "Failure to yield",
+                "rate_ratio": 5.17,
+                "share_ratio": 0.76,
+                "short": "Not yielding",
+                "status": "ok"
+              }
+            ]
+          },
           "end": [
             40.753059,
             -73.987088
           ],
-          "expected_crashes": 0.01525185,
-          "expected_rate": 0.023221961453316894,
-          "expected_rate_per_km2_hour": 0.03132586002647667,
+          "expected_crashes": 0.01769359,
+          "expected_rate": 0.026939672825459747,
+          "expected_rate_per_km2_hour": 0.036340962058090495,
+          "from_km": 0.0,
           "length_m": 565.5,
           "midpoint": [
-            40.753471,
-            -73.986956
+            40.755118,
+            -73.986426
           ],
           "model_points": 60.0,
           "nightlife_points": 40,
-          "percentile": 99.61309523809524,
+          "percentile": 99.76816484169426,
           "reasons": [
-            "0.02322 expected injury/fatal crashes per cell-hour (100th percentile)",
-            "0.0313 expected injury/fatal crashes per km2 per hour",
+            "0.02694 expected injury/fatal crashes per cell-hour (100th percentile)",
+            "0.0363 expected injury/fatal crashes per km2 per hour",
             "Top-decile learned crash risk for this hex and hour",
             "Nightlife density contributes 40 of 40 points"
           ],
@@ -158,31 +253,79 @@
           "start": [
             40.758,
             -73.9855
-          ]
+          ],
+          "to_km": 0.57
         },
         {
           "action": "Avoid driving if possible. Consider alternative transportation.",
           "bucket": "extreme",
           "cell": "882a100d2dfffff",
           "coverage": "model",
+          "danger_types": {
+            "band": "weekend_night",
+            "groups": [
+              {
+                "band_share_ratio": 0.87,
+                "id": "impaired",
+                "label": "Impaired driving",
+                "rate_ratio": 20.03,
+                "share_ratio": 2.67,
+                "short": "Impaired",
+                "status": "ok"
+              },
+              {
+                "band_share_ratio": 0.38,
+                "id": "drowsy",
+                "label": "Drowsy driving",
+                "rate_ratio": 5.15,
+                "share_ratio": 0.67,
+                "short": "Drowsy",
+                "status": "ok"
+              },
+              {
+                "id": "distracted",
+                "label": "Distracted driving",
+                "status": "not_validated"
+              },
+              {
+                "band_share_ratio": 0.64,
+                "id": "speeding",
+                "label": "Speeding",
+                "rate_ratio": 7.74,
+                "share_ratio": 1.02,
+                "short": "Speeding",
+                "status": "ok"
+              },
+              {
+                "band_share_ratio": 0.9,
+                "id": "failure_to_yield",
+                "label": "Failure to yield",
+                "rate_ratio": 4.72,
+                "share_ratio": 0.63,
+                "short": "Not yielding",
+                "status": "ok"
+              }
+            ]
+          },
           "end": [
             40.745647,
             -73.989471
           ],
-          "expected_crashes": 0.0183835,
-          "expected_rate": 0.018659104402790203,
-          "expected_rate_per_km2_hour": 0.02517303613930074,
+          "expected_crashes": 0.02906075,
+          "expected_rate": 0.0294964292025425,
+          "expected_rate_per_km2_hour": 0.03979369332350676,
+          "from_km": 0.57,
           "length_m": 848.2,
           "midpoint": [
-            40.746059,
-            -73.989338
+            40.749353,
+            -73.988279
           ],
           "model_points": 60.0,
           "nightlife_points": 40,
-          "percentile": 99.01201105442176,
+          "percentile": 99.89177489177489,
           "reasons": [
-            "0.01866 expected injury/fatal crashes per cell-hour (99th percentile)",
-            "0.0252 expected injury/fatal crashes per km2 per hour",
+            "0.02950 expected injury/fatal crashes per cell-hour (100th percentile)",
+            "0.0398 expected injury/fatal crashes per km2 per hour",
             "Top-decile learned crash risk for this hex and hour",
             "Nightlife density contributes 40 of 40 points"
           ],
@@ -191,31 +334,79 @@
           "start": [
             40.753059,
             -73.987088
-          ]
+          ],
+          "to_km": 1.41
         },
         {
           "action": "Avoid driving if possible. Consider alternative transportation.",
           "bucket": "extreme",
           "cell": "882a100d21fffff",
           "coverage": "model",
+          "danger_types": {
+            "band": "weekend_night",
+            "groups": [
+              {
+                "band_share_ratio": 0.87,
+                "id": "impaired",
+                "label": "Impaired driving",
+                "rate_ratio": 11.0,
+                "share_ratio": 2.67,
+                "short": "Impaired",
+                "status": "ok"
+              },
+              {
+                "band_share_ratio": 0.38,
+                "id": "drowsy",
+                "label": "Drowsy driving",
+                "rate_ratio": 2.83,
+                "share_ratio": 0.67,
+                "short": "Drowsy",
+                "status": "ok"
+              },
+              {
+                "id": "distracted",
+                "label": "Distracted driving",
+                "status": "not_validated"
+              },
+              {
+                "band_share_ratio": 0.64,
+                "id": "speeding",
+                "label": "Speeding",
+                "rate_ratio": 4.25,
+                "share_ratio": 1.02,
+                "short": "Speeding",
+                "status": "ok"
+              },
+              {
+                "band_share_ratio": 0.9,
+                "id": "failure_to_yield",
+                "label": "Failure to yield",
+                "rate_ratio": 2.59,
+                "share_ratio": 0.63,
+                "short": "Not yielding",
+                "status": "ok"
+              }
+            ]
+          },
           "end": [
             40.73875,
             -73.9915
           ],
-          "expected_crashes": 0.01463755,
-          "expected_rate": 0.0160363586197464,
-          "expected_rate_per_km2_hour": 0.021637941004940705,
+          "expected_crashes": 0.01478172,
+          "expected_rate": 0.016194308500200205,
+          "expected_rate_per_km2_hour": 0.021851063589439935,
+          "from_km": 1.41,
           "length_m": 785.8,
           "midpoint": [
-            40.739187,
-            -73.991375
+            40.741812,
+            -73.990625
           ],
           "model_points": 50.0,
           "nightlife_points": 40,
-          "percentile": 98.21109693877551,
+          "percentile": 97.67740429505136,
           "reasons": [
-            "0.01604 expected injury/fatal crashes per cell-hour (98th percentile)",
-            "0.0216 expected injury/fatal crashes per km2 per hour",
+            "0.01619 expected injury/fatal crashes per cell-hour (98th percentile)",
+            "0.0219 expected injury/fatal crashes per km2 per hour",
             "Top-decile learned crash risk for this hex and hour",
             "Nightlife density contributes 40 of 40 points"
           ],
@@ -224,31 +415,79 @@
           "start": [
             40.745647,
             -73.989471
-          ]
+          ],
+          "to_km": 2.2
         },
         {
           "action": "Avoid driving if possible. Consider alternative transportation.",
           "bucket": "extreme",
           "cell": "882a100d27fffff",
           "coverage": "model",
+          "danger_types": {
+            "band": "weekend_night",
+            "groups": [
+              {
+                "band_share_ratio": 0.87,
+                "id": "impaired",
+                "label": "Impaired driving",
+                "rate_ratio": 8.18,
+                "share_ratio": 2.66,
+                "short": "Impaired",
+                "status": "ok"
+              },
+              {
+                "band_share_ratio": 0.38,
+                "id": "drowsy",
+                "label": "Drowsy driving",
+                "rate_ratio": 2.11,
+                "share_ratio": 0.67,
+                "short": "Drowsy",
+                "status": "ok"
+              },
+              {
+                "id": "distracted",
+                "label": "Distracted driving",
+                "status": "not_validated"
+              },
+              {
+                "band_share_ratio": 0.64,
+                "id": "speeding",
+                "label": "Speeding",
+                "rate_ratio": 3.13,
+                "share_ratio": 1.01,
+                "short": "Speeding",
+                "status": "ok"
+              },
+              {
+                "band_share_ratio": 1.01,
+                "id": "failure_to_yield",
+                "label": "Failure to yield",
+                "rate_ratio": 2.17,
+                "share_ratio": 0.71,
+                "short": "Not yielding",
+                "status": "ok"
+              }
+            ]
+          },
           "end": [
             40.732625,
             -73.99325
           ],
-          "expected_crashes": 0.01079903,
-          "expected_rate": 0.013340490269772276,
-          "expected_rate_per_km2_hour": 0.018002080589003936,
+          "expected_crashes": 0.00977969,
+          "expected_rate": 0.012081257665674864,
+          "expected_rate_per_km2_hour": 0.01630283218352162,
+          "from_km": 2.2,
           "length_m": 696.8,
           "midpoint": [
-            40.733063,
-            -73.993125
+            40.735687,
+            -73.992375
           ],
           "model_points": 50.0,
           "nightlife_points": 40,
-          "percentile": 96.24149659863946,
+          "percentile": 93.88952550717256,
           "reasons": [
-            "0.01334 expected injury/fatal crashes per cell-hour (96th percentile)",
-            "0.0180 expected injury/fatal crashes per km2 per hour",
+            "0.01208 expected injury/fatal crashes per cell-hour (94th percentile)",
+            "0.0163 expected injury/fatal crashes per km2 per hour",
             "Top-decile learned crash risk for this hex and hour",
             "Nightlife density contributes 40 of 40 points"
           ],
@@ -257,31 +496,79 @@
           "start": [
             40.73875,
             -73.9915
-          ]
+          ],
+          "to_km": 2.9
         },
         {
           "action": "Avoid driving if possible. Consider alternative transportation.",
           "bucket": "extreme",
           "cell": "882a1072c9fffff",
           "coverage": "model",
+          "danger_types": {
+            "band": "weekend_night",
+            "groups": [
+              {
+                "band_share_ratio": 0.87,
+                "id": "impaired",
+                "label": "Impaired driving",
+                "rate_ratio": 8.29,
+                "share_ratio": 2.66,
+                "short": "Impaired",
+                "status": "ok"
+              },
+              {
+                "band_share_ratio": 0.38,
+                "id": "drowsy",
+                "label": "Drowsy driving",
+                "rate_ratio": 2.14,
+                "share_ratio": 0.67,
+                "short": "Drowsy",
+                "status": "ok"
+              },
+              {
+                "id": "distracted",
+                "label": "Distracted driving",
+                "status": "not_validated"
+              },
+              {
+                "band_share_ratio": 0.64,
+                "id": "speeding",
+                "label": "Speeding",
+                "rate_ratio": 3.18,
+                "share_ratio": 1.01,
+                "short": "Speeding",
+                "status": "ok"
+              },
+              {
+                "band_share_ratio": 1.01,
+                "id": "failure_to_yield",
+                "label": "Failure to yield",
+                "rate_ratio": 2.2,
+                "share_ratio": 0.71,
+                "short": "Not yielding",
+                "status": "ok"
+              }
+            ]
+          },
           "end": [
             40.724167,
             -73.992444
           ],
-          "expected_crashes": 0.0163152,
-          "expected_rate": 0.014622867051907356,
-          "expected_rate_per_km2_hour": 0.0197355322652882,
+          "expected_crashes": 0.01367049,
+          "expected_rate": 0.012252484666429721,
+          "expected_rate_per_km2_hour": 0.016536381381702565,
+          "from_km": 2.9,
           "length_m": 960.4,
           "midpoint": [
-            40.724583,
-            -73.992556
+            40.727917,
+            -73.993444
           ],
           "model_points": 50.0,
           "nightlife_points": 40,
-          "percentile": 97.30442176870748,
+          "percentile": 94.13462354638826,
           "reasons": [
-            "0.01462 expected injury/fatal crashes per cell-hour (97th percentile)",
-            "0.0197 expected injury/fatal crashes per km2 per hour",
+            "0.01225 expected injury/fatal crashes per cell-hour (94th percentile)",
+            "0.0165 expected injury/fatal crashes per km2 per hour",
             "Top-decile learned crash risk for this hex and hour",
             "Nightlife density contributes 40 of 40 points"
           ],
@@ -290,31 +577,79 @@
           "start": [
             40.732625,
             -73.99325
-          ]
+          ],
+          "to_km": 3.86
         },
         {
           "action": "Avoid driving if possible. Consider alternative transportation.",
           "bucket": "extreme",
           "cell": "882a1072cbfffff",
           "coverage": "model",
+          "danger_types": {
+            "band": "weekend_night",
+            "groups": [
+              {
+                "band_share_ratio": 0.95,
+                "id": "impaired",
+                "label": "Impaired driving",
+                "rate_ratio": 22.04,
+                "share_ratio": 2.89,
+                "short": "Impaired",
+                "status": "ok"
+              },
+              {
+                "band_share_ratio": 0.38,
+                "id": "drowsy",
+                "label": "Drowsy driving",
+                "rate_ratio": 5.23,
+                "share_ratio": 0.67,
+                "short": "Drowsy",
+                "status": "ok"
+              },
+              {
+                "id": "distracted",
+                "label": "Distracted driving",
+                "status": "not_validated"
+              },
+              {
+                "band_share_ratio": 0.62,
+                "id": "speeding",
+                "label": "Speeding",
+                "rate_ratio": 7.57,
+                "share_ratio": 0.99,
+                "short": "Speeding",
+                "status": "ok"
+              },
+              {
+                "band_share_ratio": 1.28,
+                "id": "failure_to_yield",
+                "label": "Failure to yield",
+                "rate_ratio": 6.83,
+                "share_ratio": 0.9,
+                "short": "Not yielding",
+                "status": "ok"
+              }
+            ]
+          },
           "end": [
             40.716667,
             -73.990444
           ],
-          "expected_crashes": 0.02670921,
-          "expected_rate": 0.02701969055706416,
-          "expected_rate_per_km2_hour": 0.03647221228377218,
+          "expected_crashes": 0.02959521,
+          "expected_rate": 0.0299392445561818,
+          "expected_rate_per_km2_hour": 0.04041313799514807,
+          "from_km": 3.86,
           "length_m": 850.8,
           "midpoint": [
-            40.717083,
-            -73.990556
+            40.720417,
+            -73.991444
           ],
           "model_points": 60.0,
           "nightlife_points": 40,
-          "percentile": 99.78103741496598,
+          "percentile": 99.91034292504881,
           "reasons": [
-            "0.02702 expected injury/fatal crashes per cell-hour (100th percentile)",
-            "0.0365 expected injury/fatal crashes per km2 per hour",
+            "0.02994 expected injury/fatal crashes per cell-hour (100th percentile)",
+            "0.0404 expected injury/fatal crashes per km2 per hour",
             "Top-decile learned crash risk for this hex and hour",
             "Nightlife density contributes 40 of 40 points"
           ],
@@ -323,64 +658,160 @@
           "start": [
             40.724167,
             -73.992444
-          ]
+          ],
+          "to_km": 4.71
         },
         {
           "action": "Drive with extreme caution. Avoid high-risk areas.",
           "bucket": "high",
           "cell": "882a1072ddfffff",
           "coverage": "model",
+          "danger_types": {
+            "band": "weekend_night",
+            "groups": [
+              {
+                "band_share_ratio": 0.93,
+                "id": "impaired",
+                "label": "Impaired driving",
+                "rate_ratio": 6.74,
+                "share_ratio": 2.84,
+                "short": "Impaired",
+                "status": "ok"
+              },
+              {
+                "band_share_ratio": 0.38,
+                "id": "drowsy",
+                "label": "Drowsy driving",
+                "rate_ratio": 1.63,
+                "share_ratio": 0.67,
+                "short": "Drowsy",
+                "status": "ok"
+              },
+              {
+                "id": "distracted",
+                "label": "Distracted driving",
+                "status": "not_validated"
+              },
+              {
+                "band_share_ratio": 0.78,
+                "id": "speeding",
+                "label": "Speeding",
+                "rate_ratio": 2.97,
+                "share_ratio": 1.24,
+                "short": "Speeding",
+                "status": "ok"
+              },
+              {
+                "band_share_ratio": 0.79,
+                "id": "failure_to_yield",
+                "label": "Failure to yield",
+                "rate_ratio": 1.31,
+                "share_ratio": 0.56,
+                "short": "Not yielding",
+                "status": "ok"
+              }
+            ]
+          },
           "end": [
             40.709167,
             -73.987278
           ],
-          "expected_crashes": 0.00899562,
-          "expected_rate": 0.008826962633593987,
-          "expected_rate_per_km2_hour": 0.011916767618415591,
+          "expected_crashes": 0.00949024,
+          "expected_rate": 0.009312304778918767,
+          "expected_rate_per_km2_hour": 0.012571999752201548,
+          "from_km": 4.71,
           "length_m": 877.1,
           "midpoint": [
-            40.709583,
-            -73.987472
+            40.712917,
+            -73.989028
           ],
           "model_points": 30.0,
-          "nightlife_points": 28,
-          "percentile": 87.81675170068027,
+          "nightlife_points": 40,
+          "percentile": 87.80398523045582,
           "reasons": [
-            "0.00883 expected injury/fatal crashes per cell-hour (88th percentile)",
-            "0.0119 expected injury/fatal crashes per km2 per hour",
+            "0.00931 expected injury/fatal crashes per cell-hour (88th percentile)",
+            "0.0126 expected injury/fatal crashes per km2 per hour",
             "Above-average learned crash risk for this hex and hour",
-            "Nightlife density contributes 28 of 40 points"
+            "Nightlife density contributes 40 of 40 points"
           ],
           "risk_level": "HIGH",
-          "risk_score": 58.0,
+          "risk_score": 70.0,
           "start": [
             40.716667,
             -73.990444
-          ]
+          ],
+          "to_km": 5.58
         },
         {
           "action": "Normal driving conditions. Drive safely.",
           "bucket": "low",
           "cell": "882a1072d1fffff",
           "coverage": "model",
+          "danger_types": {
+            "band": "weekend_night",
+            "groups": [
+              {
+                "band_share_ratio": 0.98,
+                "id": "impaired",
+                "label": "Impaired driving",
+                "rate_ratio": 1.08,
+                "share_ratio": 3.0,
+                "short": "Impaired",
+                "status": "ok"
+              },
+              {
+                "band_share_ratio": 1.09,
+                "id": "drowsy",
+                "label": "Drowsy driving",
+                "rate_ratio": 0.71,
+                "share_ratio": 1.95,
+                "short": "Drowsy",
+                "status": "ok"
+              },
+              {
+                "id": "distracted",
+                "label": "Distracted driving",
+                "status": "not_validated"
+              },
+              {
+                "band_share_ratio": 0.75,
+                "id": "speeding",
+                "label": "Speeding",
+                "rate_ratio": 0.43,
+                "share_ratio": 1.2,
+                "short": "Speeding",
+                "status": "ok"
+              },
+              {
+                "band_share_ratio": 0.94,
+                "id": "failure_to_yield",
+                "label": "Failure to yield",
+                "rate_ratio": 0.24,
+                "share_ratio": 0.67,
+                "short": "Not yielding",
+                "status": "ok"
+              }
+            ]
+          },
           "end": [
             40.701667,
             -73.983778
           ],
-          "expected_crashes": 0.00126107,
-          "expected_rate": 0.0012268237956562596,
-          "expected_rate_per_km2_hour": 0.0016565129767317289,
+          "expected_crashes": 0.00144936,
+          "expected_rate": 0.0014100020555460498,
+          "expected_rate_per_km2_hour": 0.0019038485481780412,
+          "from_km": 5.58,
           "length_m": 884.6,
           "midpoint": [
-            40.702083,
-            -73.983972
+            40.705417,
+            -73.985528
           ],
           "model_points": 0.0,
           "nightlife_points": 16,
-          "percentile": 37.010522959183675,
+          "percentile": 39.285714285714285,
           "reasons": [
-            "0.00123 expected injury/fatal crashes per cell-hour (37th percentile)",
-            "0.0017 expected injury/fatal crashes per km2 per hour",
+            "0.00141 expected injury/fatal crashes per cell-hour (39th percentile)",
+            "0.0019 expected injury/fatal crashes per km2 per hour",
             "Below-median learned crash risk for this hex and hour",
             "Nightlife density contributes 16 of 40 points"
           ],
@@ -389,106 +820,251 @@
           "start": [
             40.709167,
             -73.987278
-          ]
+          ],
+          "to_km": 6.47
         },
         {
           "action": "Avoid driving if possible. Consider alternative transportation.",
           "bucket": "extreme",
           "cell": "882a1072d3fffff",
           "coverage": "model",
+          "danger_types": {
+            "band": "weekend_night",
+            "groups": [
+              {
+                "band_share_ratio": 0.98,
+                "id": "impaired",
+                "label": "Impaired driving",
+                "rate_ratio": 11.59,
+                "share_ratio": 3.0,
+                "short": "Impaired",
+                "status": "ok"
+              },
+              {
+                "band_share_ratio": 1.09,
+                "id": "drowsy",
+                "label": "Drowsy driving",
+                "rate_ratio": 7.67,
+                "share_ratio": 1.95,
+                "short": "Drowsy",
+                "status": "ok"
+              },
+              {
+                "id": "distracted",
+                "label": "Distracted driving",
+                "status": "not_validated"
+              },
+              {
+                "band_share_ratio": 0.75,
+                "id": "speeding",
+                "label": "Speeding",
+                "rate_ratio": 4.67,
+                "share_ratio": 1.2,
+                "short": "Speeding",
+                "status": "ok"
+              },
+              {
+                "band_share_ratio": 0.94,
+                "id": "failure_to_yield",
+                "label": "Failure to yield",
+                "rate_ratio": 2.55,
+                "share_ratio": 0.67,
+                "short": "Not yielding",
+                "status": "ok"
+              }
+            ]
+          },
           "end": [
             40.6932,
             -73.981
           ],
-          "expected_crashes": 0.0211416,
-          "expected_rate": 0.01873074632436581,
-          "expected_rate_per_km2_hour": 0.025294915040631957,
+          "expected_crashes": 0.01712229,
+          "expected_rate": 0.015169775188103387,
+          "expected_rate_per_km2_hour": 0.020486005625382032,
+          "from_km": 6.47,
           "length_m": 971.3,
           "midpoint": [
-            40.693625,
-            -73.981125
+            40.697025,
+            -73.982125
           ],
-          "model_points": 60.0,
+          "model_points": 50.0,
           "nightlife_points": 28,
-          "percentile": 99.03008078231292,
+          "percentile": 97.06041507512096,
           "reasons": [
-            "0.01873 expected injury/fatal crashes per cell-hour (99th percentile)",
-            "0.0253 expected injury/fatal crashes per km2 per hour",
+            "0.01517 expected injury/fatal crashes per cell-hour (97th percentile)",
+            "0.0205 expected injury/fatal crashes per km2 per hour",
             "Top-decile learned crash risk for this hex and hour",
             "Nightlife density contributes 28 of 40 points"
           ],
           "risk_level": "CRITICAL",
-          "risk_score": 88.0,
+          "risk_score": 78.0,
           "start": [
             40.701667,
             -73.983778
-          ]
+          ],
+          "to_km": 7.44
         },
         {
           "action": "Avoid driving if possible. Consider alternative transportation.",
           "bucket": "extreme",
           "cell": "882a100da5fffff",
           "coverage": "model",
+          "danger_types": {
+            "band": "weekend_night",
+            "groups": [
+              {
+                "band_share_ratio": 0.97,
+                "id": "impaired",
+                "label": "Impaired driving",
+                "rate_ratio": 15.47,
+                "share_ratio": 2.96,
+                "short": "Impaired",
+                "status": "ok"
+              },
+              {
+                "band_share_ratio": 1.09,
+                "id": "drowsy",
+                "label": "Drowsy driving",
+                "rate_ratio": 10.38,
+                "share_ratio": 1.95,
+                "short": "Drowsy",
+                "status": "ok"
+              },
+              {
+                "id": "distracted",
+                "label": "Distracted driving",
+                "status": "not_validated"
+              },
+              {
+                "band_share_ratio": 0.76,
+                "id": "speeding",
+                "label": "Speeding",
+                "rate_ratio": 6.38,
+                "share_ratio": 1.21,
+                "short": "Speeding",
+                "status": "ok"
+              },
+              {
+                "band_share_ratio": 1.28,
+                "id": "failure_to_yield",
+                "label": "Failure to yield",
+                "rate_ratio": 4.66,
+                "share_ratio": 0.9,
+                "short": "Not yielding",
+                "status": "ok"
+              }
+            ]
+          },
           "end": [
             40.68555,
             -73.97875
           ],
-          "expected_crashes": 0.02152593,
-          "expected_rate": 0.021252183382298295,
-          "expected_rate_per_km2_hour": 0.028704316618850385,
+          "expected_crashes": 0.02078524,
+          "expected_rate": 0.02052091659618759,
+          "expected_rate_per_km2_hour": 0.027716629237098608,
+          "from_km": 7.44,
           "length_m": 871.5,
           "midpoint": [
-            40.685975,
-            -73.978875
+            40.689375,
+            -73.979875
           ],
           "model_points": 60.0,
-          "nightlife_points": 40,
-          "percentile": 99.41326530612245,
+          "nightlife_points": 28,
+          "percentile": 99.10130718954248,
           "reasons": [
-            "0.02125 expected injury/fatal crashes per cell-hour (99th percentile)",
-            "0.0287 expected injury/fatal crashes per km2 per hour",
+            "0.02052 expected injury/fatal crashes per cell-hour (99th percentile)",
+            "0.0277 expected injury/fatal crashes per km2 per hour",
             "Top-decile learned crash risk for this hex and hour",
-            "Nightlife density contributes 40 of 40 points"
+            "Nightlife density contributes 28 of 40 points"
           ],
           "risk_level": "CRITICAL",
-          "risk_score": 100.0,
+          "risk_score": 88.0,
           "start": [
             40.6932,
             -73.981
-          ]
+          ],
+          "to_km": 8.31
         },
         {
           "action": "Avoid driving if possible. Consider alternative transportation.",
           "bucket": "extreme",
           "cell": "882a100da7fffff",
           "coverage": "model",
+          "danger_types": {
+            "band": "weekend_night",
+            "groups": [
+              {
+                "band_share_ratio": 0.96,
+                "id": "impaired",
+                "label": "Impaired driving",
+                "rate_ratio": 14.77,
+                "share_ratio": 2.93,
+                "short": "Impaired",
+                "status": "ok"
+              },
+              {
+                "band_share_ratio": 1.09,
+                "id": "drowsy",
+                "label": "Drowsy driving",
+                "rate_ratio": 10.02,
+                "share_ratio": 1.95,
+                "short": "Drowsy",
+                "status": "ok"
+              },
+              {
+                "id": "distracted",
+                "label": "Distracted driving",
+                "status": "not_validated"
+              },
+              {
+                "band_share_ratio": 0.72,
+                "id": "speeding",
+                "label": "Speeding",
+                "rate_ratio": 5.79,
+                "share_ratio": 1.14,
+                "short": "Speeding",
+                "status": "ok"
+              },
+              {
+                "band_share_ratio": 0.94,
+                "id": "failure_to_yield",
+                "label": "Failure to yield",
+                "rate_ratio": 3.32,
+                "share_ratio": 0.66,
+                "short": "Not yielding",
+                "status": "ok"
+              }
+            ]
+          },
           "end": [
             40.683,
             -73.978
           ],
-          "expected_crashes": 0.00696153,
-          "expected_rate": 0.02061737657863306,
-          "expected_rate_per_km2_hour": 0.027851115688346893,
+          "expected_crashes": 0.00668757,
+          "expected_rate": 0.019806004703810547,
+          "expected_rate_per_km2_hour": 0.026755068775405896,
+          "from_km": 8.31,
           "length_m": 290.5,
           "midpoint": [
-            40.683425,
-            -73.978125
+            40.684275,
+            -73.978375
           ],
-          "model_points": 60.0,
+          "model_points": 50.0,
           "nightlife_points": 40,
-          "percentile": 99.32025935374149,
+          "percentile": 98.9654952890247,
           "reasons": [
-            "0.02062 expected injury/fatal crashes per cell-hour (99th percentile)",
-            "0.0279 expected injury/fatal crashes per km2 per hour",
+            "0.01981 expected injury/fatal crashes per cell-hour (99th percentile)",
+            "0.0268 expected injury/fatal crashes per km2 per hour",
             "Top-decile learned crash risk for this hex and hour",
             "Nightlife density contributes 40 of 40 points"
           ],
           "risk_level": "CRITICAL",
-          "risk_score": 100.0,
+          "risk_score": 90.0,
           "start": [
             40.68555,
             -73.97875
-          ]
+          ],
+          "to_km": 8.6
         }
       ],
       "synthetic": false,
@@ -497,112 +1073,112 @@
         {
           "bucket": "extreme",
           "cell": "882a100d67fffff",
-          "expected_rate": 0.023221961453316894,
-          "lat": 40.753471,
-          "lon": -73.986956,
-          "percentile": 99.61309523809524,
+          "expected_rate": 0.026939672825459747,
+          "lat": 40.755118,
+          "lon": -73.986426,
+          "percentile": 99.76816484169426,
           "risk_level": "CRITICAL",
           "risk_score": 100.0
         },
         {
           "bucket": "extreme",
           "cell": "882a100d2dfffff",
-          "expected_rate": 0.018659104402790203,
-          "lat": 40.746059,
-          "lon": -73.989338,
-          "percentile": 99.01201105442176,
+          "expected_rate": 0.0294964292025425,
+          "lat": 40.749353,
+          "lon": -73.988279,
+          "percentile": 99.89177489177489,
           "risk_level": "CRITICAL",
           "risk_score": 100.0
         },
         {
           "bucket": "extreme",
           "cell": "882a100d21fffff",
-          "expected_rate": 0.0160363586197464,
-          "lat": 40.739187,
-          "lon": -73.991375,
-          "percentile": 98.21109693877551,
+          "expected_rate": 0.016194308500200205,
+          "lat": 40.741812,
+          "lon": -73.990625,
+          "percentile": 97.67740429505136,
           "risk_level": "CRITICAL",
           "risk_score": 90.0
         },
         {
           "bucket": "extreme",
           "cell": "882a100d27fffff",
-          "expected_rate": 0.013340490269772276,
-          "lat": 40.733063,
-          "lon": -73.993125,
-          "percentile": 96.24149659863946,
+          "expected_rate": 0.012081257665674864,
+          "lat": 40.735687,
+          "lon": -73.992375,
+          "percentile": 93.88952550717256,
           "risk_level": "CRITICAL",
           "risk_score": 90.0
         },
         {
           "bucket": "extreme",
           "cell": "882a1072c9fffff",
-          "expected_rate": 0.014622867051907356,
-          "lat": 40.724583,
-          "lon": -73.992556,
-          "percentile": 97.30442176870748,
+          "expected_rate": 0.012252484666429721,
+          "lat": 40.727917,
+          "lon": -73.993444,
+          "percentile": 94.13462354638826,
           "risk_level": "CRITICAL",
           "risk_score": 90.0
         },
         {
           "bucket": "extreme",
           "cell": "882a1072cbfffff",
-          "expected_rate": 0.02701969055706416,
-          "lat": 40.717083,
-          "lon": -73.990556,
-          "percentile": 99.78103741496598,
+          "expected_rate": 0.0299392445561818,
+          "lat": 40.720417,
+          "lon": -73.991444,
+          "percentile": 99.91034292504881,
           "risk_level": "CRITICAL",
           "risk_score": 100.0
         },
         {
           "bucket": "high",
           "cell": "882a1072ddfffff",
-          "expected_rate": 0.008826962633593987,
-          "lat": 40.709583,
-          "lon": -73.987472,
-          "percentile": 87.81675170068027,
+          "expected_rate": 0.009312304778918767,
+          "lat": 40.712917,
+          "lon": -73.989028,
+          "percentile": 87.80398523045582,
           "risk_level": "HIGH",
-          "risk_score": 58.0
+          "risk_score": 70.0
         },
         {
           "bucket": "low",
           "cell": "882a1072d1fffff",
-          "expected_rate": 0.0012268237956562596,
-          "lat": 40.702083,
-          "lon": -73.983972,
-          "percentile": 37.010522959183675,
+          "expected_rate": 0.0014100020555460498,
+          "lat": 40.705417,
+          "lon": -73.985528,
+          "percentile": 39.285714285714285,
           "risk_level": "LOW",
           "risk_score": 16.0
         },
         {
           "bucket": "extreme",
           "cell": "882a1072d3fffff",
-          "expected_rate": 0.01873074632436581,
-          "lat": 40.693625,
-          "lon": -73.981125,
-          "percentile": 99.03008078231292,
+          "expected_rate": 0.015169775188103387,
+          "lat": 40.697025,
+          "lon": -73.982125,
+          "percentile": 97.06041507512096,
+          "risk_level": "CRITICAL",
+          "risk_score": 78.0
+        },
+        {
+          "bucket": "extreme",
+          "cell": "882a100da5fffff",
+          "expected_rate": 0.02052091659618759,
+          "lat": 40.689375,
+          "lon": -73.979875,
+          "percentile": 99.10130718954248,
           "risk_level": "CRITICAL",
           "risk_score": 88.0
         },
         {
           "bucket": "extreme",
-          "cell": "882a100da5fffff",
-          "expected_rate": 0.021252183382298295,
-          "lat": 40.685975,
-          "lon": -73.978875,
-          "percentile": 99.41326530612245,
-          "risk_level": "CRITICAL",
-          "risk_score": 100.0
-        },
-        {
-          "bucket": "extreme",
           "cell": "882a100da7fffff",
-          "expected_rate": 0.02061737657863306,
-          "lat": 40.683425,
-          "lon": -73.978125,
-          "percentile": 99.32025935374149,
+          "expected_rate": 0.019806004703810547,
+          "lat": 40.684275,
+          "lon": -73.978375,
+          "percentile": 98.9654952890247,
           "risk_level": "CRITICAL",
-          "risk_score": 100.0
+          "risk_score": 90.0
         }
       ]
     }
@@ -610,8 +1186,21 @@
   "routing_source": "captured-fake-one",
   "schema_version": "1.0.0",
   "total_routes": 1,
+  "via_alternatives": {
+    "added": 0,
+    "attempted": false,
+    "candidate_count": 0,
+    "enabled": false,
+    "reason": null,
+    "rejected": {
+      "backtrack": 0,
+      "duplicate": 0,
+      "too_long": 0,
+      "unscorable": 0
+    },
+    "returned": 0
+  },
   "warnings": [
-    "Live weather unavailable - missing-value path",
     "Fewer than two distinct routes were returned and no synthetic detour could be scored"
   ]
 }

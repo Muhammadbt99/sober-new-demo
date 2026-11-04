@@ -1,0 +1,26 @@
+{
+  "available": true,
+  "instructions": [
+    {
+      "maneuver": "DEPART",
+      "message": "Leave from Broadway",
+      "offset_m": 0.0,
+      "street": "Broadway"
+    },
+    {
+      "maneuver": "TURN_RIGHT",
+      "message": "Turn right onto 34th Street",
+      "offset_m": 1400.0,
+      "street": "34th Street"
+    },
+    {
+      "maneuver": "ARRIVE",
+      "message": "You have arrived",
+      "offset_m": 3200.0,
+      "street": null
+    }
+  ],
+  "length_m": 3200.0,
+  "schema_version": "1.0.0",
+  "source": "TomTom"
+}

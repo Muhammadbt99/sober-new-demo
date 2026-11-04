@@ -541,5 +541,51 @@ class RiskModel:
             "gate_passed": bool(self.info.gate.get("passed")) if self.info else False,
         }
 
+    def model_card(self) -> dict:
+        """The validation numbers the Method screen shows, read from the artifact.
+
+        Nothing here is typed into the UI, so a retrain cannot leave the page
+        quoting the previous model.
+        """
+        meta = self.metadata
+
+        def split(name: str) -> dict:
+            model = (meta.get("model_metrics") or {}).get(name) or {}
+            baseline = (meta.get("baseline") or {}).get(name) or {}
+            return {
+                "poisson_deviance": model.get("poisson_deviance"),
+                "baseline_deviance": baseline.get("poisson_deviance"),
+                "top_decile_lift": model.get("top_decile_lift"),
+                "baseline_top_decile_lift": baseline.get("top_decile_lift"),
+                "monotonic_deciles": model.get("monotonic_deciles"),
+                "deciles": [
+                    {
+                        "decile": row.get("decile"),
+                        "predicted_rate": row.get("predicted_rate"),
+                        "observed_rate": row.get("observed_rate"),
+                        "lift": row.get("lift"),
+                    }
+                    for row in model.get("calibration") or []
+                ],
+            }
+
+        window = meta.get("training_window") or {}
+        return {
+            "version": meta.get("version"),
+            "created_at": meta.get("created_at"),
+            "target": meta.get("target"),
+            "gate": meta.get("gate"),
+            "training_window": {
+                "start": window.get("start"),
+                "end": window.get("end"),
+                "crashes": window.get("crashes"),
+            },
+            "holdout_borough": (meta.get("split") or {}).get("holdout_borough"),
+            "temporal_test": split("temporal_test"),
+            "holdout": split("holdout"),
+            "cells": meta.get("cell_count"),
+            "prior_rate": meta.get("prior_rate"),
+        }
+
 
 risk_model = RiskModel()

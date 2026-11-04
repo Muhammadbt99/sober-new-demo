@@ -67,7 +67,11 @@ FAKE_WEATHER = {
 
 
 def _fake_country(lat, lon):
-    return "AE" if 22 <= lat <= 27 and 51 <= lon <= 57 else ("GB" if lon > -10 and lat > 49 else "US")
+    if 22 <= lat <= 27 and 51 <= lon <= 57:
+        return "AE"
+    if 16 <= lat <= 32 and 34 <= lon < 51:
+        return "SA"
+    return "GB" if lon > -10 and lat > 49 else "US"
 
 
 @pytest.fixture(autouse=True)

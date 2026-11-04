@@ -6,37 +6,40 @@
     "data_quality": {
       "bars": "offline",
       "model": "live",
-      "weather": "fallback"
+      "weather": "live"
     },
-    "expected_rate": 0.023221961453316894,
-    "expected_rate_per_km2_hour": 0.03132586002647667,
+    "expected_rate": 0.026939672825459747,
+    "expected_rate_per_km2_hour": 0.036340962058090495,
     "lat": 40.758,
     "lon": -73.9855,
     "model_points": 60.0,
-    "model_version": "2026.10.29-1",
+    "model_version": "2026.11.03-1",
     "nightlife_points": 40,
-    "percentile": 99.61309523809524,
+    "percentile": 99.76816484169426,
+    "place": {
+      "area": "Manhattan",
+      "name": "Midtown-Times Square",
+      "source": "neighbourhood"
+    },
     "reasons": [
-      "0.02322 expected injury/fatal crashes per cell-hour (100th percentile)",
-      "0.0313 expected injury/fatal crashes per km2 per hour",
+      "0.02694 expected injury/fatal crashes per cell-hour (100th percentile)",
+      "0.0363 expected injury/fatal crashes per km2 per hour",
       "Top-decile learned crash risk for this hex and hour",
       "Nightlife density contributes 40 of 40 points"
     ],
     "risk_breakdown": {
-      "expected_rate": 0.023221961453316894,
-      "expected_rate_per_km2_hour": 0.03132586002647667,
+      "expected_rate": 0.026939672825459747,
+      "expected_rate_per_km2_hour": 0.036340962058090495,
       "model": 60.0,
       "model_max": 60,
       "nightlife": 40,
       "nightlife_max": 40,
-      "percentile": 99.61309523809524,
+      "percentile": 99.76816484169426,
       "total": 100.0
     },
     "risk_level": "CRITICAL",
     "risk_score": 100.0,
-    "warnings": [
-      "Live weather unavailable - the model used a missing-value path"
-    ]
+    "warnings": []
   },
   "location_b": {
     "action": "Avoid driving if possible. Consider alternative transportation.",
@@ -45,40 +48,43 @@
     "data_quality": {
       "bars": "offline",
       "model": "live",
-      "weather": "fallback"
+      "weather": "live"
     },
-    "expected_rate": 0.02061737657863306,
-    "expected_rate_per_km2_hour": 0.027851115688346893,
+    "expected_rate": 0.019806004703810547,
+    "expected_rate_per_km2_hour": 0.026755068775405896,
     "lat": 40.6829,
     "lon": -73.9776,
-    "model_points": 60.0,
-    "model_version": "2026.10.29-1",
+    "model_points": 50.0,
+    "model_version": "2026.11.03-1",
     "nightlife_points": 40,
-    "percentile": 99.32025935374149,
+    "percentile": 98.9654952890247,
+    "place": {
+      "area": "Brooklyn",
+      "name": "Park Slope",
+      "source": "neighbourhood"
+    },
     "reasons": [
-      "0.02062 expected injury/fatal crashes per cell-hour (99th percentile)",
-      "0.0279 expected injury/fatal crashes per km2 per hour",
+      "0.01981 expected injury/fatal crashes per cell-hour (99th percentile)",
+      "0.0268 expected injury/fatal crashes per km2 per hour",
       "Top-decile learned crash risk for this hex and hour",
       "Nightlife density contributes 40 of 40 points"
     ],
     "risk_breakdown": {
-      "expected_rate": 0.02061737657863306,
-      "expected_rate_per_km2_hour": 0.027851115688346893,
-      "model": 60.0,
+      "expected_rate": 0.019806004703810547,
+      "expected_rate_per_km2_hour": 0.026755068775405896,
+      "model": 50.0,
       "model_max": 60,
       "nightlife": 40,
       "nightlife_max": 40,
-      "percentile": 99.32025935374149,
-      "total": 100.0
+      "percentile": 98.9654952890247,
+      "total": 90.0
     },
     "risk_level": "CRITICAL",
-    "risk_score": 100.0,
-    "warnings": [
-      "Live weather unavailable - the model used a missing-value path"
-    ]
+    "risk_score": 90.0,
+    "warnings": []
   },
-  "recommendation": "Both locations have equal risk",
-  "risk_difference": 0.0,
-  "safer_location": "EQUAL",
+  "recommendation": "Location B is safer by 10.0 points",
+  "risk_difference": 10.0,
+  "safer_location": "B",
   "schema_version": "1.0.0"
 }

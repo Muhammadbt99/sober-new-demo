@@ -2,11 +2,35 @@
   "checks": {
     "crash_risk_model": {
       "available": true,
-      "cells": 1120,
+      "cells": 1122,
       "error": null,
       "gate_passed": true,
       "status": "approved",
-      "version": "2026.10.29-1"
+      "version": "2026.11.03-1"
+    },
+    "danger_types": {
+      "available": true,
+      "error": null,
+      "validated": [
+        "impaired",
+        "drowsy",
+        "speeding",
+        "failure_to_yield"
+      ],
+      "version": "danger-types-2026.11.03-2"
+    },
+    "global_model": {
+      "available": true,
+      "error": null,
+      "gate_passed": true,
+      "regions": {
+        "uae": {
+          "cells": 33989,
+          "name": "United Arab Emirates",
+          "reference_cells": 1552
+        }
+      },
+      "version": "global-2026.11.04-1"
     },
     "indexes": {
       "bars": "ok",
@@ -14,9 +38,26 @@
       "safe_stops": "ok"
     },
     "providers": {
+      "context_model": "context-2 (outside NYC)",
+      "nightlife": "overpass-europe -> overpass-britain -> overpass -> overpass-coffee -> overpass-vk -> photon",
       "osrm": "http://router.project-osrm.org",
+      "places": "photon -> nominatim (OpenStreetMap)",
+      "provider_state": {
+        "met-norway": "ok",
+        "nominatim": "ok",
+        "open-meteo": "ok",
+        "overpass": "paused 299s",
+        "overpass-britain": "ok",
+        "overpass-coffee": "ok",
+        "overpass-europe": "ok",
+        "overpass-vk": "ok",
+        "photon": "ok",
+        "weatherapi": "ok"
+      },
       "routing_chain": "osrm-public -> osrm-fossgis -> valhalla-fossgis -> brouter -> graphhopper (disabled) -> ors (disabled)",
-      "weather_api_key": "missing"
+      "weather_api_key": "missing",
+      "weather_chain": "open-meteo -> met-norway",
+      "weather_last": "open-meteo"
     },
     "severity_model": "ok"
   },
@@ -29,23 +70,29 @@
     ],
     "model_area": "New York City"
   },
-  "endpoint_count": 15,
+  "endpoint_count": 21,
   "endpoints": [
-    "/health",
-    "/risk",
-    "/safe_route",
-    "/heatmap",
-    "/stats",
     "/alerts",
     "/alerts/check_location",
-    "/ml/stats",
-    "/ml/severity",
+    "/danger_types",
+    "/geocode",
+    "/global_model",
+    "/health",
+    "/heatmap",
+    "/hotspots",
     "/ml/confusion_matrix",
     "/ml/feature_importance",
-    "/risk/trend",
-    "/hotspots",
+    "/ml/severity",
+    "/ml/stats",
+    "/model_card",
     "/nearest_safe",
-    "/risk/compare"
+    "/risk",
+    "/risk/compare",
+    "/risk/trend",
+    "/safe_route",
+    "/stats",
+    "/surface",
+    "/surface/global"
   ],
   "schema_version": "1.0.0",
   "status": "ok"

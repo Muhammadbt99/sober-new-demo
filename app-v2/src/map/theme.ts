@@ -46,6 +46,15 @@ const DAY: Record<string, string> = {
   // land in the NYC extract, buildings
   "#0f2334": "#f1eee8",
   "#0e1824": "#e2dcd2",
+  // Overture buildings, their outlines, and school or hospital grounds
+  "#1b2a3b": "#d3cabb",
+  "#2d4058": "#b8ad9b",
+  "#2a2f45": "#eadff0",
+  // labels: road and place names, water names, landmarks, then the halo behind them
+  "#d9e3ee": "#2f3a47",
+  "#8fc1e0": "#2f6f9f",
+  "#b6c2d0": "#5a6573",
+  "#0a1320": "#ffffff",
   // roads: casing, then motorway to service
   "#03121c": "#cdc6ba",
   "#49657f": "#fbe8b8",

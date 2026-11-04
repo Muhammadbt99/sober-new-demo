@@ -1128,6 +1128,21 @@ button {
   display: none;
 }
 
+.explore-shortcut-group {
+  display: grid;
+  grid-template-columns: 38px minmax(0, 1fr);
+  align-items: center;
+  gap: 6px;
+}
+
+.explore-shortcut-label {
+  color: var(--color-faint, #8a97a8);
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
 .explore-shortcuts {
   display: flex;
   gap: 5px;
@@ -1203,4 +1218,479 @@ button {
   color: var(--color-faint, #8a97a8);
   font-size: 10px;
   font-style: normal;
+}
+
+/* ------------------------------------------------- danger types (idea 1) */
+
+.danger-card {
+  display: grid;
+  gap: 10px;
+}
+
+.danger-list {
+  display: grid;
+  gap: 5px;
+}
+
+.danger-row {
+  border: 1px solid var(--color-line-soft, rgba(255, 255, 255, 0.06));
+  border-radius: 9px;
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.danger-row[data-call="higher"] {
+  border-color: rgba(255, 82, 104, 0.35);
+  background: rgba(255, 82, 104, 0.05);
+}
+
+.danger-line {
+  display: grid;
+  grid-template-columns: 22px minmax(0, 1fr) auto auto 12px;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 9px;
+  list-style: none;
+  cursor: pointer;
+}
+
+.danger-line::-webkit-details-marker {
+  display: none;
+}
+
+.danger-line:focus-visible {
+  outline: 2px solid var(--color-brand);
+  outline-offset: -2px;
+  border-radius: 9px;
+}
+
+.danger-row.is-thin .danger-line {
+  grid-template-columns: 22px auto minmax(0, 1fr);
+  cursor: default;
+}
+
+.danger-icon {
+  display: grid;
+  place-items: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 99px;
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.danger-name {
+  overflow: hidden;
+  font-size: 12.5px;
+  font-weight: 500;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.danger-call {
+  padding: 1px 7px;
+  border-radius: 99px;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+}
+
+.danger-call.is-higher {
+  background: rgba(255, 82, 104, 0.16);
+  color: #ff8794;
+}
+
+.danger-call.is-usual {
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--color-muted, #a9b4c2);
+}
+
+.danger-call.is-lower {
+  background: rgba(89, 227, 176, 0.13);
+  color: #6fe6b9;
+}
+
+.danger-ratio {
+  min-width: 3.4em;
+  color: var(--color-ink, #f4f0e6);
+  font-size: 13px;
+  font-weight: 600;
+  text-align: right;
+}
+
+.danger-chevron {
+  color: var(--color-faint, #8a97a8);
+  transition: transform 150ms ease;
+}
+
+.danger-row[open] .danger-chevron {
+  transform: rotate(90deg);
+}
+
+.danger-detail {
+  margin: 0;
+  padding: 0 10px 8px 39px;
+  color: var(--color-muted, #a9b4c2);
+  font-size: 11px;
+  line-height: 1.45;
+}
+
+.danger-detail .mono {
+  color: var(--color-ink, #f4f0e6);
+}
+
+.danger-dim {
+  color: var(--color-faint, #8a97a8);
+  font-size: 10.5px;
+  line-height: 1.4;
+}
+
+.danger-note {
+  margin: 0;
+}
+
+.danger-layers {
+  display: grid;
+  gap: 6px;
+}
+
+.danger-layers .eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.danger-layer-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+
+.danger-layer-buttons .chip {
+  cursor: pointer;
+}
+
+.danger-layer-buttons .chip[data-active] {
+  border-color: var(--color-brand);
+  color: var(--color-ink);
+}
+
+.map-legend .legend-title {
+  margin-bottom: 2px;
+  color: var(--color-muted, #a9b4c2);
+  font-size: 10.5px;
+  letter-spacing: 0.04em;
+}
+
+/* Danger chips on a route stretch */
+.segment-dangers {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+
+.segment-danger {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 3px 8px;
+  border: 1px solid var(--color-line-soft, rgba(255, 255, 255, 0.08));
+  border-radius: 99px;
+  font-size: 10.5px;
+}
+
+.segment-danger[data-high] {
+  border-color: rgba(255, 82, 104, 0.4);
+  color: #ff9aa5;
+}
+
+.danger-table td.gate-pass,
+.danger-table td.gate-fail {
+  white-space: nowrap;
+}
+
+.danger-table td.gate-pass {
+  color: #1f7a55;
+}
+
+.danger-table td.gate-fail {
+  color: #b23a48;
+}
+
+.danger-table svg {
+  display: inline;
+  vertical-align: -2px;
+}
+
+.method-prose p + p {
+  margin-top: 10px;
+}
+
+/* ------------------------------------------------- method: global model */
+
+.gate-checks li {
+  display: flex;
+  align-items: flex-start;
+  gap: 7px;
+}
+
+.gate-checks svg {
+  flex: none;
+  margin-top: 2px;
+}
+
+.gate-checks .is-pass {
+  color: #2f9e6e;
+}
+
+.gate-checks .is-fail {
+  color: #d6455d;
+}
+
+.method-prose.method-aside {
+  margin-top: 18px;
+}
+
+/* --------------------------------------------------------------- layout */
+
+/* The panel, the dock and the map controls share the screen by rule, not by
+   luck: the dock lives in the map area beside the panel, so neither covers the
+   other at any width, and the panel can take the full height. */
+.app-shell {
+  --panel-width: clamp(350px, 26vw, 430px);
+  --edge: 20px;
+  --map-controls: 66px;
+}
+
+.planner-panel,
+.explore-panel {
+  bottom: 44px;
+  left: var(--edge);
+  width: var(--panel-width);
+}
+
+.time-dock {
+  right: var(--map-controls);
+  left: calc(var(--edge) + var(--panel-width) + 16px);
+  width: auto;
+  max-width: 640px;
+  margin-inline: auto;
+  transform: none;
+  container-type: inline-size;
+}
+
+.maplibregl-ctrl-bottom-left {
+  left: var(--edge);
+}
+
+.maplibregl-ctrl-bottom-left .maplibregl-ctrl-attrib {
+  max-width: var(--panel-width);
+}
+
+.sheet-toggle {
+  display: none;
+}
+
+/* A narrow dock, wherever it is: the hour beside the slider, the days below. */
+@container (max-width: 600px) {
+  .time-dock-inner {
+    grid-template-columns: auto minmax(0, 1fr);
+    gap: 8px 12px;
+    padding: 9px 12px;
+  }
+
+  .time-readout {
+    padding-right: 12px;
+  }
+
+  .time-readout .eyebrow,
+  .time-readout-value span,
+  .time-presets {
+    display: none;
+  }
+
+  .time-side {
+    grid-column: 1 / -1;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .day-row {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .now-button {
+    flex: none;
+    width: auto;
+    padding: 0 8px;
+    white-space: nowrap;
+  }
+}
+
+/* Short laptop screens: the trip and its routes outrank the page furniture. */
+@media (min-width: 901px) and (max-height: 800px) {
+  .planner-panel,
+  .explore-panel {
+    top: 74px;
+    bottom: 36px;
+  }
+
+  .panel-head {
+    padding: 12px 16px 10px;
+  }
+
+  .map-legend {
+    bottom: 150px;
+  }
+}
+
+/* Large monitors: scale the interface with the room it has. */
+@media (min-width: 2200px) {
+  .topbar,
+  .planner-panel,
+  .explore-panel,
+  .time-dock,
+  .map-legend,
+  .present-rail,
+  .paper-wrap {
+    zoom: 1.25;
+  }
+
+  .app-shell {
+    --panel-width: 416px;
+  }
+
+  .method-screen {
+    top: 80px;
+  }
+}
+
+/* Tablets and phones: the panel is a sheet above the dock, and it can be put
+   away so the map is reachable. */
+@media (max-width: 900px) {
+  .app-shell {
+    --edge: 10px;
+    --dock-room: 120px;
+    --sheet-height: 50dvh;
+  }
+
+  .planner-panel,
+  .explore-panel {
+    top: auto;
+    right: var(--edge);
+    bottom: calc(var(--dock-room) + env(safe-area-inset-bottom));
+    left: var(--edge);
+    width: auto;
+    height: var(--sheet-height);
+  }
+
+  .app-shell[data-sheet="closed"] .planner-panel,
+  .app-shell[data-sheet="closed"] .explore-panel {
+    display: none;
+  }
+
+  .time-dock {
+    right: var(--edge);
+    bottom: calc(10px + env(safe-area-inset-bottom));
+    left: var(--edge);
+    max-width: none;
+  }
+
+  .maplibregl-ctrl-bottom-left,
+  .maplibregl-ctrl-bottom-right {
+    bottom: calc(var(--dock-room) - 6px + env(safe-area-inset-bottom));
+  }
+
+  .sheet-toggle {
+    position: absolute;
+    z-index: 26;
+    bottom: calc(var(--dock-room) + var(--sheet-height) - 13px + env(safe-area-inset-bottom));
+    left: 50%;
+    display: grid;
+    width: 56px;
+    height: 26px;
+    place-items: center;
+    border: 1px solid var(--color-line);
+    border-radius: 13px;
+    background: var(--color-panel-2);
+    color: var(--color-ink);
+    transform: translateX(-50%);
+  }
+
+  .app-shell[data-sheet="closed"] .sheet-toggle {
+    bottom: calc(var(--dock-room) - 2px + env(safe-area-inset-bottom));
+  }
+
+  .app-shell[data-present] .sheet-toggle {
+    display: none;
+  }
+
+  .paper-table {
+    display: block;
+    overflow-x: auto;
+  }
+}
+
+.route-slow-note {
+  color: var(--color-muted);
+  font-size: 12px;
+}
+
+/* A flex child will not shrink below its content without this, so a long
+   formula ran off a phone screen instead of scrolling inside its card. */
+.formula-card > :not(svg) {
+  min-width: 0;
+}
+
+.time-dock .day-button {
+  display: grid;
+  height: 33px;
+  place-content: center;
+  gap: 1px;
+  line-height: 1;
+}
+
+.day-letter {
+  font-size: 9.5px;
+  opacity: 0.75;
+}
+
+.day-date {
+  font-size: 11.5px;
+  font-weight: 600;
+}
+
+.day-button.is-today:not(.is-active) .day-date {
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.traffic-note {
+  margin: 0 0 7px;
+  color: var(--color-muted);
+  font-size: 11px;
+}
+
+.traffic-note.is-live::before {
+  content: "";
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  margin-right: 6px;
+  border-radius: 50%;
+  background: currentcolor;
+  vertical-align: 1px;
+}
+
+.traffic-note.is-none {
+  color: var(--color-ink);
+}
+
+.route-recommended {
+  margin-left: 6px;
+  border: 1px solid currentcolor;
+  border-radius: 3px;
+  padding: 1px 4px;
+  font-size: 9.5px;
 }

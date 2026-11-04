@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Clock3, Sun } from "lucide-react";
 
-import { DAY_NAMES, DAY_SHORT, formatHour, formatHour12 } from "@/lib/risk";
+import { DAY_SHORT, formatDateFor, formatHour, formatHour12, upcomingDays } from "@/lib/risk";
 import { cn } from "@/lib/utils";
 
 type TimeDockProps = {
@@ -54,7 +54,8 @@ export function TimeDock({
           <div className="time-readout-value">
             <strong className="mono">{formatHour(draftHour)}</strong>
             <span>
-              {DAY_NAMES[day]} · {formatHour12(draftHour)}
+              {/* "Today" or "Tomorrow" is enough here: the day buttons show the date. */}
+              {formatDateFor(day, draftHour, now).split(",")[0]} · {formatHour12(draftHour)}
             </span>
           </div>
         </div>
@@ -108,21 +109,29 @@ export function TimeDock({
         </div>
 
         <div className="time-side">
-          <div className="day-row" role="group" aria-label="Day of week">
-            {DAY_SHORT.map((label, index) => (
-              <button
-                key={label}
-                type="button"
-                className={cn("day-button", day === index && "is-active")}
-                aria-pressed={day === index}
-                aria-label={DAY_NAMES[index]}
-                onClick={() => onChange({ day: index })}
-                disabled={disabled}
-                title={DAY_NAMES[index]}
-              >
-                {label.slice(0, 1)}
-              </button>
-            ))}
+          <div className="day-row" role="group" aria-label="Day, starting today">
+            {upcomingDays(now).map((item) => {
+              const label = formatDateFor(item.day, draftHour, now);
+              return (
+                <button
+                  key={item.day}
+                  type="button"
+                  className={cn(
+                    "day-button",
+                    day === item.day && "is-active",
+                    item.isToday && "is-today",
+                  )}
+                  aria-pressed={day === item.day}
+                  aria-label={label}
+                  onClick={() => onChange({ day: item.day })}
+                  disabled={disabled}
+                  title={label}
+                >
+                  <span className="day-letter">{DAY_SHORT[item.day]?.slice(0, 2)}</span>
+                  <span className="day-date">{item.date}</span>
+                </button>
+              );
+            })}
           </div>
           <div className="now-row">
             <button

@@ -148,6 +148,26 @@ export function StatusPopover({
                     }
                   />
                   <Row label="Modelled cells" value={<span className="mono">{crash.cells.toLocaleString()}</span>} />
+                  {data.checks.global_model && (
+                    <Row
+                      label="Global crash model"
+                      tone={data.checks.global_model.available ? "ok" : "warn"}
+                      value={
+                        data.checks.global_model.available ? (
+                          <>
+                            <span className="mono">{data.checks.global_model.version}</span>
+                            <span>
+                              {Object.values(data.checks.global_model.regions ?? {})
+                                .map((region) => `${region.name} · ${region.cells.toLocaleString()} cells`)
+                                .join(", ")}
+                            </span>
+                          </>
+                        ) : (
+                          data.checks.global_model.error ?? "unavailable"
+                        )
+                      }
+                    />
+                  )}
                   <Row
                     label="Severity model"
                     tone={data.checks.severity_model === "ok" ? "ok" : "warn"}

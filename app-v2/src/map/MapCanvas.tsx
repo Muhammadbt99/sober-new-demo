@@ -1,6 +1,8 @@
 import { useEffect, useRef, useState } from "react";
 import * as maplibregl from "maplibre-gl";
+import { Satellite } from "lucide-react";
 import type {
+  ExpressionSpecification,
   GeoJSONSource,
   Map as MapLibreMap,
   MapMouseEvent,
@@ -15,15 +17,33 @@ import { cellToBoundary } from "h3-js";
 
 import type { Coverage, Hotspot, RiskLevel, Route, SafeStop } from "@/lib/contract";
 import type { Point } from "@/lib/api";
-import { RISK_COLORS, formatDuration } from "@/lib/risk";
+import { RISK_COLORS, formatDuration, formatPercent } from "@/lib/risk";
+import { LAYER_STEPS, dangerMeta } from "@/lib/danger";
 import { segmentPaths, type LonLat } from "@/lib/route-geometry";
 import { routeLabel } from "@/lib/routes";
 import { stopKey, stopMeta } from "@/lib/stops";
 import { SunLighting } from "@/map/SunLighting";
 import { globeFramingAt, subsolarPoint } from "@/map/sun";
 import { WORLD_COORDINATES, paintNightTexture, sunElevation } from "@/map/daynight";
+import { SATELLITE_TILES } from "@/lib/api";
+import { cn } from "@/lib/utils";
+import { LABEL_LAYERS } from "@/map/basemap-style";
 import { applyBasemapTheme, themedStyle, type MapTheme } from "@/map/theme";
+import { DriveMode, type DriveTrip } from "@/features/drive/DriveMode";
 
+// Off during a drive: the road and its own colours are the whole picture.
+const DRIVE_HIDDEN_LAYERS = [
+  "risk-hexes-fill",
+  "risk-hexes-outline",
+  "risk-hexes-selected",
+  "hotspots-dots",
+  "route-alt-casing",
+  "route-alt-line",
+  "safe-stops-dots",
+];
+
+const SATELLITE_SOURCE = "satellite";
+const SATELLITE_LAYER = "satellite-imagery";
 const RISK_SOURCE = "risk-hexes";
 const RISK_FILL = "risk-hexes-fill";
 const RISK_OUTLINE = "risk-hexes-outline";
@@ -74,12 +94,23 @@ function applyDataTheme(map: MapLibreMap, theme: MapTheme, dim = false) {
   // The surface now tiles the whole city, so it is drawn lighter than the old
   // scattered sample was: the streets have to stay readable under it.
   const fill = dim ? (light ? 0.14 : 0.1) : light ? 0.3 : 0.22;
-  set(RISK_FILL, "fill-opacity", ["case", ["==", ["get", "coverage"], "rule_based_only"], light ? 0.12 : 0.08, fill]);
+  set(RISK_FILL, "fill-opacity", hexOpacity(light ? 0.12 : 0.08, fill));
   set(RISK_OUTLINE, "line-opacity", dim ? (light ? 0.22 : 0.14) : light ? 0.5 : 0.3);
   set(RISK_SELECTED, "line-color", light ? "#15181b" : "#f4f0e6");
   set(SELECTED_LINE, "line-color", light ? "#15181b" : "#ffffff");
   set(ALT_CASING, "line-color", light ? "#ffffff" : "#020407");
   set(ALT_CASING, "line-opacity", light ? 0.8 : 0.55);
+}
+
+/** Hexes fade at street zoom, where the streets under them are the point. */
+function hexOpacity(uncovered: number, covered: number): ExpressionSpecification {
+  const at = (scale: number): ExpressionSpecification => [
+    "case",
+    ["==", ["get", "coverage"], "rule_based_only"],
+    uncovered * scale,
+    covered * scale,
+  ];
+  return ["interpolate", ["linear"], ["zoom"], 13.5, at(1), 16, at(0.35)];
 }
 
 // Must be set before the first Map is constructed; the worker pool is global.
@@ -123,6 +154,10 @@ export type MapCell = {
   risk_score: number | null;
   percentile: number | null;
   coverage: Coverage;
+  /** With a danger layer on: expected rate of that kind of crash vs a typical cell-hour. */
+  danger_rate_ratio?: number | null;
+  /** "global_model" for the global crash model's cells (the UAE). */
+  source?: string;
 };
 
 type MapCanvasProps = {
@@ -158,6 +193,11 @@ type MapCanvasProps = {
   compareTarget: Point | null;
   /** While true the next click chooses place B and must not move the point. */
   picking: boolean;
+  /** Explore: colour the hexes by one kind of crash instead of overall risk. */
+  dangerLayer?: string | null;
+  /** The route being driven in the road simulation, if any. */
+  drive?: DriveTrip | null;
+  onDriveEnd?: () => void;
 };
 
 type FeatureCollection = {
@@ -216,6 +256,9 @@ function hexCollection(cells: MapCell[]): FeatureCollection {
         score: cell.risk_score,
         percentile: cell.percentile,
         coverage: cell.coverage,
+        source: cell.source ?? null,
+        // -1 marks "no value" (thin data, or no layer), which the colour ramp greys out.
+        danger: cell.danger_rate_ratio ?? -1,
       },
       geometry: { type: "Polygon", coordinates: [ring] },
     });
@@ -347,6 +390,23 @@ function fillColorExpression() {
       RISK_COLORS.UNKNOWN,
     ],
   ];
+}
+
+/** Colour of a danger-layer value (see LAYER_STEPS). */
+function dangerStepColor(value: number): string {
+  for (const step of LAYER_STEPS) {
+    if (step.upTo === null || value < step.upTo) return step.color;
+  }
+  return LAYER_STEPS[LAYER_STEPS.length - 1]!.color;
+}
+
+function dangerColorExpression() {
+  const stops: unknown[] = [];
+  LAYER_STEPS.forEach((step, index) => {
+    if (index > 0) stops.push(LAYER_STEPS[index - 1]!.upTo);
+    stops.push(step.color);
+  });
+  return ["case", ["<", ["get", "danger"], 0], "#4d5a6b", ["step", ["get", "danger"], ...stops]];
 }
 
 function routeBounds(routes: Route[], selectedRoute: number) {
@@ -737,6 +797,9 @@ export function MapCanvas({
   onSelectStop,
   compareTarget,
   picking,
+  dangerLayer = null,
+  drive = null,
+  onDriveEnd = () => {},
 }: MapCanvasProps) {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const mapRef = useRef<MapLibreMap | null>(null);
@@ -744,6 +807,7 @@ export function MapCanvas({
   const chipMarkersRef = useRef<maplibregl.Marker[]>([]);
   const compareMarkersRef = useRef<maplibregl.Marker[]>([]);
   const [ready, setReady] = useState(false);
+  const [satellite, setSatellite] = useState(false);
   const sunTimeRef = useRef(sunTime);
   sunTimeRef.current = sunTime;
   const callbacksRef = useRef({
@@ -765,6 +829,8 @@ export function MapCanvas({
   /** Explore owns the hover labels; Plan dims the surface under its routes. */
   const exploreModeRef = useRef(exploreMode);
   exploreModeRef.current = exploreMode;
+  const dangerLayerRef = useRef(dangerLayer);
+  dangerLayerRef.current = dangerLayer;
   const pointMarkerRef = useRef<maplibregl.Marker | null>(null);
   const tipRef = useRef<maplibregl.Popup | null>(null);
   /** The last place a reveal flew to, so the explore pan does not fight it. */
@@ -793,7 +859,7 @@ export function MapCanvas({
       center: globeFramingAt(new Date(sunTimeRef.current)),
       zoom: globeZoom(),
       minZoom: 0.3,
-      maxZoom: 16,
+      maxZoom: 18,
       attributionControl: false,
       pitchWithRotate: false,
       dragRotate: false,
@@ -904,6 +970,21 @@ export function MapCanvas({
           marker.setOpacity(visible ? 1 : 0);
         });
       });
+      // Off until asked for: tiles are only fetched while the layer is visible.
+      map.addSource(SATELLITE_SOURCE, {
+        type: "raster",
+        tiles: [SATELLITE_TILES],
+        tileSize: 256,
+        maxzoom: 19,
+        attribution: "Satellite © TomTom",
+      });
+      map.addLayer({
+        id: SATELLITE_LAYER,
+        type: "raster",
+        source: SATELLITE_SOURCE,
+        minzoom: 5,
+        layout: { visibility: "none" },
+      });
       map.addSource(RISK_SOURCE, { type: "geojson", data: emptyCollection() });
       map.addSource(HOTSPOT_SOURCE, { type: "geojson", data: emptyCollection() });
       map.addSource(SEGMENT_SOURCE, { type: "geojson", data: emptyCollection() });
@@ -946,12 +1027,7 @@ export function MapCanvas({
         source: RISK_SOURCE,
         paint: {
           "fill-color": fillColorExpression() as never,
-          "fill-opacity": [
-            "case",
-            ["==", ["get", "coverage"], "rule_based_only"],
-            0.08,
-            0.28,
-          ],
+          "fill-opacity": hexOpacity(0.08, 0.28),
         },
       });
       map.addLayer({
@@ -1118,6 +1194,11 @@ export function MapCanvas({
           }
         }
       });
+      // The data layers were added after the style, so lift the names back over them.
+      for (const id of LABEL_LAYERS) {
+        if (map.getLayer(id)) map.moveLayer(id);
+      }
+
       for (const layer of [RISK_FILL, SEGMENT_LINE, ALT_LINE, STOP_LAYER, HOTSPOT_LAYER]) {
         map.on("mouseenter", layer, () => {
           map.getCanvas().style.cursor = pickingRef.current ? "crosshair" : "pointer";
@@ -1138,6 +1219,7 @@ export function MapCanvas({
       });
       tipRef.current = tip;
       let tipCell: string | null = null;
+      let tipLayer: string | null = null;
       map.on("mousemove", RISK_FILL, (event: MapMouseEvent & { features?: maplibregl.MapGeoJSONFeature[] }) => {
         if (!exploreModeRef.current || pickingRef.current) {
           tip.remove();
@@ -1147,7 +1229,8 @@ export function MapCanvas({
         const props = event.features?.[0]?.properties;
         if (!props) return;
         tip.setLngLat(event.lngLat);
-        if (props.cell !== tipCell) {
+        if (props.cell !== tipCell || tipLayer !== dangerLayerRef.current) {
+          tipLayer = dangerLayerRef.current;
           tipCell = String(props.cell);
           const named = typeof props.name === "string" && props.name && props.name !== "null";
           const level = String(props.level) as RiskLevel;
@@ -1157,12 +1240,24 @@ export function MapCanvas({
           const title = document.createElement("strong");
           title.textContent = named
             ? String(props.name)
-            : props.coverage === "context"
-              ? "Global estimate (sampled)"
-              : "Model cell";
+            : props.source === "global_model"
+              ? `Global crash model · ${formatPercent(Number(props.percentile))} percentile`
+              : props.coverage === "context"
+                ? "Global estimate (sampled)"
+                : "Model cell";
           const line = document.createElement("span");
-          line.textContent = Number.isFinite(score) ? `${level} · ${Math.round(score)} / 100` : level;
-          line.style.color = RISK_COLORS[level] ?? "";
+          const layer = dangerLayerRef.current;
+          const danger = Number(props.danger);
+          if (layer) {
+            line.textContent =
+              danger >= 0
+                ? `${dangerMeta(layer).short}: ${danger.toFixed(1)}× a typical NYC hour`
+                : `${dangerMeta(layer).short}: not enough data`;
+            line.style.color = danger >= 0 ? dangerStepColor(danger) : "";
+          } else {
+            line.textContent = Number.isFinite(score) ? `${level} · ${Math.round(score)} / 100` : level;
+            line.style.color = RISK_COLORS[level] ?? "";
+          }
           const hint = document.createElement("em");
           hint.textContent = "Click to see why";
           body.append(title, line, hint);
@@ -1270,6 +1365,12 @@ export function MapCanvas({
     const source = map.getSource(STOP_SOURCE) as GeoJSONSource | undefined;
     source?.setData(stopCollection(stops, selectedStopKey) as never);
   }, [stops, selectedStopKey, ready]);
+
+  useEffect(() => {
+    const map = mapRef.current;
+    if (!map || !ready || !map.getLayer(SATELLITE_LAYER)) return;
+    map.setLayoutProperty(SATELLITE_LAYER, "visibility", satellite ? "visible" : "none");
+  }, [ready, satellite]);
 
   useEffect(() => {
     // The sun moved (the live clock ticked, or the dock hour changed): repaint
@@ -1652,6 +1753,16 @@ export function MapCanvas({
   }, [point.lat, point.lon, ready, fitRoutesKey, exploreMode]);
 
   useEffect(() => {
+    // A danger layer recolours the hexes by one kind of crash; off, they show
+    // overall risk again.
+    const map = mapRef.current;
+    if (!map || !ready || !map.getLayer(RISK_FILL)) return;
+    const colour = dangerLayer ? dangerColorExpression() : fillColorExpression();
+    map.setPaintProperty(RISK_FILL, "fill-color", colour as never);
+    map.setPaintProperty(RISK_OUTLINE, "line-color", colour as never);
+  }, [dangerLayer, ready]);
+
+  useEffect(() => {
     // The surface is the subject in Explore and the backdrop in Plan.
     const map = mapRef.current;
     if (!map || !ready) return;
@@ -1727,6 +1838,26 @@ export function MapCanvas({
         aria-label="New York City risk map. Risk hexes, crash hotspots and planned routes."
       />
       <SunLighting map={ready ? mapRef.current : null} sunTime={sunTime} />
+      {ready && (
+        <button
+          type="button"
+          className={cn("map-satellite", satellite && "is-active")}
+          aria-pressed={satellite}
+          title={satellite ? "Back to the street map" : "Show satellite imagery"}
+          onClick={() => setSatellite((value) => !value)}
+        >
+          <Satellite size={14} aria-hidden="true" />
+          Satellite
+        </button>
+      )}
+      {ready && drive && mapRef.current && (
+        <DriveMode
+          map={mapRef.current}
+          trip={drive}
+          hiddenLayers={DRIVE_HIDDEN_LAYERS}
+          onExit={onDriveEnd}
+        />
+      )}
     </div>
   );
 }

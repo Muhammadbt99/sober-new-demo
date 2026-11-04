@@ -1,4 +1,4 @@
-import type { StyleSpecification } from "maplibre-gl";
+import type { ExpressionSpecification, StyleSpecification } from "maplibre-gl";
 
 /**
  * Two basemaps share one style.
@@ -10,16 +10,28 @@ import type { StyleSpecification } from "maplibre-gl";
  *    offline, higher-detail basemap and never depends on the network for the
  *    route view.
  *
- * The style deliberately has no symbol layers. MapLibre would need a glyph
- * endpoint for labels, and a glyph request is exactly the kind of network
- * dependency the offline demo must not have. Road hierarchy, water, parks and
- * borough boundaries carry the geography instead.
+ * Labels need a glyph endpoint. If those fonts cannot be fetched the labels are
+ * simply missing and everything else still draws, so the map degrades instead
+ * of breaking. Names are English or Latin only: MapLibre shapes Arabic properly
+ * only with an extra plugin, and unshaped Arabic reads as broken text.
  *
  * The global stack is OpenMapTiles schema; the local extract is Protomaps
  * schema. That is why the two groups filter on different property names.
  */
 export const BASEMAP_URL = "pmtiles:///basemap/nyc.pmtiles";
 export const PLANET_TILEJSON = "https://tiles.openfreemap.org/planet";
+/**
+ * OpenStreetMap, Microsoft and Google footprints merged, so places volunteers
+ * have not mapped still have their buildings. The Sharjah streets around one
+ * school had 35 buildings in OpenStreetMap alone, against 398 at Dubai Marina.
+ * Each Overture release is a new address, and old ones are eventually removed:
+ * if this stops loading the map keeps its OpenStreetMap buildings. Update the
+ * date from https://docs.overturemaps.org/examples/overture-tiles/
+ */
+export const OVERTURE_RELEASE = "2026-10-21.0";
+export const OVERTURE_BUILDINGS = `pmtiles://https://overturemaps-extras-us-west-2.s3.us-west-2.amazonaws.com/tiles/${OVERTURE_RELEASE}/buildings.pmtiles`;
+export const OVERTURE_ATTRIBUTION =
+  '<a href="https://overturemaps.org" target="_blank">Overture Maps</a>';
 export const BASEMAP_ATTRIBUTION =
   "© OpenStreetMap contributors · Protomaps · NYC extract";
 export const PLANET_ATTRIBUTION =
@@ -27,9 +39,26 @@ export const PLANET_ATTRIBUTION =
   '<a href="https://www.openmaptiles.org/" target="_blank">© OpenMapTiles</a> · ' +
   'Data from <a href="https://www.openstreetmap.org/copyright" target="_blank">OpenStreetMap</a>';
 
+const ENGLISH_NAME: ExpressionSpecification = ["coalesce", ["get", "name:en"], ["get", "name:latin"], ""];
+
+/** Text layers, kept above the data so names stay readable over the risk hexes. */
+export const LABEL_LAYERS = [
+  "label-water",
+  "label-road",
+  "label-road-number",
+  "label-landmark",
+  "label-house-number",
+  "label-airport",
+  "label-area",
+  "label-town",
+  "label-city",
+  "label-country",
+];
+
 export const basemapStyle: StyleSpecification = {
   version: 8,
   name: "S.O.B.E.R. Night",
+  glyphs: "https://tiles.openfreemap.org/fonts/{fontstack}/{range}.pbf",
   projection: { type: "globe" },
   sky: {
     "sky-color": "#03060f",
@@ -68,6 +97,11 @@ export const basemapStyle: StyleSpecification = {
     world: {
       type: "geojson",
       data: "/geo/world-countries.geojson",
+    },
+    overture: {
+      type: "vector",
+      url: OVERTURE_BUILDINGS,
+      attribution: OVERTURE_ATTRIBUTION,
     },
   },
   layers: [
@@ -316,6 +350,22 @@ export const basemapStyle: StyleSpecification = {
       },
     },
     {
+      // Schools, hospitals and campuses: the places a street map should show.
+      id: "planet-landuse-civic",
+      type: "fill",
+      source: "planet",
+      "source-layer": "landuse",
+      minzoom: 12,
+      filter: [
+        "match",
+        ["get", "class"],
+        ["school", "university", "college", "hospital", "kindergarten"],
+        true,
+        false,
+      ],
+      paint: { "fill-color": "#2a2f45", "fill-opacity": 0.75 },
+    },
+    {
       id: "planet-landuse-urban",
       type: "fill",
       source: "planet",
@@ -531,6 +581,8 @@ export const basemapStyle: StyleSpecification = {
           1.1,
           15,
           2.8,
+          18,
+          10,
         ],
         "line-opacity": 0.85,
       },
@@ -557,8 +609,38 @@ export const basemapStyle: StyleSpecification = {
           0.3,
           15,
           1.4,
+          18,
+          6,
         ],
         "line-opacity": 0.8,
+      },
+    },
+    {
+      id: "planet-road-path",
+      type: "line",
+      source: "planet",
+      "source-layer": "transportation",
+      minzoom: 14,
+      filter: ["match", ["get", "class"], ["path", "pedestrian"], true, false],
+      layout: { "line-cap": "round", "line-join": "round" },
+      paint: {
+        "line-color": "#141f2c",
+        "line-width": ["interpolate", ["linear"], ["zoom"], 14, 0.4, 17, 1.4],
+        "line-dasharray": [2, 1.4],
+        "line-opacity": 0.8,
+      },
+    },
+    {
+      id: "planet-rail",
+      type: "line",
+      source: "planet",
+      "source-layer": "transportation",
+      minzoom: 10,
+      filter: ["match", ["get", "class"], ["rail", "transit"], true, false],
+      paint: {
+        "line-color": "#3b5164",
+        "line-width": ["interpolate", ["linear"], ["zoom"], 10, 0.5, 15, 1.6],
+        "line-dasharray": [3, 2],
       },
     },
     {
@@ -570,6 +652,28 @@ export const basemapStyle: StyleSpecification = {
       paint: {
         "fill-color": "#0e1824",
         "fill-opacity": ["interpolate", ["linear"], ["zoom"], 13, 0.28, 15, 0.62],
+      },
+    },
+    {
+      id: "overture-building",
+      type: "fill",
+      source: "overture",
+      "source-layer": "building",
+      minzoom: 13,
+      paint: {
+        "fill-color": "#1b2a3b",
+        "fill-opacity": ["interpolate", ["linear"], ["zoom"], 13, 0.45, 15, 0.92],
+      },
+    },
+    {
+      id: "overture-building-outline",
+      type: "line",
+      source: "overture",
+      "source-layer": "building",
+      minzoom: 14.5,
+      paint: {
+        "line-color": "#2d4058",
+        "line-width": ["interpolate", ["linear"], ["zoom"], 14.5, 0.3, 17, 1],
       },
     },
     // ------------------------------------------------------- local NYC extract
@@ -795,6 +899,169 @@ export const basemapStyle: StyleSpecification = {
         "line-opacity": 0.45,
         "line-dasharray": [4, 4],
       },
+    },
+    // ----------------------------------------------------------------- labels
+    {
+      id: "label-water",
+      type: "symbol",
+      source: "planet",
+      "source-layer": "water_name",
+      minzoom: 4,
+      layout: {
+        "text-field": ENGLISH_NAME,
+        "text-font": ["Noto Sans Italic"],
+        "text-size": ["interpolate", ["linear"], ["zoom"], 4, 11, 12, 13],
+        "text-letter-spacing": 0.08,
+        "text-max-width": 8,
+      },
+      paint: { "text-color": "#8fc1e0", "text-halo-color": "#0a1320", "text-halo-width": 1.1 },
+    },
+    {
+      id: "label-road",
+      type: "symbol",
+      source: "planet",
+      "source-layer": "transportation_name",
+      minzoom: 12,
+      filter: [
+        "any",
+        [
+          "match",
+          ["get", "class"],
+          ["motorway", "trunk", "primary", "secondary", "tertiary"],
+          true,
+          false,
+        ],
+        [">=", ["zoom"], 14],
+      ],
+      layout: {
+        "symbol-placement": "line",
+        "text-field": ENGLISH_NAME,
+        "text-font": ["Noto Sans Regular"],
+        "text-size": ["interpolate", ["linear"], ["zoom"], 12, 10, 16, 13],
+        "symbol-spacing": 320,
+      },
+      paint: { "text-color": "#d9e3ee", "text-halo-color": "#0a1320", "text-halo-width": 1.3 },
+    },
+    {
+      // Road numbers (E11, D71, I-95): what signs and directions call a road.
+      id: "label-road-number",
+      type: "symbol",
+      source: "planet",
+      "source-layer": "transportation_name",
+      minzoom: 9,
+      filter: ["match", ["get", "class"], ["motorway", "trunk", "primary"], true, false],
+      layout: {
+        "symbol-placement": "line",
+        "text-field": ["get", "ref"],
+        "text-font": ["Noto Sans Bold"],
+        "text-size": 11,
+        "text-rotation-alignment": "viewport",
+        "symbol-spacing": 420,
+      },
+      paint: { "text-color": "#d9e3ee", "text-halo-color": "#0a1320", "text-halo-width": 1.6 },
+    },
+    {
+      id: "label-landmark",
+      type: "symbol",
+      source: "planet",
+      "source-layer": "poi",
+      minzoom: 14,
+      filter: ["any", ["<=", ["get", "rank"], 4], [">=", ["zoom"], 15.5]],
+      layout: {
+        "text-field": ENGLISH_NAME,
+        "text-font": ["Noto Sans Regular"],
+        "text-size": 11,
+        "text-max-width": 8,
+      },
+      paint: { "text-color": "#b6c2d0", "text-halo-color": "#0a1320", "text-halo-width": 1.1 },
+    },
+    {
+      id: "label-house-number",
+      type: "symbol",
+      source: "planet",
+      "source-layer": "housenumber",
+      minzoom: 17,
+      layout: { "text-field": ["get", "housenumber"], "text-font": ["Noto Sans Regular"], "text-size": 10 },
+      paint: { "text-color": "#b6c2d0", "text-halo-color": "#0a1320", "text-halo-width": 1 },
+    },
+    {
+      id: "label-airport",
+      type: "symbol",
+      source: "planet",
+      "source-layer": "aerodrome_label",
+      minzoom: 9,
+      layout: {
+        "text-field": ENGLISH_NAME,
+        "text-font": ["Noto Sans Regular"],
+        "text-size": 11.5,
+        "text-max-width": 8,
+      },
+      paint: { "text-color": "#b6c2d0", "text-halo-color": "#0a1320", "text-halo-width": 1.1 },
+    },
+    {
+      id: "label-area",
+      type: "symbol",
+      source: "planet",
+      "source-layer": "place",
+      minzoom: 11,
+      filter: ["match", ["get", "class"], ["suburb", "neighbourhood", "quarter"], true, false],
+      layout: {
+        "text-field": ENGLISH_NAME,
+        "text-font": ["Noto Sans Regular"],
+        "text-size": ["interpolate", ["linear"], ["zoom"], 11, 10.5, 15, 13],
+        "text-letter-spacing": 0.05,
+        "text-max-width": 7,
+      },
+      paint: { "text-color": "#b6c2d0", "text-halo-color": "#0a1320", "text-halo-width": 1.2 },
+    },
+    {
+      id: "label-town",
+      type: "symbol",
+      source: "planet",
+      "source-layer": "place",
+      minzoom: 8,
+      filter: ["match", ["get", "class"], ["town", "village"], true, false],
+      layout: {
+        "text-field": ENGLISH_NAME,
+        "text-font": ["Noto Sans Regular"],
+        "text-size": ["interpolate", ["linear"], ["zoom"], 8, 11, 13, 14],
+        "text-max-width": 8,
+      },
+      paint: { "text-color": "#d9e3ee", "text-halo-color": "#0a1320", "text-halo-width": 1.2 },
+    },
+    {
+      id: "label-city",
+      type: "symbol",
+      source: "planet",
+      "source-layer": "place",
+      minzoom: 4,
+      maxzoom: 14,
+      filter: ["==", ["get", "class"], "city"],
+      layout: {
+        "text-field": ENGLISH_NAME,
+        "text-font": ["Noto Sans Bold"],
+        "text-size": ["interpolate", ["linear"], ["zoom"], 4, 11, 10, 16],
+        "text-max-width": 8,
+      },
+      paint: { "text-color": "#d9e3ee", "text-halo-color": "#0a1320", "text-halo-width": 1.4 },
+    },
+    {
+      id: "label-country",
+      type: "symbol",
+      source: "planet",
+      "source-layer": "place",
+      minzoom: 2.5,
+      maxzoom: 7,
+      filter: ["==", ["get", "class"], "country"],
+      layout: {
+        "text-field": ENGLISH_NAME,
+        "text-font": ["Noto Sans Bold"],
+        "text-size": ["interpolate", ["linear"], ["zoom"], 3, 10.5, 6, 14],
+        "text-transform": "uppercase",
+        "text-letter-spacing": 0.1,
+        "text-max-width": 7,
+      },
+      paint: { "text-color": "#d9e3ee", "text-halo-color": "#0a1320", "text-halo-width": 1.4 },
     },
   ],
 };

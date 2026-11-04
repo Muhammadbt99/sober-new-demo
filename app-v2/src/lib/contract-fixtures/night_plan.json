@@ -1,0 +1,80 @@
+{
+  "applies": true,
+  "best_index": 0,
+  "options": [
+    {
+      "critical_km": 3.0,
+      "high_km": 0.2,
+      "is_best": true,
+      "km": 3.1,
+      "label": "Safest",
+      "minutes": 10,
+      "risk": 0.079,
+      "route_index": 0,
+      "why": "The pick."
+    },
+    {
+      "critical_km": 3.2,
+      "high_km": 0.1,
+      "is_best": false,
+      "km": 3.3,
+      "label": "Option 2",
+      "minutes": 10,
+      "risk": 0.08,
+      "route_index": 1,
+      "why": "About the same time and about the same risk."
+    },
+    {
+      "critical_km": 2.9,
+      "high_km": 0.3,
+      "is_best": false,
+      "km": 3.2,
+      "label": "Option 3",
+      "minutes": 10,
+      "risk": 0.084,
+      "route_index": 2,
+      "why": "About the same time and 6% more risk."
+    },
+    {
+      "critical_km": 3.4,
+      "high_km": 0.1,
+      "is_best": false,
+      "km": 3.5,
+      "label": "Option 4",
+      "minutes": 11,
+      "risk": 0.088,
+      "route_index": 3,
+      "why": "1 min slower and 11% more risk."
+    }
+  ],
+  "pickup": null,
+  "scanned": 4,
+  "schema_version": "1.0.0",
+  "steps": [
+    {
+      "detail": "Your start ranks at the 99th percentile at this hour.",
+      "kind": "now",
+      "title": "Critical risk where you are"
+    },
+    {
+      "detail": "That is on 3.2 km of the fastest road, at this hour.",
+      "kind": "danger",
+      "title": "Impaired-driver crashes run up to 22.3\u00d7 a typical hour"
+    },
+    {
+      "detail": "It is both the fastest and the lowest-risk road.",
+      "kind": "best",
+      "title": "Best of 4 roads: the safest one, 10 min"
+    },
+    {
+      "detail": "Only the small hours look lower, and that mostly reflects empty roads, so no change of time is advised.",
+      "kind": "when",
+      "title": "When to leave"
+    },
+    {
+      "detail": "About 3.1 km in all.",
+      "kind": "arrive",
+      "title": "Arrive"
+    }
+  ]
+}

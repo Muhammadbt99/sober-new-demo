@@ -8,6 +8,9 @@
     "build": "tsc -b && vite build",
     "lint": "oxlint",
     "verify:sun": "tsx scripts/verify-sun.ts",
+    "verify:dates": "tsx scripts/verify-dates.ts",
+    "verify:drive": "tsx scripts/verify-drive.ts",
+    "verify:checkin": "tsx scripts/verify-checkin.ts",
     "preview": "vite preview"
   },
   "dependencies": {

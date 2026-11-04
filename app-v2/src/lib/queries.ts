@@ -1,6 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 
 import { api, type Place, type Point, type TimeParams } from "@/lib/api";
+import { isNow } from "@/lib/risk";
 
 const MINUTE = 60_000;
 
@@ -11,7 +12,8 @@ export const queryKeys = {
     ["heatmap", point.lat.toFixed(3), point.lon.toFixed(3), time.hour, time.day] as const,
   hotspots: (near: Point | null) =>
     ["hotspots", near ? near.lat.toFixed(3) : "city", near ? near.lon.toFixed(3) : "city"] as const,
-  surface: (time: TimeParams) => ["surface", time.hour, time.day] as const,
+  surface: (time: TimeParams, danger: string | null) =>
+    ["surface", time.hour, time.day, danger ?? "risk"] as const,
   trend: (point: Point, day: number) =>
     ["trend", point.lat.toFixed(4), point.lon.toFixed(4), day] as const,
   compare: (a: Point, b: Point, time: TimeParams) =>
@@ -33,6 +35,25 @@ export const queryKeys = {
       destination.lon.toFixed(4),
       time.hour,
       time.day,
+    ] as const,
+  departures: (
+    origin: Point,
+    destination: Point,
+    time: TimeParams,
+    route: number,
+    from: TimeParams | null,
+  ) =>
+    [
+      "departures",
+      origin.lat.toFixed(4),
+      origin.lon.toFixed(4),
+      destination.lat.toFixed(4),
+      destination.lon.toFixed(4),
+      time.hour,
+      time.day,
+      route,
+      from?.hour,
+      from?.day,
     ] as const,
   stats: ["stats"] as const,
   health: ["health"] as const,
@@ -76,15 +97,37 @@ export function useHotspots(near: Point | null) {
   });
 }
 
-/** The whole NYC model surface for an hour; independent of the selected point. */
-export function useSurface(time: TimeParams, enabled = true) {
+/**
+ * The whole NYC model surface for an hour; independent of the selected point.
+ * `danger` adds one kind of crash's layer (impaired, drowsy, ...).
+ */
+export function useSurface(time: TimeParams, danger: string | null = null, enabled = true) {
   return useQuery({
-    queryKey: queryKeys.surface(time),
-    queryFn: ({ signal }) => api.surface(time, signal),
+    queryKey: queryKeys.surface(time, danger),
+    queryFn: ({ signal }) => api.surface(time, danger, signal),
     enabled,
     staleTime: 2 * MINUTE,
     retry: false,
     // Scrubbing the hour swaps the colours in place instead of blanking the map.
+    placeholderData: (previous) => previous,
+  });
+}
+
+/**
+ * The global crash model's cells around a point, in a region it serves (the
+ * UAE). The point is snapped to ~2 km so panning nearby reuses the answer.
+ */
+export function useGlobalSurface(point: Point, time: TimeParams, enabled = true, radiusKm = 14) {
+  const snapped = {
+    lat: Math.round(point.lat * 50) / 50,
+    lon: Math.round(point.lon * 50) / 50,
+  };
+  return useQuery({
+    queryKey: ["global-surface", snapped.lat, snapped.lon, radiusKm, time.hour, time.day] as const,
+    queryFn: ({ signal }) => api.globalSurface(snapped, time, radiusKm, signal),
+    enabled,
+    staleTime: 5 * MINUTE,
+    retry: false,
     placeholderData: (previous) => previous,
   });
 }
@@ -111,13 +154,15 @@ export function useSafeRoute(
   destination: Place | null,
   time: TimeParams,
   enabled: boolean,
+  /** Hold the list still, so a refresh cannot move anything during a drive. */
+  frozen = false,
 ) {
+  const live = isNow(time.day, time.hour);
   return useQuery({
-    queryKey: queryKeys.route(
-      origin ?? { lat: 0, lon: 0 },
-      destination ?? { lat: 0, lon: 0 },
-      time,
-    ),
+    queryKey: [
+      ...queryKeys.route(origin ?? { lat: 0, lon: 0 }, destination ?? { lat: 0, lon: 0 }, time),
+      live,
+    ],
     queryFn: ({ signal }) =>
       api.safeRoute(
         { lat: origin!.lat, lon: origin!.lon },
@@ -126,6 +171,67 @@ export function useSafeRoute(
         signal,
       ),
     enabled: Boolean(enabled && origin && destination),
+    staleTime: (live ? 3 : 60) * MINUTE,
+    // Traffic moves; a refresh swaps the times in without a loading state.
+    refetchInterval: live && !frozen ? 3 * MINUTE : false,
+    retry: false,
+  });
+}
+
+export function useNightPlan(
+  origin: Point,
+  destination: Point,
+  time: TimeParams,
+  enabled: boolean,
+) {
+  return useQuery({
+    queryKey: [
+      "night-plan",
+      origin.lat.toFixed(4),
+      origin.lon.toFixed(4),
+      destination.lat.toFixed(4),
+      destination.lon.toFixed(4),
+      time.hour,
+      time.day,
+    ],
+    queryFn: ({ signal }) => api.nightPlan(origin, destination, time, signal),
+    enabled,
+    staleTime: 3 * MINUTE,
+    retry: false,
+  });
+}
+
+/** Directions for the route being driven; they do not change during a drive. */
+export function useGuidance(origin: Point, destination: Point, time: TimeParams, route: number) {
+  return useQuery({
+    queryKey: [
+      "guidance",
+      origin.lat.toFixed(4),
+      origin.lon.toFixed(4),
+      destination.lat.toFixed(4),
+      destination.lon.toFixed(4),
+      time.hour,
+      time.day,
+      route,
+    ],
+    queryFn: ({ signal }) => api.guidance(origin, destination, time, route, signal),
+    staleTime: 30 * MINUTE,
+    retry: false,
+  });
+}
+
+export function useDepartures(
+  origin: Point,
+  destination: Point,
+  time: TimeParams,
+  route: number,
+  from: TimeParams | null,
+  enabled: boolean,
+) {
+  return useQuery({
+    queryKey: queryKeys.departures(origin, destination, time, route, from),
+    queryFn: ({ signal }) => api.departures(origin, destination, time, route, from, signal),
+    enabled,
     staleTime: 5 * MINUTE,
     retry: false,
   });
@@ -210,5 +316,38 @@ export function useSeverity(
     // Keep the previous bars on screen while a new scenario loads, so the
     // numbers glide between scenarios instead of flashing to a skeleton.
     placeholderData: (previous) => previous,
+  });
+}
+
+/** The danger-type model card (Method screen). */
+export function useDangerCard(enabled = true) {
+  return useQuery({
+    queryKey: ["danger-types-card"] as const,
+    queryFn: ({ signal }) => api.dangerTypes(signal),
+    enabled,
+    staleTime: 10 * MINUTE,
+    retry: false,
+  });
+}
+
+/** The crash model's validation numbers (Method screen). */
+export function useModelCard(enabled = true) {
+  return useQuery({
+    queryKey: ["model-card"] as const,
+    queryFn: ({ signal }) => api.modelCard(signal),
+    enabled,
+    staleTime: 10 * MINUTE,
+    retry: false,
+  });
+}
+
+/** The global crash model's card (Method screen). */
+export function useGlobalModelCard(enabled = true) {
+  return useQuery({
+    queryKey: ["global-model-card"] as const,
+    queryFn: ({ signal }) => api.globalModelCard(signal),
+    enabled,
+    staleTime: 10 * MINUTE,
+    retry: false,
   });
 }

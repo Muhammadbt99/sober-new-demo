@@ -1,5 +1,7 @@
+import { isNow, isoDateFor } from "@/lib/risk";
 import {
   AlertsResponse,
+  DeparturesResponse,
   ErrorResponse,
   HealthResponse,
   HeatmapResponse,
@@ -14,6 +16,14 @@ import {
   SeverityResponse,
   StatsResponse,
   SurfaceResponse,
+  GlobalSurfaceResponse,
+  type GlobalSurfaceResponse as GlobalSurfaceResponseType,
+  GlobalModelCard,
+  type GlobalModelCard as GlobalModelCardType,
+  DangerTypesCard,
+  type DangerTypesCard as DangerTypesCardType,
+  ModelCard,
+  type ModelCard as ModelCardType,
   type SurfaceResponse as SurfaceResponseType,
   type AlertsResponse as AlertsResponseType,
   type HealthResponse as HealthResponseType,
@@ -25,12 +35,20 @@ import {
   type RiskCompareResponse as RiskCompareResponseType,
   type RiskResponse as RiskResponseType,
   type RiskTrendResponse as RiskTrendResponseType,
+  type DeparturesResponse as DeparturesResponseType,
+  GuidanceResponse,
+  type GuidanceResponse as GuidanceResponseType,
+  NightPlanResponse,
+  type NightPlanResponse as NightPlanResponseType,
   type SafeRouteResponse as SafeRouteResponseType,
   type SeverityResponse as SeverityResponseType,
   type StatsResponse as StatsResponseType,
 } from "@/lib/contract";
 
 const API_BASE = import.meta.env.VITE_API_BASE ?? "/api";
+
+/** Satellite tiles, through the API so the provider's key stays on the server. */
+export const SATELLITE_TILES = `${new URL(API_BASE, window.location.origin).href.replace(/\/$/, "")}/tiles/satellite/{z}/{x}/{y}.jpg`;
 const GEOCODE_BASE = "/geocode";
 
 export class ApiError extends Error {
@@ -123,6 +141,13 @@ function query(params: Record<string, string | number | undefined | null>): stri
   return text ? `?${text}` : "";
 }
 
+/** Live while the chosen time is now; otherwise typical traffic for that date. */
+function trafficParams(time: TimeParams) {
+  return isNow(time.day, time.hour)
+    ? { live: 1 }
+    : { date: isoDateFor(time.day, time.hour) };
+}
+
 function coord(value: number): string {
   return value.toFixed(5);
 }
@@ -193,13 +218,55 @@ export const api = {
     );
   },
 
-  /** Every cell of the NYC crash-model surface at one hour (the whole city). */
-  surface(time: TimeParams, signal?: AbortSignal): Promise<SurfaceResponseType> {
+  /**
+   * Every cell of the NYC crash-model surface at one hour (the whole city).
+   * With `danger`, each cell also carries its expected rate of that kind of
+   * crash against a typical NYC cell-hour.
+   */
+  surface(
+    time: TimeParams,
+    danger: string | null = null,
+    signal?: AbortSignal,
+  ): Promise<SurfaceResponseType> {
     return request(
-      `/surface${query({ hour: time.hour, day: time.day })}`,
+      `/surface${query({ hour: time.hour, day: time.day, danger })}`,
       SurfaceResponse,
       signal,
     );
+  },
+
+  /** The global crash model's cells around a point (regions such as the UAE). */
+  globalSurface(
+    point: Point,
+    time: TimeParams,
+    radiusKm: number,
+    signal?: AbortSignal,
+  ): Promise<GlobalSurfaceResponseType> {
+    return request(
+      `/surface/global${query({
+        lat: point.lat.toFixed(4),
+        lon: point.lon.toFixed(4),
+        radius_km: radiusKm,
+        hour: time.hour,
+        day: time.day,
+      })}`,
+      GlobalSurfaceResponse,
+      signal,
+    );
+  },
+
+  /** The global crash model's card: cities, protocol, held-out results. */
+  globalModelCard(signal?: AbortSignal): Promise<GlobalModelCardType> {
+    return request("/global_model", GlobalModelCard, signal);
+  },
+
+  /** The danger-type model card: definitions, gate and held-out metrics. */
+  dangerTypes(signal?: AbortSignal): Promise<DangerTypesCardType> {
+    return request("/danger_types", DangerTypesCard, signal);
+  },
+
+  modelCard(signal?: AbortSignal): Promise<ModelCardType> {
+    return request("/model_card", ModelCard, signal);
   },
 
   trend(
@@ -252,8 +319,79 @@ export const api = {
         dlon: coord(destination.lon),
         hour: time.hour,
         day: time.day,
+        ...trafficParams(time),
       })}`,
       SafeRouteResponse,
+      signal,
+    );
+  },
+
+  nightPlan(
+    origin: Point,
+    destination: Point,
+    time: TimeParams,
+    signal?: AbortSignal,
+  ): Promise<NightPlanResponseType> {
+    return request(
+      `/night_plan${query({
+        olat: coord(origin.lat),
+        olon: coord(origin.lon),
+        dlat: coord(destination.lat),
+        dlon: coord(destination.lon),
+        hour: time.hour,
+        day: time.day,
+        ...trafficParams(time),
+      })}`,
+      NightPlanResponse,
+      signal,
+    );
+  },
+
+  guidance(
+    origin: Point,
+    destination: Point,
+    time: TimeParams,
+    route: number,
+    signal?: AbortSignal,
+  ): Promise<GuidanceResponseType> {
+    return request(
+      `/safe_route/guidance${query({
+        olat: coord(origin.lat),
+        olon: coord(origin.lon),
+        dlat: coord(destination.lat),
+        dlon: coord(destination.lon),
+        hour: time.hour,
+        day: time.day,
+        route,
+        ...trafficParams(time),
+      })}`,
+      GuidanceResponse,
+      signal,
+    );
+  },
+
+  departures(
+    origin: Point,
+    destination: Point,
+    time: TimeParams,
+    route: number,
+    from: TimeParams | null,
+    signal?: AbortSignal,
+  ): Promise<DeparturesResponseType> {
+    return request(
+      `/safe_route/departures${query({
+        olat: coord(origin.lat),
+        olon: coord(origin.lon),
+        dlat: coord(destination.lat),
+        dlon: coord(destination.lon),
+        hour: time.hour,
+        day: time.day,
+        route,
+        ...trafficParams(time),
+        from_hour: from?.hour,
+        from_day: from?.day,
+      })}`,
+      DeparturesResponse,
       signal,
     );
   },

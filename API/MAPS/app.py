@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify
+from flask import Flask, Response, request, jsonify
 from flask_cors import CORS
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
@@ -16,9 +16,23 @@ from main import (
 )
 from features import NYC_BBOX, in_model_area
 from crash_model import risk_model
-from route_engine import RoutePlanningError, current_route_hint, plan_routes
+from crash_model.danger_types import GROUP_IDS as DANGER_GROUP_IDS, Area, DangerTypes
+from route_engine import (
+    choose_recommended,
+    departure_centre,
+    RoutePlanningError,
+    current_route_hint,
+    departure_slots,
+    plan_departures,
+    plan_routes,
+    slim_long_trip,
+    tag_routes,
+)
 import context_model
 import providers
+import night_plan
+import traffic
+from global_model.serve import GlobalModel, design_rows, rel_dow
 from severity_features import CLASS_NAMES, SEVERITY_FEATURES
 
 import concurrent.futures
@@ -38,7 +52,9 @@ SCHEMA_VERSION = "1.0.0"
 # routing service, so they only run alongside the real provider.
 _STOCK_GET_ROUTES = get_routes
 # Bump when the route response changes shape so stale cached routes are not served.
-ROUTE_CACHE_VERSION = "v5"
+ROUTE_CACHE_VERSION = "v7"
+#: How long a live trip's routes and times are reused. The app asks every 3 min.
+LIVE_ROUTE_TTL_S = 170.0
 MODEL_METRICS = get_model_metrics()
 
 try:
@@ -60,13 +76,44 @@ def _warm_up_model() -> None:
         risk_model.warm_up()
     except Exception as exc:  # pragma: no cover - warm-up is best-effort
         print(f"[app] model warm-up skipped: {type(exc).__name__}: {exc}")
+    try:
+        if GLOBAL_MODEL is not None:
+            GLOBAL_MODEL.warm_up()
+    except Exception as exc:  # pragma: no cover - warm-up is best-effort
+        print(f"[app] global model warm-up skipped: {type(exc).__name__}: {exc}")
 
-
-threading.Thread(target=_warm_up_model, name="model-warm-up", daemon=True).start()
 
 # Off with SOBER_CONTEXT_MODEL=0: outside NYC the API then reports "no coverage"
 # exactly as it did before the context estimate existed.
 CONTEXT_ENABLED = os.environ.get("SOBER_CONTEXT_MODEL", "1") != "0"
+# The global crash model (global_model/): learned from six cities' crash
+# records (Dubai among them) and OpenStreetMap, served where a region has a feature table (the UAE).
+# Places outside every region keep the context estimate. Off with
+# SOBER_GLOBAL_MODEL=0.
+GLOBAL_ENABLED = os.environ.get("SOBER_GLOBAL_MODEL", "1") != "0"
+GLOBAL_MODEL = GlobalModel() if GLOBAL_ENABLED else None
+if GLOBAL_MODEL is not None and not GLOBAL_MODEL.available:
+    print(f"[app] global crash model unavailable: {GLOBAL_MODEL.error}")
+
+
+def global_covers(lat, lon):
+    """Is the point in a region the global crash model serves?"""
+    return bool(
+        GLOBAL_ENABLED
+        and GLOBAL_MODEL is not None
+        and GLOBAL_MODEL.available
+        and not in_model_area(lat, lon)
+        and GLOBAL_MODEL.region_at(lat, lon) is not None
+    )
+
+
+def is_global_answer(result):
+    return (result.get("context") or {}).get("method") == "global_model"
+
+
+# Started once both models exist (the warm-up uses them).
+threading.Thread(target=_warm_up_model, name="model-warm-up", daemon=True).start()
+
 # This machine's resolver drops out for a minute at a time; reuse the last good
 # address rather than fail every provider at once.
 providers.install_dns_fallback()
@@ -106,12 +153,20 @@ def score_point(lat, lon, hour, day_of_week, *, weather=None, bars=None, road=No
     """The crash model where it covers the point, a labelled estimate elsewhere.
 
     Inside the NYC bounding box an uncovered cell (a river, a park) keeps the
-    honest "no coverage" answer. Outside it, ``context_model`` estimates risk
+    honest "no coverage" answer. In a region the global crash model serves (the
+    UAE) the answer is that model's. Elsewhere ``context_model`` estimates risk
     from road, time, weather, nightlife and the country's road-death rate. On a
     route the router's speed and junction density stand in for the road class.
     """
     result = risk_model.score(lat, lon, hour, day_of_week, weather=weather, bars=bars)
-    if not CONTEXT_ENABLED or result.get("coverage") != "rule_based_only" or in_model_area(lat, lon):
+    if result.get("coverage") != "rule_based_only" or in_model_area(lat, lon):
+        return result
+    # A region the global crash model serves: a learned answer, offline.
+    if global_covers(lat, lon):
+        learned = GLOBAL_MODEL.score(lat, lon, hour, day_of_week, road=road)
+        if learned is not None:
+            return learned
+    if not CONTEXT_ENABLED:
         return result
     hint = current_route_hint(lat, lon) or {}
     if lookup_road:
@@ -148,7 +203,9 @@ CONDITIONS_DEADLINE_S = 3.0
 def _conditions(lat, lon):
     """Weather, nightlife and (outside NYC) the road at a point, fetched together."""
     weather_future = _PREFETCH.submit(get_weather_ex, lat, lon)
-    bars_future = _PREFETCH.submit(get_bars_ex, lat, lon)
+    # The global model counts nightlife from its own OpenStreetMap extract.
+    offline_region = global_covers(lat, lon)
+    bars_future = None if offline_region else _PREFETCH.submit(get_bars_ex, lat, lon)
     road_future = None if in_model_area(lat, lon) else _PREFETCH.submit(providers.road_at, lat, lon)
     pending = [f for f in (weather_future, bars_future, road_future) if f is not None]
     concurrent.futures.wait(pending, timeout=CONDITIONS_DEADLINE_S)
@@ -162,9 +219,51 @@ def _conditions(lat, lon):
             return fallback
 
     weather, weather_source = ready(weather_future, ((20, 0, 0), "fallback"))
-    bars, bars_source = ready(bars_future, (0, "fallback"))
+    bars, bars_source = (None, "offline") if offline_region else ready(bars_future, (0, "fallback"))
     road = ready(road_future, None)
     return weather, weather_source, bars, bars_source, road
+
+
+#: What kind of injury crash is over-represented in a modelled cell at an hour
+#: (crash_model/danger_types.py). Explains the score; never changes it.
+DANGER_TYPES = DangerTypes()
+DANGER_TYPES_GROUPS = list(DANGER_GROUP_IDS)
+
+
+def danger_profile(result, hour, day_of_week, *, compact=False):
+    """The danger-type profile of a scored point, or None.
+
+    Only inside the crash model: the shares come from NYC crash records, so a
+    river, Newark or London has none rather than a borrowed one.
+    """
+    if result.get("coverage") != "model" or not DANGER_TYPES.available:
+        return None
+    area = area_for_cell(result.get("cell"))
+    if area is None:
+        return None
+    return DANGER_TYPES.profile(
+        area, hour, day_of_week, result.get("expected_rate"), compact=compact
+    )
+
+
+def _text(value):
+    if value is None or (isinstance(value, float) and math.isnan(value)):
+        return None
+    text = str(value).strip()
+    return None if text in ("", "nan", "UNKNOWN") else text
+
+
+def area_for_cell(cell):
+    """The neighbourhood (2020 NTA) and borough of a modelled cell, or None."""
+    cells = risk_model.cells
+    if not cell or cells is None or cell not in cells.index:
+        return None
+    row = cells.loc[cell]
+    return Area(
+        nta=_text(row.get("nta_code")),
+        nta_name=_text(row.get("nta_name")),
+        borough=_text(row.get("borough")),
+    )
 
 
 def place_for(lat, lon, result):
@@ -319,12 +418,26 @@ def health():
     endpoints = sorted(
         {rule.rule for rule in app.url_map.iter_rules() if rule.endpoint != "static"}
     )
+    checks = data_source_status(deep=deep)
+    checks["global_model"] = (
+        GLOBAL_MODEL.health() if GLOBAL_MODEL is not None
+        else {"available": False, "error": "switched off (SOBER_GLOBAL_MODEL=0)", "regions": {}}
+    )
+    checks["danger_types"] = {
+        "available": DANGER_TYPES.available,
+        "version": getattr(DANGER_TYPES, "version", None),
+        "error": DANGER_TYPES.error,
+        "validated": [
+            group for group, spec in (DANGER_TYPES.meta.get("groups") or {}).items()
+            if spec.get("status") == "validated"
+        ],
+    }
     return jsonify({
         "status": "ok",
         "endpoints": endpoints,
         "endpoint_count": len(endpoints),
         "coverage": {"bounding_box": list(NYC_BBOX), "model_area": "New York City"},
-        "checks": data_source_status(deep=deep),
+        "checks": checks,
     })
 
 
@@ -354,6 +467,9 @@ def risk():
         bars=bars,
         road=road if road is not None else {},
     )
+    learned = is_global_answer(result)
+    if learned:
+        bars, bars_source = result.get("bars", 0), "offline"
 
     warnings = []
     if weather_source == "fallback":
@@ -362,7 +478,12 @@ def risk():
         warnings.append("Weather refresh failed - using the last cached reading")
     if bars_source == "fallback":
         warnings.append("Nightlife data unavailable - bars treated as 0")
-    if result["coverage"] == "context":
+    if result["coverage"] == "context" and learned:
+        warnings.append(
+            "Outside the NYC crash model: scored by the global crash model, which "
+            "learned from six cities' crash records, including Dubai's"
+        )
+    elif result["coverage"] == "context":
         warnings.append(
             "Outside the NYC crash model: this is an estimate from road, time, "
             "weather, nightlife and country data, not a trained crash model"
@@ -402,6 +523,7 @@ def risk():
         "model_version": result["model_version"],
         "cell": result["cell"],
         "place": place_for(lat, lon, result),
+        "danger_types": danger_profile(result, hour, day_of_week),
         "local_time": {
             "hour": hour,
             "day_of_week": day_of_week,
@@ -452,18 +574,38 @@ def safe_route():
         hour=hour_override, day=day_override
     )
 
+    # With live=1 or a date the answer uses traffic. Without them it never calls
+    # the traffic service: the plain answer stays free and offline-testable.
+    live = request.args.get("live") == "1"
+    date = request.args.get("date")
+    if date and not live:
+        try:
+            datetime.strptime(date, "%Y-%m-%d")
+        except ValueError:
+            return error("date must be YYYY-MM-DD", 400)
+    wants_traffic = live or bool(date)
+    depart = traffic.depart_for(live, date, hour) if wants_traffic else None
+
     route_id = (f"{round(origin_lat, 3)}_{round(origin_lon, 3)}_"
                 f"{round(dest_lat, 3)}_{round(dest_lon, 3)}_"
                 f"{hour}_{day_of_week}")
-    cache_key = f"{route_id}:{ROUTE_CACHE_VERSION}"
+    cache_key = f"{route_id}:{depart or 'plain'}:{ROUTE_CACHE_VERSION}"
     cached = get_cached_route(cache_key)
-    if cached:
+    # Live traffic goes stale in minutes. A question about a route already on
+    # screen keeps the list it was asked about.
+    keep = request.environ.get("sober.keep_route")
+    fresh = cached is not None and cached.get("complete", True) and (
+        not live or time.time() - cached["last_updated"] < LIVE_ROUTE_TTL_S
+    )
+    if cached and (keep or fresh):
         return jsonify(cached["routes"])
 
     # Outside NYC, nightlife for the whole trip is fetched while the router
     # works: every venue in the trip's box (counted per stretch), and one count
     # halfway along as the fallback. Both start now so their waits overlap.
-    outside_trip = CONTEXT_ENABLED and not (
+    # A trip inside a global-model region counts nightlife offline: nothing to fetch.
+    global_trip = global_covers(origin_lat, origin_lon) and global_covers(dest_lat, dest_lon)
+    outside_trip = CONTEXT_ENABLED and not global_trip and not (
         in_model_area(origin_lat, origin_lon) and in_model_area(dest_lat, dest_lon)
     )
     nightlife_deadline = time.time() + NIGHTLIFE_ROUTE_BUDGET_S
@@ -499,11 +641,13 @@ def safe_route():
         # The offline nightlife index only covers NYC. Elsewhere one live lookup
         # halfway along the trip stands for every route of it.
         outside = not in_model_area(mid_lat, mid_lon)
-        bars_available = (
+        in_region = global_covers(mid_lat, mid_lon)
+        bars_available = in_region or (
             BARS_INDEX is not None and getattr(BARS_INDEX, "available", False) and not outside
         )
-        country = providers.country_at(mid_lat, mid_lon) if outside else None
-        weather_detail = providers.current_weather(mid_lat, mid_lon) if outside else None
+        estimated = outside and not in_region
+        country = providers.country_at(mid_lat, mid_lon) if estimated else None
+        weather_detail = providers.current_weather(mid_lat, mid_lon) if estimated else None
         fixed_bars = None
         bars_source = "offline" if bars_available else None
         grid = None if bars_available else venue_grid()
@@ -515,7 +659,10 @@ def safe_route():
             bars_source = fixed_bars[1]
 
         def score_at(lat, lon):
-            if grid is not None and grid.covers(lat, lon, NIGHTLIFE_RADIUS_M):
+            if in_region:
+                # The global model counts its own nightlife; never a live lookup.
+                bars, source = None, "offline"
+            elif grid is not None and grid.covers(lat, lon, NIGHTLIFE_RADIUS_M):
                 bars, source = grid.count(lat, lon, NIGHTLIFE_RADIUS_M), "live"
             elif grid is not None:
                 # A detour beyond the downloaded box: one count for the trip.
@@ -536,7 +683,12 @@ def safe_route():
                 lookup_road=False,
             )
             result["_bars_source"] = source
+            # Per stretch: which kinds of crash are over-represented there now.
+            result["danger_types"] = danger_profile(result, hour, day_of_week, compact=True)
             return result
+
+        if GLOBAL_ENABLED and GLOBAL_MODEL is not None:
+            score_at.prepare = GLOBAL_MODEL.prepare_points
 
         return score_at, {
             "weather": weather_source,
@@ -555,9 +707,22 @@ def safe_route():
         else None
     )
 
+    def routes_with_traffic(olat, olon, dlat, dlon):
+        """The routers' roads plus TomTom's, and TomTom alone if the routers are down."""
+        options = traffic.route_options((olat, olon), (dlat, dlon), depart)
+        try:
+            raw, source = get_routes(olat, olon, dlat, dlon)
+        except Exception:  # noqa: BLE001 - TomTom may still have an answer
+            if not options:
+                raise
+            return options, "tomtom"
+        if not raw:
+            return options, "tomtom" if options else source
+        return list(raw) + options, source
+
     try:
         plan = plan_routes(
-            get_routes,
+            routes_with_traffic if wants_traffic else get_routes,
             (origin_lat, origin_lon),
             (dest_lat, dest_lon),
             score_factory,
@@ -569,6 +734,18 @@ def safe_route():
         return error(str(exc), exc.status)
 
     scored_routes = plan.routes
+    traffic_status = None
+    if wants_traffic:
+        timed = traffic.route_times(scored_routes, date=date, hour=hour, live=live)
+        traffic_status = {key: value for key, value in timed.items() if key != "routes"}
+        if timed["available"]:
+            for item in timed["routes"]:
+                route = scored_routes[item["route_index"]]
+                route["duration_min"] = item["traffic_min"]
+                route["traffic_min_added"] = round(max(0.0, item["traffic_min"] - item["no_traffic_min"]), 1)
+            tag_routes(scored_routes)
+        scored_routes = slim_long_trip(scored_routes)
+
     for route in scored_routes:
         context = route.pop("context", {})
         route["data_quality"] = {**route.get("data_quality", {}), **context}
@@ -595,7 +772,17 @@ def safe_route():
     bars_sources = {route["data_quality"].get("bars") for route in scored_routes}
     if "fallback" in bars_sources:
         warnings.append("Nightlife data unavailable for part of this trip - counted as none")
-    if coverage == "context":
+    learned_trip = any(
+        segment.get("method") == "global_model"
+        for route in scored_routes
+        for segment in route.get("segments", [])
+    )
+    if coverage == "context" and learned_trip:
+        warnings.append(
+            "Outside the NYC crash model: route risk comes from the global crash model, "
+            "which learned from six cities' crash records, including Dubai's"
+        )
+    elif coverage == "context":
         warnings.append(
             "Outside the NYC crash model: route risk is an estimate from routed "
             "speed, junctions, time, weather, nightlife and the country's road-death rate"
@@ -618,7 +805,9 @@ def safe_route():
                 "detour could be scored"
             )
 
-    best = scored_routes[0]
+    # Without traffic the plain answer keeps its old meaning: lowest risk first.
+    recommended_index = choose_recommended(scored_routes) if wants_traffic else 0
+    best = scored_routes[recommended_index]
     fastest = next(
         (route for route in scored_routes if route.get("is_fastest")),
         scored_routes[0],
@@ -660,6 +849,20 @@ def safe_route():
     else:
         text = "Only one route is available; there is no alternative to compare"
 
+    if wants_traffic and len(scored_routes) > 1:
+        if best is fastest:
+            text = (
+                "The fastest route is also the lowest-exposure route"
+                if fastest["is_safest"]
+                else "Take the fastest route: the safer roads do not save enough risk for the time"
+            )
+        else:
+            extra = (best["duration_min"] or 0) - (fastest["duration_min"] or 0)
+            text = (
+                f"Worth the extra time: {reduction_percent:.0f}% less {measure.replace('expected ', '')} "
+                f"than the fastest route for {extra:.0f} more minutes"
+            )
+
     log_route(
         len(scored_routes), best["average_risk"], best["risk_level"],
         best["distance_km"], best["duration_min"],
@@ -669,13 +872,14 @@ def safe_route():
         "route_id": route_id,
         "origin": {"lat": origin_lat, "lon": origin_lon},
         "destination": {"lat": dest_lat, "lon": dest_lon},
-        "recommended_route": 0,
+        "recommended_route": recommended_index,
         "total_routes": len(scored_routes),
         "provider_routes": plan.distinct_provider_routes,
         "routing_source": plan.provider_source,
         "provider_source": plan.provider_source,
         "model_version": (
-            context_model.VERSION if estimated
+            GLOBAL_MODEL.version if estimated and learned_trip and GLOBAL_MODEL is not None
+            else context_model.VERSION if estimated
             else risk_model.info.version if risk_model.info else None
         ),
         "local_time": {
@@ -696,13 +900,320 @@ def safe_route():
         },
         "routes": scored_routes,
     }
+    if traffic_status is not None:
+        response_data["traffic"] = traffic_status
 
-    # A trip scored without live weather or nightlife is answered but not kept:
-    # the next request should try the providers again, not reuse the gap.
-    if "fallback" not in weather_sources and "fallback" not in bars_sources:
-        cache_route(cache_key, {"routes": response_data, "last_updated": time.time()})
+    # A trip scored without live weather, nightlife or traffic it asked for is
+    # marked incomplete, so asking for the trip again tries again. Questions about
+    # the list on screen (its chart, plan and directions) still reuse it: redoing
+    # a 2,000 km trip for each would take minutes and could change the list.
+    missing_traffic = traffic_status is not None and not traffic_status["available"] and traffic.configured()
+    complete = "fallback" not in weather_sources and "fallback" not in bars_sources and not missing_traffic
+    cache_route(cache_key, {"routes": response_data, "last_updated": time.time(), "complete": complete})
     return jsonify(response_data)
 
+
+
+def _route_response():
+    """This request's ``/safe_route`` answer as ``(body, None)``, or ``(None, error)``.
+
+    A planned trip is normally in the route cache, so nothing is routed twice.
+    """
+    request.environ["sober.keep_route"] = True
+    answer = safe_route()
+    if isinstance(answer, tuple):
+        return None, answer
+    return answer.get_json(), None
+
+
+# Printed under the departure chart: what the comparison can and cannot say.
+DEPARTURE_NOTE = (
+    "Compares how many crashes these roads usually see at each hour, which also "
+    "reflects how busy they are, so a time is only suggested if this route improves "
+    "more than the city does. It is not your personal odds. Drive time and today's "
+    "weather are held the same at every hour."
+)
+# The global crash model ranks places and hours; it does not count crashes.
+DEPARTURE_NOTE_RELATIVE = (
+    "Compares how risky these roads usually are at each hour, which also reflects "
+    "how busy they are. It is not your personal odds. Drive time and today's "
+    "weather are held the same at every hour."
+)
+
+
+_CITY_RATES = {}
+
+
+def _city_rate_for(segments, weather):
+    """The mean rate of the city a route runs through, by hour, or None.
+
+    Each value is a whole-city prediction, kept because a week has only 168 hours.
+    """
+    region = None
+    if any(segment.get("method") == "global_model" for segment in segments):
+        lat, lon = segments[len(segments) // 2]["midpoint"]
+        found = GLOBAL_MODEL.region_at(lat, lon)
+        if found is None:
+            return None
+        region = found[0]
+
+    def rate(hour, day):
+        key = (region.region.key if region else "nyc", hour, day, None if region else weather)
+        if key not in _CITY_RATES:
+            if region is not None:
+                # The reference cells only: a slot would predict all 34,000.
+                relative_day = rel_dow(day, region.region.weekend_start)
+                static = region.static[region.reference_rows()]
+                _CITY_RATES[key] = float(region.model.predict(design_rows(static, hour, relative_day)).mean())
+            else:
+                cells = risk_model.score_cells(hour, day, weather=weather)
+                _CITY_RATES[key] = sum(cell["expected_rate"] for cell in cells) / max(len(cells), 1)
+        return _CITY_RATES[key]
+
+    return rate
+
+
+def _global_departure_rates(segments, hour, day_of_week):
+    """Global-model rates for a route's cells at each departure hour, in one batch.
+
+    ``GlobalModel.score`` also predicts the cell's whole week for its reasons,
+    which a long route would repeat for every cell at every hour (over a minute
+    for Sharjah to Abu Dhabi). Same model and inputs, so the same rates.
+    """
+    by_region = {}
+    for segment in segments:
+        if segment.get("method") != "global_model":
+            continue
+        lat, lon = segment["midpoint"]
+        found = GLOBAL_MODEL.region_at(lat, lon)
+        if found is not None:
+            region, row = found
+            by_region.setdefault(region.region.key, (region, []))[1].append((lat, lon, row))
+
+    rates = {}
+    for region, points in by_region.values():
+        rows = [row for _, _, row in points]
+        static = region.static[rows]
+        for _, slot_hour, slot_day in departure_slots(hour, day_of_week):
+            relative_day = rel_dow(slot_day, region.region.weekend_start)
+            predicted = region.model.predict(design_rows(static, slot_hour, relative_day))
+            for (lat, lon, _), rate in zip(points, predicted):
+                rates[(lat, lon, slot_hour, slot_day)] = (
+                    context_model.REFERENCE_RATE * max(float(rate), 1e-9)
+                )
+    return rates
+
+
+def _departure_plan(body, route, route_index, hour, day_of_week, anchor=None):
+    """One route scored at each hour around the planned departure."""
+    segments = route["segments"]
+
+    # The rule-of-thumb estimate has an assumed time curve, not a learned one:
+    # ranking departure hours on it would dress an assumption up as a finding.
+    learned = all(
+        segment.get("coverage") == "model" or segment.get("method") == "global_model"
+        for segment in segments
+        if segment.get("expected_rate") is not None
+    )
+    if not learned:
+        return {
+            "available": False,
+            "reason": "Departure times need a crash model trained on real crashes, and this trip is outside one.",
+            "slots": [],
+        }
+
+    quality = route.get("data_quality") or {}
+    weather = (quality.get("temperature"), quality.get("rain"), quality.get("wind_speed"))
+
+    global_rates = _global_departure_rates(segments, *departure_centre(hour, day_of_week, anchor))
+
+    def rate_at(lat, lon, slot_hour, slot_day):
+        known = global_rates.get((lat, lon, slot_hour, slot_day))
+        if known is not None:
+            return {"expected_rate": known, "cell_area_km2": context_model.CELL_AREA_KM2}
+        # Bars only add score points, never crash rate, so none are looked up.
+        return score_point(lat, lon, slot_hour, slot_day, weather=weather, bars=0, lookup_road=False)
+
+    basis = (body.get("recommendation") or {}).get("basis", "expected_injury_crashes")
+    plan = plan_departures(
+        segments,
+        hour,
+        day_of_week,
+        rate_at,
+        basis=basis,
+        city_rate=_city_rate_for(segments, weather),
+        anchor=anchor,
+        can_leave_earlier=request.args.get("live") != "1",
+    )
+    return {
+        **plan,
+        "route_index": route_index,
+        "model_version": route.get("model_version"),
+        "note": DEPARTURE_NOTE_RELATIVE if basis == "relative_risk_estimate" else DEPARTURE_NOTE,
+    }
+
+
+@app.route("/safe_route/departures", methods=["GET"])
+@limiter.limit("60/minute")
+def safe_route_departures():
+    """The same route scored at each hour around the planned departure."""
+    time_override, err = parse_time_args()
+    if err:
+        return err
+    try:
+        route_index = int(request.args.get("route", 0))
+    except ValueError:
+        return error("route must be an integer", 400)
+    if route_index < 0:
+        return error("route must not be negative", 400)
+    hour, day_of_week, _ = get_time_features(hour=time_override[0], day=time_override[1])
+    anchor = None
+    if request.args.get("from_hour") is not None or request.args.get("from_day") is not None:
+        try:
+            anchor = (int(request.args.get("from_hour", "")), int(request.args.get("from_day", "")))
+        except ValueError:
+            return error("from_hour and from_day must be integers", 400)
+        if not (0 <= anchor[0] <= 23 and 0 <= anchor[1] <= 6):
+            return error("from_hour must be 0-23 and from_day 0-6", 400)
+
+    body, failure = _route_response()
+    if failure is not None:
+        return failure
+    routes = body["routes"]
+    if route_index >= len(routes):
+        return error("route is past the end of this trip's routes", 400)
+    return jsonify(_departure_plan(body, routes[route_index], route_index, hour, day_of_week, anchor))
+
+
+#: How long the night plan waits for a place to stop before going without one.
+NIGHT_STOP_DEADLINE_S = 2.5
+NIGHT_GUIDANCE_DEADLINE_S = 9.0
+
+
+def _pickup_cells(lat, lon, hour, day_of_week):
+    """Scored places near a start, for the walk to a calmer pickup."""
+    if in_model_area(lat, lon):
+        return risk_model.score_cells(hour, day_of_week)
+    if not global_covers(lat, lon):
+        return []
+    found = GLOBAL_MODEL.surface(lat, lon, 1.2, hour, day_of_week)
+    if found is None:
+        return []
+    # Open desert ranks low too, and nobody can be collected there.
+    table = GLOBAL_MODEL.region_at(lat, lon)[0].table
+    return [cell for cell in found["cells"] if int(table.loc[cell["cell"], "junctions"]) >= 5]
+
+
+@app.route("/night_plan", methods=["GET"])
+@limiter.limit("60/minute")
+def night_plan_route():
+    """A trip after dark as a plan in order, from what is already scored."""
+    origin, err = parse_coords("olat", "olon")
+    if err:
+        return err
+    _, err = parse_coords("dlat", "dlon")
+    if err:
+        return err
+    time_override, err = parse_time_args()
+    if err:
+        return err
+    hour, day_of_week, _ = get_time_features(hour=time_override[0], day=time_override[1])
+    if not night_plan.is_night(hour):
+        return jsonify({"applies": False, "steps": [], "options": []})
+
+    body, failure = _route_response()
+    if failure is not None:
+        return failure
+    routes = body["routes"]
+    # The same pick as the recommendation above it, whichever card is selected.
+    best_index = body["recommended_route"]
+    best = routes[best_index]
+    fastest = next((item for item in routes if item.get("is_fastest")), best)
+
+    segments = best["segments"]
+    start = next((item for item in segments if item.get("percentile") is not None), None)
+    here = {
+        "risk_level": (start or {}).get("risk_level", "UNKNOWN"),
+        "percentile": (start or {}).get("percentile"),
+    }
+    live = request.args.get("live") == "1"
+    date = request.args.get("date")
+    depart = traffic.depart_for(live, date, hour) if live or date else "now"
+    middle = segments[len(segments) // 2]["midpoint"]
+    stops_future = _PREFETCH.submit(get_nearest_safe, middle[0], middle[1], 3000)
+    guidance_future = _PREFETCH.submit(traffic.route_guidance, best, depart)
+    try:
+        stops = stops_future.result(timeout=NIGHT_STOP_DEADLINE_S)
+    except Exception:  # noqa: BLE001 - the plan goes on without a stop
+        stops = []
+    try:
+        guidance = guidance_future.result(timeout=NIGHT_GUIDANCE_DEADLINE_S)
+    except Exception:  # noqa: BLE001 - street names stand in for directions
+        guidance = {}
+    pickup = night_plan.choose_pickup(
+        origin, here["percentile"], _pickup_cells(origin[0], origin[1], hour, day_of_week)
+    )
+    route_type = best.get("route_type", "suggested")
+    legs = night_plan.build_legs(best, guidance.get("instructions") or [], guidance.get("length_m"))
+    return jsonify({
+        "applies": True,
+        "best_index": best_index,
+        "scanned": len(routes),
+        "options": night_plan.scan_options(routes, best_index),
+        "steps": night_plan.build_steps(
+            here=here,
+            fastest_danger=night_plan.danger_on_route(fastest["segments"]),
+            scanned=len(routes),
+            best_label="suggested" if route_type in ("alternative", "detour") else route_type,
+            best=best,
+            why=night_plan.why_best(best, fastest),
+            timing=_departure_plan(body, best, best_index, hour, day_of_week),
+            avoided=night_plan.streets_avoided(fastest, best),
+            legs=legs,
+            destination_note=f"About {best['distance_km']:.1f} km in all.",
+            pickup=pickup,
+            stop=night_plan.rest_stop(stops or []),
+        ),
+        "pickup": pickup,
+    })
+
+
+@app.route("/safe_route/guidance", methods=["GET"])
+@limiter.limit("30/minute")
+def safe_route_guidance():
+    """Turn-by-turn directions for one route of the trip on screen."""
+    try:
+        route_index = int(request.args.get("route", 0))
+    except ValueError:
+        return error("route must be an integer", 400)
+    if route_index < 0:
+        return error("route must not be negative", 400)
+    body, failure = _route_response()
+    if failure is not None:
+        return failure
+    routes = body["routes"]
+    if route_index >= len(routes):
+        return error("route is past the end of this trip's routes", 400)
+    time_override, err = parse_time_args()
+    if err:
+        return err
+    hour, _, _ = get_time_features(hour=time_override[0], day=time_override[1])
+    live = request.args.get("live") == "1"
+    date = request.args.get("date")
+    depart = traffic.depart_for(live, date, hour) if live or date else "now"
+    return jsonify(traffic.route_guidance(routes[route_index], depart))
+
+
+@app.route("/tiles/satellite/<int:z>/<int:x>/<int:y>.jpg", methods=["GET"])
+@limiter.exempt
+def satellite_tile(z, x, y):
+    """A satellite map tile. A screen asks for dozens at once, so no rate limit."""
+    if z > 19 or x >= 2 ** z or y >= 2 ** z:
+        return error("No such tile", 404)
+    tile = traffic.satellite_tile(z, x, y)
+    if tile is None:
+        return error("Satellite imagery is not available", 503)
+    return Response(tile, mimetype="image/jpeg", headers={"Cache-Control": "public, max-age=2592000"})
 
 
 @app.route("/geocode", methods=["GET"])
@@ -771,8 +1282,12 @@ def heatmap():
 
     centre_lat, centre_lon = (lat1 + lat2) / 2, (lon1 + lon2) / 2
     tile_outside = not in_model_area(centre_lat, centre_lon)
+    tile_global = global_covers(centre_lat, centre_lon)
     cell_bars = None
-    if tile_outside and CONTEXT_ENABLED:
+    if tile_global:
+        # Learned and offline: no venue or road lookups for this tile.
+        tile_bars, road_at_point, tile_country, tile_weather = (None, "offline"), {}, None, None
+    elif tile_outside and CONTEXT_ENABLED:
         # Outside NYC: nightlife for every cell in one Overpass request, running
         # while the road types are looked up; one count for the tile if that fails.
         counts_future = _PREFETCH.submit(
@@ -907,6 +1422,180 @@ def heatmap():
     })
 
 
+@app.route("/model_card", methods=["GET"])
+def crash_model_card():
+    """The crash model's validation numbers, straight from its metadata."""
+    if not risk_model.available:
+        return error(f"The crash model is not available: {risk_model.error}", 503)
+    return jsonify(risk_model.model_card())
+
+
+@app.route("/global_model", methods=["GET"])
+def global_model_card():
+    """The global crash model's card: training cities, protocol and held-out results."""
+    if GLOBAL_MODEL is None or not GLOBAL_MODEL.available:
+        reason = GLOBAL_MODEL.error if GLOBAL_MODEL is not None else "switched off"
+        return error(f"The global crash model is not available: {reason}", 503)
+    meta = GLOBAL_MODEL.metadata
+    gate = meta.get("gate") or {}
+
+    def finite(value):
+        # A constant prediction (time only) has no rank correlation: NaN in the
+        # metadata, which is not valid JSON for a browser.
+        return None if isinstance(value, float) and not math.isfinite(value) else value
+
+    def city_rows(per_city):
+        return {
+            city: {key: finite(value) for key, value in metrics.items() if key != "deciles"}
+            for city, metrics in (per_city or {}).items()
+        }
+
+    chosen = meta.get("feature_set")
+    per_city = gate.get("per_city") or {}
+    return jsonify({
+        "version": meta.get("version"),
+        "created_at": meta.get("created_at"),
+        "target": meta.get("target"),
+        "feature_set": chosen,
+        "best_on_training_cities": meta.get("best_on_training_cities"),
+        "static_features": meta.get("static_features"),
+        "mapping_check": {
+            "region": (meta.get("mapping_check") or {}).get("region"),
+            "rule": (meta.get("mapping_check") or {}).get("rule"),
+            "features": {
+                feature: {
+                    "share_of_least_mapped_city": row.get("share_of_least_mapped_city"),
+                    "usable": row.get("usable"),
+                }
+                for feature, row in ((meta.get("mapping_check") or {}).get("features") or {}).items()
+            },
+        },
+        "training": meta.get("training"),
+        "protocol": meta.get("protocol"),
+        "selection": (meta.get("selection") or {}).get("ranking"),
+        "gate": {
+            "summary": gate.get("summary"),
+            "checks": gate.get("checks"),
+            "held_out": city_rows(per_city.get(chosen)),
+            "baseline": city_rows(per_city.get((meta.get("protocol") or {}).get("baseline"))),
+            "time_only": city_rows(per_city.get("time_only")),
+            "best": city_rows(per_city.get(meta.get("best_on_training_cities")))
+            if meta.get("best_on_training_cities") != chosen
+            else None,
+            "best_summary": gate.get("best_summary"),
+        },
+        "dubai_validation": dubai_validation(),
+        "regions": GLOBAL_MODEL.health().get("regions"),
+    })
+
+
+def dubai_validation() -> dict | None:
+    """The served feature set scored on Dubai Police records (validate_dubai.py)."""
+    path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "global_model", "artifacts", "dubai_validation.json")
+    try:
+        with open(path, encoding="utf-8") as handle:
+            saved = json.load(handle)
+    except (OSError, ValueError):
+        return None
+    served = saved["served_feature_set"]
+    primary = saved["results"]["serious_or_moderate_collisions"]
+    every = saved["results"]["all_collisions"]
+    row = {key: value for key, value in primary[served].items() if key != "deciles"}
+    row["protocol"] = saved["protocol"]
+    row["baseline_top_decile_lift"] = primary["population"]["top_decile_lift"]
+    row["baseline_cell_spearman"] = primary["population"]["cell_spearman"]
+    row["all_collisions_top_decile_lift"] = every[served]["top_decile_lift"]
+    row["all_collisions_cell_spearman"] = every[served]["cell_spearman"]
+    row["all_collisions"] = every[served]["crashes"]
+    try:
+        with open(os.path.join(os.path.dirname(path), "dubai_retrain.json"), encoding="utf-8") as handle:
+            row["retrain"] = json.load(handle)
+    except (OSError, ValueError):
+        row["retrain"] = None
+    return row
+
+
+GLOBAL_SURFACE_MAX_KM = 25.0
+
+
+@app.route("/surface/global", methods=["GET"])
+@limiter.limit("90/minute")
+def global_surface():
+    """Every global-model cell within ``radius_km`` of a point, at one hour.
+
+    The UAE has ~34,000 cells, too many to send at once, so the map asks for
+    the cells around what it is looking at.
+    """
+    coords, err = parse_coords()
+    if err:
+        return err
+    lat, lon = coords
+    try:
+        radius_km = float(request.args.get("radius_km", 12))
+    except ValueError:
+        return error("radius_km must be a number", 400)
+    if not 0 < radius_km <= GLOBAL_SURFACE_MAX_KM:
+        return error(f"radius_km must be between 0 and {GLOBAL_SURFACE_MAX_KM:g}", 400)
+    time_override, err = parse_time_args()
+    if err:
+        return err
+    hour_override, day_override = time_override
+    hour, day_of_week, is_weekend = get_time_features(hour=hour_override, day=day_override)
+    if not global_covers(lat, lon):
+        return error("No global crash model region covers this point", 404)
+    region = GLOBAL_MODEL.surface(lat, lon, radius_km, hour, day_of_week)
+    if region is None:
+        return error("No global crash model region covers this point", 404)
+    return jsonify({
+        "danger_layer": None,
+        "region": region["region"],
+        "region_name": region["region_name"],
+        "centre": {"lat": lat, "lon": lon},
+        "radius_km": radius_km,
+        "hour": hour,
+        "day_of_week": day_of_week,
+        "is_weekend": bool(is_weekend),
+        "coverage": "context",
+        "model_version": GLOBAL_MODEL.version,
+        "cell_count": len(region["cells"]),
+        "data_quality": {"model": "live", "weather": "unavailable", "bars": "offline"},
+        "warnings": [],
+        "cells": region["cells"],
+    })
+
+
+@app.route("/danger_types", methods=["GET"])
+def danger_types_card():
+    """The danger-type model card: definitions, gate and held-out metrics.
+
+    Everything the Method screen shows about danger types comes from here,
+    straight out of the trained artifact; the raw counts stay on the server.
+    """
+    if not DANGER_TYPES.available:
+        return error(f"Danger types are not available: {DANGER_TYPES.error}", 503)
+    meta = DANGER_TYPES.meta
+    return jsonify({
+        "version": meta.get("version"),
+        "created_at": meta.get("created_at"),
+        "target": meta.get("target"),
+        "inputs": meta.get("inputs"),
+        "data": meta.get("data"),
+        "bands": meta.get("bands"),
+        "definitions": meta.get("definitions"),
+        "gate_rules": meta.get("gate_rules"),
+        "city_share": {
+            group: DANGER_TYPES.city_share(group) for group in DANGER_TYPES_GROUPS
+        },
+        "groups": {
+            group: {
+                key: spec.get(key)
+                for key in ("status", "level", "validation_choice", "gate", "test", "test_deciles")
+            }
+            for group, spec in (meta.get("groups") or {}).items()
+        },
+    })
+
+
 SURFACE_RATE_LIMIT = "90/minute"
 #: Where the surface's single weather reading is taken (the city is ~50 km
 #: across; one reading per hour is what /heatmap does per tile).
@@ -953,9 +1642,13 @@ def surface():
     hour, day_of_week, is_weekend = get_time_features(hour=hour_override, day=day_override)
     if not risk_model.available:
         return error("The crash model is not loaded", 503)
+    # Optional danger-type layer: each cell's expected rate of one kind of crash.
+    danger = (request.args.get("danger") or "").strip() or None
+    if danger is not None and danger not in DANGER_TYPES_GROUPS:
+        return error(f"danger must be one of: {', '.join(DANGER_TYPES_GROUPS)}", 400)
 
     (temperature, rain, wind_speed), weather_source = get_weather_ex(*SURFACE_WEATHER_POINT)
-    key = (hour, day_of_week, datetime.now().date().isoformat(), temperature, rain, wind_speed)
+    key = (hour, day_of_week, datetime.now().date().isoformat(), temperature, rain, wind_speed, danger)
     with _surface_lock:
         cached = _surface_cache.get(key)
         if cached and time.time() - cached[0] < SURFACE_CACHE_S:
@@ -986,8 +1679,25 @@ def surface():
     warnings = []
     if weather_source == "fallback":
         warnings.append("Live weather unavailable - neutral weather was assumed")
+    layer = None
+    if danger is not None:
+        spec = (DANGER_TYPES.meta.get("groups") or {}).get(danger) or {}
+        layer = {
+            "group": danger,
+            "status": spec.get("status", "unavailable") if DANGER_TYPES.available else "unavailable",
+        }
+        for cell in cells:
+            area = area_for_cell(cell["cell"])
+            value = (
+                DANGER_TYPES.layer_value(danger, area, hour, day_of_week, cell["expected_rate"])
+                if DANGER_TYPES.available and area is not None
+                else {"rate_ratio": None, "status": "unavailable"}
+            )
+            cell["danger_rate_ratio"] = value.get("rate_ratio")
+            cell["danger_status"] = value["status"]
     payload = {
         "schema_version": SCHEMA_VERSION,
+        "danger_layer": layer,
         "hour": hour,
         "day_of_week": day_of_week,
         "is_weekend": bool(is_weekend),

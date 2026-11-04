@@ -1,0 +1,1658 @@
+{
+  "version": "global-2026.11.04-1",
+  "created_at": "2026-11-04T03:49:22.218926+00:00",
+  "status": "approved",
+  "target": "crashes per H3 res-8 cell-hour, relative to the training city's mean",
+  "resolution": 8,
+  "features": [
+    "population",
+    "ring_population",
+    "km_motorway",
+    "km_trunk",
+    "km_primary",
+    "km_secondary",
+    "km_tertiary",
+    "km_local",
+    "km_service",
+    "junctions",
+    "ring_km_motorway",
+    "ring_km_trunk",
+    "ring_km_primary",
+    "ring_km_secondary",
+    "ring_km_tertiary",
+    "ring_km_local",
+    "ring_km_service",
+    "ring_junctions",
+    "hour",
+    "rel_dow",
+    "weekend"
+  ],
+  "static_features": [
+    "population",
+    "ring_population",
+    "km_motorway",
+    "km_trunk",
+    "km_primary",
+    "km_secondary",
+    "km_tertiary",
+    "km_local",
+    "km_service",
+    "junctions",
+    "ring_km_motorway",
+    "ring_km_trunk",
+    "ring_km_primary",
+    "ring_km_secondary",
+    "ring_km_tertiary",
+    "ring_km_local",
+    "ring_km_service",
+    "ring_junctions"
+  ],
+  "feature_set": "roads",
+  "best_on_training_cities": "mapped",
+  "mapping_check": {
+    "region": "uae",
+    "rule": "a tagged feature is usable when the region has at least 0.5x the least-mapped training city's count per street junction",
+    "features": {
+      "signals": {
+        "training_cities": {
+          "nyc": 0.35392916856665146,
+          "chicago": 0.1516980877542073,
+          "london": 0.14953167822830812,
+          "paris": 0.257917126201355,
+          "berlin": 0.36244210190065485
+        },
+        "region": 0.0146204028630173,
+        "share_of_least_mapped_city": 0.09777461897200511,
+        "usable": false
+      },
+      "crossings": {
+        "training_cities": {
+          "nyc": 2.281064751481988,
+          "chicago": 4.653974570840781,
+          "london": 0.627561213119033,
+          "paris": 1.7484025698930379,
+          "berlin": 1.827543523398818
+        },
+        "region": 0.18524201153245629,
+        "share_of_least_mapped_city": 0.295177598073322,
+        "usable": false
+      },
+      "bus_stops": {
+        "training_cities": {
+          "nyc": 0.22131022951816384,
+          "chicago": 0.3678459411149708,
+          "london": 0.19931533665960588,
+          "paris": 0.22209967963867444,
+          "berlin": 0.24852260022360645
+        },
+        "region": 0.0071730023033994466,
+        "share_of_least_mapped_city": 0.035988210559278845,
+        "usable": false
+      },
+      "roundabouts": {
+        "training_cities": {
+          "nyc": 0.0028879768961848303,
+          "chicago": 0.0051937540049239485,
+          "london": 0.03394203451426047,
+          "paris": 0.05108275125606148,
+          "berlin": 0.007147420539849864
+        },
+        "region": 0.023517089987168983,
+        "share_of_least_mapped_city": 8.143101843451829,
+        "usable": true
+      },
+      "stations": {
+        "training_cities": {
+          "nyc": 0.011380908952728377,
+          "chicago": 0.011163198543050824,
+          "london": 0.007037375390268143,
+          "paris": 0.013847311940899462,
+          "berlin": 0.017888516211467816
+        },
+        "region": 0.0007343051926971416,
+        "share_of_least_mapped_city": 0.10434361562019255,
+        "usable": false
+      },
+      "km_walk": {
+        "training_cities": {
+          "nyc": 0.3454984040605306,
+          "chicago": 0.4569569791761647,
+          "london": 0.12572215941193263,
+          "paris": 0.20685957915475617,
+          "berlin": 0.5513954548442986
+        },
+        "region": 0.028490774629801593,
+        "share_of_least_mapped_city": 0.22661696842519757,
+        "usable": false
+      },
+      "km_cycle": {
+        "training_cities": {
+          "nyc": 0.005542590400795936,
+          "chicago": 0.007379397207990277,
+          "london": 0.01398964712194584,
+          "paris": 0.015097101653073446,
+          "berlin": 0.028982308720250052
+        },
+        "region": 0.002088124851793259,
+        "share_of_least_mapped_city": 0.37674168588993995,
+        "usable": false
+      },
+      "nightlife": {
+        "training_cities": {
+          "nyc": 0.03725870193038456,
+          "chicago": 0.03234292266702641,
+          "london": 0.04581823292608246,
+          "paris": 0.05164294592370849,
+          "berlin": 0.08517010062290369
+        },
+        "region": 0.0012289950067246897,
+        "share_of_least_mapped_city": 0.037998885239201016,
+        "usable": false
+      },
+      "food": {
+        "training_cities": {
+          "nyc": 0.29153366773065814,
+          "chicago": 0.16721189841826584,
+          "london": 0.2243728102318017,
+          "paris": 0.39383435743921014,
+          "berlin": 0.4091199488899537
+        },
+        "region": 0.03555196561905793,
+        "share_of_least_mapped_city": 0.21261624295495896,
+        "usable": false
+      },
+      "shops": {
+        "training_cities": {
+          "nyc": 0.4916590667274662,
+          "chicago": 0.21705844659539308,
+          "london": 0.44087500376464445,
+          "paris": 0.8453162473959701,
+          "berlin": 0.8676728957035618
+        },
+        "region": 0.09978434615919736,
+        "share_of_least_mapped_city": 0.4597118781799815,
+        "usable": false
+      },
+      "schools": {
+        "training_cities": {
+          "nyc": 0.05262957896336829,
+          "chicago": 0.03925668611513945,
+          "london": 0.041822690265131364,
+          "paris": 0.10848519860651576,
+          "berlin": 0.1446653889155087
+        },
+        "region": 0.004517909317173466,
+        "share_of_least_mapped_city": 0.11508636526074781,
+        "usable": false
+      },
+      "fuel": {
+        "training_cities": {
+          "nyc": 0.011684906520747834,
+          "chicago": 0.016964014704394455,
+          "london": 0.005310658461414904,
+          "paris": 0.0062496717609369255,
+          "berlin": 0.011899057658521003
+        },
+        "region": 0.0023420470882866726,
+        "share_of_least_mapped_city": 0.44100879491743616,
+        "usable": false
+      },
+      "parking": {
+        "training_cities": {
+          "nyc": 0.10596215230278158,
+          "chicago": 0.3279821928434117,
+          "london": 0.1787252411882222,
+          "paris": 0.28974318575705055,
+          "berlin": 2.2010860884842676
+        },
+        "region": 0.04303414905622459,
+        "share_of_least_mapped_city": 0.4061275476290501,
+        "usable": false
+      }
+    }
+  },
+  "params": {
+    "loss": "poisson",
+    "learning_rate": 0.05,
+    "max_iter": 400,
+    "max_leaf_nodes": 31,
+    "min_samples_leaf": 400,
+    "l2_regularization": 1.0,
+    "random_state": 7
+  },
+  "training": {
+    "nyc": {
+      "name": "New York",
+      "country": "US",
+      "cells": 1100,
+      "crashes": 180880,
+      "years": [
+        2021,
+        2022,
+        2023,
+        2024,
+        2025
+      ]
+    },
+    "chicago": {
+      "name": "Chicago",
+      "country": "US",
+      "cells": 856,
+      "crashes": 84833,
+      "years": [
+        2021,
+        2022,
+        2023,
+        2024,
+        2025
+      ]
+    },
+    "london": {
+      "name": "London",
+      "country": "GB",
+      "cells": 2296,
+      "crashes": 111341,
+      "years": [
+        2021,
+        2022,
+        2023,
+        2024,
+        2025
+      ]
+    },
+    "paris": {
+      "name": "Paris",
+      "country": "FR",
+      "cells": 1121,
+      "crashes": 59216,
+      "years": [
+        2021,
+        2022,
+        2023,
+        2024,
+        2025
+      ]
+    },
+    "berlin": {
+      "name": "Berlin",
+      "country": "DE",
+      "cells": 1128,
+      "crashes": 61547,
+      "years": [
+        2021,
+        2022,
+        2023,
+        2024,
+        2025
+      ]
+    },
+    "dubai": {
+      "name": "Dubai",
+      "country": "AE",
+      "cells": 1552,
+      "crashes": 32550,
+      "years": [
+        2021,
+        2022,
+        2023,
+        2024,
+        2025
+      ]
+    }
+  },
+  "protocol": {
+    "selection": "other cities 2021-2022 -> held-out city 2023",
+    "gate": "other cities 2021-2023 -> held-out city 2024-2025 (six cities)",
+    "gate_rules": {
+      "beats_baseline_in_at_least": 4,
+      "mean_top_decile_lift": 2.0,
+      "min_top_decile_lift": 1.5,
+      "mean_cell_spearman": 0.6
+    },
+    "baseline": "population"
+  },
+  "selection": {
+    "ranking": {
+      "roads": {
+        "mean_deviance_gain_vs_baseline": 0.03641747764496206,
+        "beats_baseline_in": 5,
+        "mean_top_decile_lift": 3.442624802085812,
+        "min_top_decile_lift": 2.5518370770228347,
+        "mean_cell_spearman": 0.7874998174655522
+      },
+      "mapped": {
+        "mean_deviance_gain_vs_baseline": 0.05689196244750849,
+        "beats_baseline_in": 5,
+        "mean_top_decile_lift": 3.620653565723356,
+        "min_top_decile_lift": 2.8127316097502573,
+        "mean_cell_spearman": 0.8201766717730671
+      },
+      "full": {
+        "mean_deviance_gain_vs_baseline": 0.05932677628111525,
+        "beats_baseline_in": 5,
+        "mean_top_decile_lift": 3.6222862475352713,
+        "min_top_decile_lift": 2.818141865037232,
+        "mean_cell_spearman": 0.8202417464676699
+      }
+    },
+    "chosen": "roads",
+    "per_city": {
+      "time_only": {
+        "nyc": {
+          "deviance": 0.7322185403489654,
+          "top_decile_lift": 1.725146983811646,
+          "cell_spearman": NaN,
+          "top10_cells_capture": 0.06263255389406427,
+          "crashes": 37249,
+          "cells": 1100
+        },
+        "chicago": {
+          "deviance": 0.5127147477038574,
+          "top_decile_lift": 1.9422816480237404,
+          "cell_spearman": NaN,
+          "top10_cells_capture": 0.03384226977638855,
+          "crashes": 16636,
+          "cells": 856
+        },
+        "london": {
+          "deviance": 0.3284690440643545,
+          "top_decile_lift": 2.117259389301025,
+          "cell_spearman": NaN,
+          "top10_cells_capture": 0.08096777011092672,
+          "crashes": 22898,
+          "cells": 2296
+        },
+        "paris": {
+          "deviance": 0.349534151190438,
+          "top_decile_lift": 1.7204413221185104,
+          "cell_spearman": NaN,
+          "top10_cells_capture": 0.03887884267631103,
+          "crashes": 12166,
+          "cells": 1121
+        },
+        "berlin": {
+          "deviance": 0.3468488275555231,
+          "top_decile_lift": 2.1820858800989367,
+          "cell_spearman": NaN,
+          "top10_cells_capture": 0.03413246647704185,
+          "crashes": 12305,
+          "cells": 1128
+        }
+      },
+      "population": {
+        "nyc": {
+          "deviance": 0.6227252093083122,
+          "top_decile_lift": 2.899943622647588,
+          "cell_spearman": 0.8002796677235662,
+          "top10_cells_capture": 0.21487825176514805,
+          "crashes": 37249,
+          "cells": 1100
+        },
+        "chicago": {
+          "deviance": 0.49647788797691883,
+          "top_decile_lift": 2.3420393997835016,
+          "cell_spearman": 0.6111819388388193,
+          "top10_cells_capture": 0.16644626112046165,
+          "crashes": 16636,
+          "cells": 856
+        },
+        "london": {
+          "deviance": 0.2970940003310701,
+          "top_decile_lift": 3.555406082570059,
+          "cell_spearman": 0.6897479153738316,
+          "top10_cells_capture": 0.26840772119835793,
+          "crashes": 22898,
+          "cells": 2296
+        },
+        "paris": {
+          "deviance": 0.3267448280909384,
+          "top_decile_lift": 2.929600034414893,
+          "cell_spearman": 0.6229806606157494,
+          "top10_cells_capture": 0.2186421173762946,
+          "crashes": 12166,
+          "cells": 1121
+        },
+        "berlin": {
+          "deviance": 0.31317278400677323,
+          "top_decile_lift": 3.6384351900197163,
+          "cell_spearman": 0.606644760684716,
+          "top10_cells_capture": 0.26542056074766357,
+          "crashes": 12305,
+          "cells": 1128
+        }
+      },
+      "roads": {
+        "nyc": {
+          "deviance": 0.6112131442868136,
+          "top_decile_lift": 2.971086472120057,
+          "cell_spearman": 0.8301599333478304,
+          "top10_cells_capture": 0.23785873446267014,
+          "crashes": 37249,
+          "cells": 1100
+        },
+        "chicago": {
+          "deviance": 0.48620357288462457,
+          "top_decile_lift": 2.5518370770228347,
+          "cell_spearman": 0.7174332601451122,
+          "top10_cells_capture": 0.19908631882664102,
+          "crashes": 16636,
+          "cells": 856
+        },
+        "london": {
+          "deviance": 0.286021906888398,
+          "top_decile_lift": 3.801720912513495,
+          "cell_spearman": 0.8263593707409437,
+          "top10_cells_capture": 0.2931697091449035,
+          "crashes": 22898,
+          "cells": 2296
+        },
+        "paris": {
+          "deviance": 0.31447876694098864,
+          "top_decile_lift": 3.487736516841299,
+          "cell_spearman": 0.7540130212439976,
+          "top10_cells_capture": 0.270014795331251,
+          "crashes": 12166,
+          "cells": 1121
+        },
+        "berlin": {
+          "deviance": 0.2918462724162819,
+          "top_decile_lift": 4.400743031931374,
+          "cell_spearman": 0.8095335018498766,
+          "top10_cells_capture": 0.33669240146282,
+          "crashes": 12305,
+          "cells": 1128
+        }
+      },
+      "mapped": {
+        "nyc": {
+          "deviance": 0.5965403228707135,
+          "top_decile_lift": 3.11900990630621,
+          "cell_spearman": 0.876532355646851,
+          "top10_cells_capture": 0.2522215361486214,
+          "crashes": 37249,
+          "cells": 1100
+        },
+        "chicago": {
+          "deviance": 0.46474529103010664,
+          "top_decile_lift": 2.8127316097502573,
+          "cell_spearman": 0.7856357125540908,
+          "top10_cells_capture": 0.2157970666025487,
+          "crashes": 16636,
+          "cells": 856
+        },
+        "london": {
+          "deviance": 0.27998663554700753,
+          "top_decile_lift": 4.137565068943464,
+          "cell_spearman": 0.8500246662429206,
+          "top10_cells_capture": 0.3334789064547122,
+          "crashes": 22898,
+          "cells": 2296
+        },
+        "paris": {
+          "deviance": 0.31416469637477706,
+          "top_decile_lift": 3.4885585146062867,
+          "cell_spearman": 0.746619520376472,
+          "top10_cells_capture": 0.28152227519316125,
+          "crashes": 12166,
+          "cells": 1121
+        },
+        "berlin": {
+          "deviance": 0.2873636522502272,
+          "top_decile_lift": 4.54540272901056,
+          "cell_spearman": 0.8420711040450005,
+          "top10_cells_capture": 0.3499390491670053,
+          "crashes": 12305,
+          "cells": 1128
+        }
+      },
+      "full": {
+        "nyc": {
+          "deviance": 0.6022824599839693,
+          "top_decile_lift": 3.0250476522859673,
+          "cell_spearman": 0.8650048444445085,
+          "top10_cells_capture": 0.2371338827887997,
+          "crashes": 37249,
+          "cells": 1100
+        },
+        "chicago": {
+          "deviance": 0.4639474926069453,
+          "top_decile_lift": 2.818141865037232,
+          "cell_spearman": 0.7774151501405849,
+          "top10_cells_capture": 0.20906467900937725,
+          "crashes": 16636,
+          "cells": 856
+        },
+        "london": {
+          "deviance": 0.2786943145396559,
+          "top_decile_lift": 4.183421553241444,
+          "cell_spearman": 0.8542773518764792,
+          "top10_cells_capture": 0.33784610009607824,
+          "crashes": 22898,
+          "cells": 2296
+        },
+        "paris": {
+          "deviance": 0.3146681710225242,
+          "top_decile_lift": 3.386630791747856,
+          "cell_spearman": 0.7499089488273666,
+          "top10_cells_capture": 0.26327469998356073,
+          "crashes": 12166,
+          "cells": 1121
+        },
+        "berlin": {
+          "deviance": 0.28204624730214245,
+          "top_decile_lift": 4.698189375363855,
+          "cell_spearman": 0.854602437049411,
+          "top10_cells_capture": 0.36505485574969526,
+          "crashes": 12305,
+          "cells": 1128
+        }
+      }
+    }
+  },
+  "gate": {
+    "summary": {
+      "mean_deviance_gain_vs_baseline": 0.07022386497086781,
+      "beats_baseline_in": 6,
+      "mean_top_decile_lift": 3.3118795639361753,
+      "min_top_decile_lift": 2.6295941023375025,
+      "mean_cell_spearman": 0.7812252633409967
+    },
+    "checks": {
+      "beats_baseline": true,
+      "mean_top_decile_lift": true,
+      "min_top_decile_lift": true,
+      "mean_cell_spearman": true,
+      "passed": true
+    },
+    "per_city": {
+      "time_only": {
+        "nyc": {
+          "deviance": 1.060546454675168,
+          "top_decile_lift": 1.6702879241312398,
+          "cell_spearman": null,
+          "top10_cells_capture": 0.06668579783817762,
+          "crashes": 73179,
+          "cells": 1100,
+          "deciles": [
+            {
+              "predicted": 0.0838699778310803,
+              "observed": 0.1038961038961039,
+              "lift": 0.26237035215020704
+            },
+            {
+              "predicted": 0.1349604670225913,
+              "observed": 0.17813852813852815,
+              "lift": 0.4498558329575425
+            },
+            {
+              "predicted": 0.2023186167350172,
+              "observed": 0.2909090909090909,
+              "lift": 0.7346369860205796
+            },
+            {
+              "predicted": 0.2833879027612789,
+              "observed": 0.3426948051948052,
+              "lift": 0.8654122084204485
+            },
+            {
+              "predicted": 0.3779989467198221,
+              "observed": 0.3951298701298701,
+              "lift": 0.997827245521256
+            },
+            {
+              "predicted": 0.44242846139731246,
+              "observed": 0.44036796536796535,
+              "lift": 1.1120676696866587
+            },
+            {
+              "predicted": 0.4889277265902222,
+              "observed": 0.45735930735930735,
+              "lift": 1.1549761543612238
+            },
+            {
+              "predicted": 0.55767223547142,
+              "observed": 0.4968073593073593,
+              "lift": 1.2545948974432555
+            },
+            {
+              "predicted": 0.6330959655501183,
+              "observed": 0.5931818181818181,
+              "lift": 1.4979707293075881
+            },
+            {
+              "predicted": 0.7552422973237352,
+              "observed": 0.661417748917749,
+              "lift": 1.6702879241312398
+            }
+          ]
+        },
+        "chicago": {
+          "deviance": 0.7990106413411625,
+          "top_decile_lift": 1.8513385331824521,
+          "cell_spearman": null,
+          "top10_cells_capture": 0.031200599051501788,
+          "crashes": 36057,
+          "cells": 856,
+          "deciles": [
+            {
+              "predicted": 0.0535463617349649,
+              "observed": 0.06035741603504624,
+              "lift": 0.24072660745952051
+            },
+            {
+              "predicted": 0.08706297828453118,
+              "observed": 0.10145330644600514,
+              "lift": 0.4046314749809221
+            },
+            {
+              "predicted": 0.13196029357446368,
+              "observed": 0.16111536054516376,
+              "lift": 0.6425847344282362
+            },
+            {
+              "predicted": 0.17972446467955244,
+              "observed": 0.20116820805229121,
+              "lift": 0.8023295799313281
+            },
+            {
+              "predicted": 0.24054948381692443,
+              "observed": 0.24998261595160282,
+              "lift": 0.9970186103882215
+            },
+            {
+              "predicted": 0.27848367922840894,
+              "observed": 0.2806480773242473,
+              "lift": 1.1193232577265262
+            },
+            {
+              "predicted": 0.31013276026095693,
+              "observed": 0.28294277171267646,
+              "lift": 1.1284753061668076
+            },
+            {
+              "predicted": 0.35250668202400665,
+              "observed": 0.31903205618524444,
+              "lift": 1.2724120680003228
+            },
+            {
+              "predicted": 0.40157639958968044,
+              "observed": 0.3864394993045897,
+              "lift": 1.541256663504852
+            },
+            {
+              "predicted": 0.4717841592054256,
+              "observed": 0.4641863699582754,
+              "lift": 1.8513385331824521
+            }
+          ]
+        },
+        "london": {
+          "deviance": 0.4883843577445203,
+          "top_decile_lift": 2.108953921068995,
+          "cell_spearman": null,
+          "top10_cells_capture": 0.08066712862297197,
+          "crashes": 41851,
+          "cells": 2296,
+          "deciles": [
+            {
+              "predicted": 0.025366577390804022,
+              "observed": 0.017551136805537552,
+              "lift": 0.1617635157517476
+            },
+            {
+              "predicted": 0.040937351851779435,
+              "observed": 0.029035854094833172,
+              "lift": 0.2676146789393756
+            },
+            {
+              "predicted": 0.0618711829502948,
+              "observed": 0.048168407953750034,
+              "lift": 0.44395363702621427
+            },
+            {
+              "predicted": 0.08190978898422209,
+              "observed": 0.07201928810307728,
+              "lift": 0.6637799804407014
+            },
+            {
+              "predicted": 0.10521145279139965,
+              "observed": 0.1073030358022451,
+              "lift": 0.9889796036875677
+            },
+            {
+              "predicted": 0.12035340717700022,
+              "observed": 0.11723226090788894,
+              "lift": 1.080494266217729
+            },
+            {
+              "predicted": 0.1326583536615251,
+              "observed": 0.13027247038083634,
+              "lift": 1.2006819300628238
+            },
+            {
+              "predicted": 0.14890525390343198,
+              "observed": 0.1561454903689109,
+              "lift": 1.4391457243320174
+            },
+            {
+              "predicted": 0.16905142207904916,
+              "observed": 0.17844550451104427,
+              "lift": 1.6446782051572504
+            },
+            {
+              "predicted": 0.19872646677119285,
+              "observed": 0.22881883231359534,
+              "lift": 2.108953921068995
+            }
+          ]
+        },
+        "paris": {
+          "deviance": 0.5067275716022471,
+          "top_decile_lift": 1.690910992421234,
+          "cell_spearman": null,
+          "top10_cells_capture": 0.037301329873499836,
+          "crashes": 21581,
+          "cells": 1121,
+          "deciles": [
+            {
+              "predicted": 0.026106911051051968,
+              "observed": 0.024265916210906388,
+              "lift": 0.21175809592547046
+            },
+            {
+              "predicted": 0.041680371718742115,
+              "observed": 0.042372431370466736,
+              "lift": 0.3697657780055261
+            },
+            {
+              "predicted": 0.06497885934014827,
+              "observed": 0.05400095576912866,
+              "lift": 0.4712428524205765
+            },
+            {
+              "predicted": 0.08775460872417123,
+              "observed": 0.07492168002973504,
+              "lift": 0.6538089132403475
+            },
+            {
+              "predicted": 0.11279998743849642,
+              "observed": 0.10502840758243509,
+              "lift": 0.9165372291916424
+            },
+            {
+              "predicted": 0.12472980441229685,
+              "observed": 0.13263951574364147,
+              "lift": 1.1574873602228122
+            },
+            {
+              "predicted": 0.13736435624743565,
+              "observed": 0.16040991875962407,
+              "lift": 1.3998275881637774
+            },
+            {
+              "predicted": 0.15515600160240794,
+              "observed": 0.17421547284022726,
+              "lift": 1.5203026536793622
+            },
+            {
+              "predicted": 0.17865729826272841,
+              "observed": 0.18431393372982158,
+              "lift": 1.6084275293762957
+            },
+            {
+              "predicted": 0.21670688133736918,
+              "observed": 0.1937659303313509,
+              "lift": 1.690910992421234
+            }
+          ]
+        },
+        "berlin": {
+          "deviance": 0.5670709557449045,
+          "top_decile_lift": 2.156441773449302,
+          "cell_spearman": null,
+          "top10_cells_capture": 0.03603744149765991,
+          "crashes": 25640,
+          "cells": 1128,
+          "deciles": [
+            {
+              "predicted": 0.032696142246844626,
+              "observed": 0.016252440504458867,
+              "lift": 0.12012100176899271
+            },
+            {
+              "predicted": 0.0526844603243544,
+              "observed": 0.028494538546778535,
+              "lift": 0.210601756348234
+            },
+            {
+              "predicted": 0.07826880408573228,
+              "observed": 0.0457495646667722,
+              "lift": 0.33813281991466454
+            },
+            {
+              "predicted": 0.10765400523405493,
+              "observed": 0.06822858952034193,
+              "lift": 0.5042742054782713
+            },
+            {
+              "predicted": 0.13318116176863695,
+              "observed": 0.13076517150395778,
+              "lift": 0.9664790585290958
+            },
+            {
+              "predicted": 0.14839774174657813,
+              "observed": 0.1495514511873351,
+              "lift": 1.1053275431281104
+            },
+            {
+              "predicted": 0.16562709740551343,
+              "observed": 0.16839050131926123,
+              "lift": 1.2445660515602683
+            },
+            {
+              "predicted": 0.18331093561461181,
+              "observed": 0.20358839050131927,
+              "lift": 1.504711948266849
+            },
+            {
+              "predicted": 0.206767837271212,
+              "observed": 0.25023746701846966,
+              "lift": 1.8494930167655255
+            },
+            {
+              "predicted": 0.24443179829127962,
+              "observed": 0.29176781002638524,
+              "lift": 2.156441773449302
+            }
+          ]
+        },
+        "dubai": {
+          "deviance": 0.38035640315715236,
+          "top_decile_lift": 1.425722115736761,
+          "cell_spearman": null,
+          "top10_cells_capture": 0.07195696032279758,
+          "crashes": 17844,
+          "cells": 1552,
+          "deciles": [
+            {
+              "predicted": 0.01307070952820098,
+              "observed": 0.026271381452788217,
+              "lift": 0.38387664842379443
+            },
+            {
+              "predicted": 0.022728816182011648,
+              "observed": 0.031142133926516838,
+              "lift": 0.45504793944543226
+            },
+            {
+              "predicted": 0.0354706671253432,
+              "observed": 0.04966633427935875,
+              "lift": 0.7257230068741808
+            },
+            {
+              "predicted": 0.04736043331028438,
+              "observed": 0.06696325841834778,
+              "lift": 0.9784651505809419
+            },
+            {
+              "predicted": 0.06394774361182791,
+              "observed": 0.08295620158011813,
+              "lift": 1.212153562833091
+            },
+            {
+              "predicted": 0.07597796019085724,
+              "observed": 0.07175730612871059,
+              "lift": 1.0485156338699553
+            },
+            {
+              "predicted": 0.08461737433190844,
+              "observed": 0.08000613661642313,
+              "lift": 1.1690473008753473
+            },
+            {
+              "predicted": 0.09581570162500627,
+              "observed": 0.08721666091358878,
+              "lift": 1.2744072685477181
+            },
+            {
+              "predicted": 0.11099333936527124,
+              "observed": 0.0908219230621716,
+              "lift": 1.3270872523839035
+            },
+            {
+              "predicted": 0.13439348468633427,
+              "observed": 0.09757220112760327,
+              "lift": 1.425722115736761
+            }
+          ]
+        }
+      },
+      "population": {
+        "nyc": {
+          "deviance": 0.8937070953402295,
+          "top_decile_lift": 2.6727613113051554,
+          "cell_spearman": 0.7467906453718094,
+          "top10_cells_capture": 0.20400661391929378,
+          "crashes": 73179,
+          "cells": 1100,
+          "deciles": [
+            {
+              "predicted": 0.03849651450493497,
+              "observed": 0.05194805194805195,
+              "lift": 0.13118517607510352
+            },
+            {
+              "predicted": 0.07189958070459208,
+              "observed": 0.08706709956709957,
+              "lift": 0.2198718211508766
+            },
+            {
+              "predicted": 0.11340362125017703,
+              "observed": 0.14404761904761904,
+              "lift": 0.36376556115825576
+            },
+            {
+              "predicted": 0.1696389212843092,
+              "observed": 0.2017857142857143,
+              "lift": 0.5095724183167302
+            },
+            {
+              "predicted": 0.2350057554928639,
+              "observed": 0.2688311688311688,
+              "lift": 0.6788832861886606
+            },
+            {
+              "predicted": 0.3106508197813619,
+              "observed": 0.3305735930735931,
+              "lift": 0.8348023340029244
+            },
+            {
+              "predicted": 0.40799357972288003,
+              "observed": 0.42483766233766235,
+              "lift": 1.0728487680892058
+            },
+            {
+              "predicted": 0.5624578031700613,
+              "observed": 0.5774350649350649,
+              "lift": 1.4582052228098223
+            },
+            {
+              "predicted": 0.8139268007324918,
+              "observed": 0.8149891774891775,
+              "lift": 2.0581041009032646
+            },
+            {
+              "predicted": 1.2364292007589248,
+              "observed": 1.0583874458874458,
+              "lift": 2.6727613113051554
+            }
+          ]
+        },
+        "chicago": {
+          "deviance": 0.7635566426911102,
+          "top_decile_lift": 2.207183827275798,
+          "cell_spearman": 0.5299999429619455,
+          "top10_cells_capture": 0.1556424550018027,
+          "crashes": 36057,
+          "cells": 856,
+          "deciles": [
+            {
+              "predicted": 0.03541051753318264,
+              "observed": 0.04909255267366664,
+              "lift": 0.19579836966177588
+            },
+            {
+              "predicted": 0.06117100447520049,
+              "observed": 0.07843682636812462,
+              "lift": 0.31283365577688843
+            },
+            {
+              "predicted": 0.08795676557290939,
+              "observed": 0.11244002503302969,
+              "lift": 0.44845037357378414
+            },
+            {
+              "predicted": 0.12648465599181757,
+              "observed": 0.15909881093108963,
+              "lift": 0.6345420251928374
+            },
+            {
+              "predicted": 0.17385156296978688,
+              "observed": 0.1976218621792643,
+              "lift": 0.7881855050690751
+            },
+            {
+              "predicted": 0.22773183347252882,
+              "observed": 0.2408038383978861,
+              "lift": 0.9604104166270963
+            },
+            {
+              "predicted": 0.288104511704384,
+              "observed": 0.3013003268201099,
+              "lift": 1.201691693689058
+            },
+            {
+              "predicted": 0.3558455809743208,
+              "observed": 0.3606842361449134,
+              "lift": 1.4385356139314893
+            },
+            {
+              "predicted": 0.4503459929078784,
+              "observed": 0.4544506258692629,
+              "lift": 1.81250896095091
+            },
+            {
+              "predicted": 0.7004441281926579,
+              "observed": 0.5534075104311543,
+              "lift": 2.207183827275798
+            }
+          ]
+        },
+        "london": {
+          "deviance": 0.44215740119446584,
+          "top_decile_lift": 3.326632278395938,
+          "cell_spearman": 0.6505160989523163,
+          "top10_cells_capture": 0.24919356765668682,
+          "crashes": 41851,
+          "cells": 2296,
+          "deciles": [
+            {
+              "predicted": 0.016210487221966847,
+              "observed": 0.011614341637933269,
+              "lift": 0.10704587157575025
+            },
+            {
+              "predicted": 0.027039248149473012,
+              "observed": 0.020039924299380396,
+              "lift": 0.18470191680369408
+            },
+            {
+              "predicted": 0.03861680404844147,
+              "observed": 0.026780390428538095,
+              "lift": 0.24682675298604914
+            },
+            {
+              "predicted": 0.05550796759078421,
+              "observed": 0.0409612941694968,
+              "lift": 0.37752785064661926
+            },
+            {
+              "predicted": 0.07595918513553593,
+              "observed": 0.06094936872942214,
+              "lift": 0.5617518840950645
+            },
+            {
+              "predicted": 0.09856136309966845,
+              "observed": 0.08931117621133954,
+              "lift": 0.8231540794162046
+            },
+            {
+              "predicted": 0.12378707356553419,
+              "observed": 0.11648043968579058,
+              "lift": 1.0735649575666204
+            },
+            {
+              "predicted": 0.15255517647388164,
+              "observed": 0.1504679438985819,
+              "lift": 1.3868174969322644
+            },
+            {
+              "predicted": 0.19652155025417256,
+              "observed": 0.20745618583428393,
+              "lift": 1.912060874279866
+            },
+            {
+              "predicted": 0.30023574579557044,
+              "observed": 0.3609353935497252,
+              "lift": 3.326632278395938
+            }
+          ]
+        },
+        "paris": {
+          "deviance": 0.47133407384037035,
+          "top_decile_lift": 2.713613256130103,
+          "cell_spearman": 0.6109873212526122,
+          "top10_cells_capture": 0.2023539224317687,
+          "crashes": 21581,
+          "cells": 1121,
+          "deciles": [
+            {
+              "predicted": 0.01619291698677099,
+              "observed": 0.016725959751500027,
+              "lift": 0.14596017552849716
+            },
+            {
+              "predicted": 0.028487992523212533,
+              "observed": 0.02612435618329528,
+              "lift": 0.2279758932064146
+            },
+            {
+              "predicted": 0.04345013315431678,
+              "observed": 0.03748738915733022,
+              "lift": 0.327136139438473
+            },
+            {
+              "predicted": 0.06127441532480773,
+              "observed": 0.05686826315510009,
+              "lift": 0.4962645967968903
+            },
+            {
+              "predicted": 0.08118695832992187,
+              "observed": 0.0753995645940636,
+              "lift": 0.6579792039697331
+            },
+            {
+              "predicted": 0.10378207847523405,
+              "observed": 0.10290447618541922,
+              "lift": 0.8980026037277062
+            },
+            {
+              "predicted": 0.1306056616173719,
+              "observed": 0.12610842669781766,
+              "lift": 1.1004933869212086
+            },
+            {
+              "predicted": 0.16622892341250653,
+              "observed": 0.16343652100037168,
+              "lift": 1.4262394294498864
+            },
+            {
+              "predicted": 0.21142917801597808,
+              "observed": 0.22992778249787596,
+              "lift": 2.0064797471043967
+            },
+            {
+              "predicted": 0.30330316053924333,
+              "observed": 0.3109600679694138,
+              "lift": 2.713613256130103
+            }
+          ]
+        },
+        "berlin": {
+          "deviance": 0.5169225813207204,
+          "top_decile_lift": 3.2578690782459794,
+          "cell_spearman": 0.5467317674006402,
+          "top10_cells_capture": 0.24426677067082683,
+          "crashes": 25640,
+          "cells": 1128,
+          "deciles": [
+            {
+              "predicted": 0.02334744950855308,
+              "observed": 0.008864967547886656,
+              "lift": 0.06552054641945057
+            },
+            {
+              "predicted": 0.03797644780375719,
+              "observed": 0.020210015302622553,
+              "lift": 0.14937124570624744
+            },
+            {
+              "predicted": 0.05322751430204114,
+              "observed": 0.03118568940952984,
+              "lift": 0.2304919222255672
+            },
+            {
+              "predicted": 0.07633220475011435,
+              "observed": 0.05482560287056092,
+              "lift": 0.40521337934410206
+            },
+            {
+              "predicted": 0.10182553961651385,
+              "observed": 0.07514511873350924,
+              "lift": 0.5553939383960582
+            },
+            {
+              "predicted": 0.12888500432001676,
+              "observed": 0.10575197889182059,
+              "lift": 0.7816077616191719
+            },
+            {
+              "predicted": 0.1562638119537179,
+              "observed": 0.14559366754617414,
+              "lift": 1.0760757556423628
+            },
+            {
+              "predicted": 0.1871104190223173,
+              "observed": 0.19551451187335092,
+              "lift": 1.445038301795924
+            },
+            {
+              "predicted": 0.2319756252157471,
+              "observed": 0.2751451187335092,
+              "lift": 2.0335842660091625
+            },
+            {
+              "predicted": 0.356080211284722,
+              "observed": 0.44079155672823217,
+              "lift": 3.2578690782459794
+            }
+          ]
+        },
+        "dubai": {
+          "deviance": 0.37107467437831837,
+          "top_decile_lift": 1.8880730377032815,
+          "cell_spearman": 0.4516611213898618,
+          "top10_cells_capture": 0.14368975566016587,
+          "crashes": 17844,
+          "cells": 1552,
+          "deciles": [
+            {
+              "predicted": 0.008292798833120304,
+              "observed": 0.01591623839840454,
+              "lift": 0.2325676045195251
+            },
+            {
+              "predicted": 0.014937155410969134,
+              "observed": 0.025312571910715655,
+              "lift": 0.3698665517659917
+            },
+            {
+              "predicted": 0.021377482117440245,
+              "observed": 0.036626524507171895,
+              "lift": 0.5351856923280638
+            },
+            {
+              "predicted": 0.02891702076486763,
+              "observed": 0.04138221983585181,
+              "lift": 0.6046757717507654
+            },
+            {
+              "predicted": 0.03795205062179257,
+              "observed": 0.051123724783309045,
+              "lift": 0.7470183537940409
+            },
+            {
+              "predicted": 0.05029817338373673,
+              "observed": 0.06684820127329907,
+              "lift": 0.9767839389820054
+            },
+            {
+              "predicted": 0.06961737255947477,
+              "observed": 0.08710159935565527,
+              "lift": 1.2727259924678396
+            },
+            {
+              "predicted": 0.09538539474682366,
+              "observed": 0.10773597207839528,
+              "lift": 1.574234836126007
+            },
+            {
+              "predicted": 0.13233945808250333,
+              "observed": 0.12311586698883903,
+              "lift": 1.7989654054697337
+            },
+            {
+              "predicted": 0.22526303538541484,
+              "observed": 0.12921412955931424,
+              "lift": 1.8880730377032815
+            }
+          ]
+        }
+      },
+      "roads": {
+        "nyc": {
+          "deviance": 0.8464362531229216,
+          "top_decile_lift": 2.8740485658453925,
+          "cell_spearman": 0.8356935851621168,
+          "top10_cells_capture": 0.2235477391054811,
+          "crashes": 73179,
+          "cells": 1100,
+          "deciles": [
+            {
+              "predicted": 0.02659182290770008,
+              "observed": 0.015746753246753245,
+              "lift": 0.039765506497765744
+            },
+            {
+              "predicted": 0.06266020563499254,
+              "observed": 0.059848484848484845,
+              "lift": 0.1511362549365255
+            },
+            {
+              "predicted": 0.10433547860878244,
+              "observed": 0.11937229437229437,
+              "lift": 0.3014526025225816
+            },
+            {
+              "predicted": 0.15293370254874486,
+              "observed": 0.179004329004329,
+              "lift": 0.45204225255879416
+            },
+            {
+              "predicted": 0.21590432260474332,
+              "observed": 0.26266233766233765,
+              "lift": 0.6633050465297421
+            },
+            {
+              "predicted": 0.3017644701572303,
+              "observed": 0.3612012987012987,
+              "lift": 0.912146927397204
+            },
+            {
+              "predicted": 0.418718723573933,
+              "observed": 0.4773809523809524,
+              "lift": 1.20553710764017
+            },
+            {
+              "predicted": 0.5702251553947869,
+              "observed": 0.5865259740259741,
+              "lift": 1.4811626286229655
+            },
+            {
+              "predicted": 0.7876255904009842,
+              "observed": 0.7600649350649351,
+              "lift": 1.9194031074488582
+            },
+            {
+              "predicted": 1.3191431255706996,
+              "observed": 1.138095238095238,
+              "lift": 2.8740485658453925
+            }
+          ]
+        },
+        "chicago": {
+          "deviance": 0.7213326995539925,
+          "top_decile_lift": 2.6295941023375025,
+          "cell_spearman": 0.7323460691464843,
+          "top10_cells_capture": 0.21008403361344538,
+          "crashes": 36057,
+          "cells": 856,
+          "deciles": [
+            {
+              "predicted": 0.015802218239072106,
+              "observed": 0.023642305820179402,
+              "lift": 0.09429383241501955
+            },
+            {
+              "predicted": 0.0388127722265568,
+              "observed": 0.061122314164522636,
+              "lift": 0.24377729027294762
+            },
+            {
+              "predicted": 0.06380231246109705,
+              "observed": 0.10270495793060287,
+              "lift": 0.4096235014028937
+            },
+            {
+              "predicted": 0.09636112294759684,
+              "observed": 0.13448299840066755,
+              "lift": 0.5363655055607288
+            },
+            {
+              "predicted": 0.14051312176539488,
+              "observed": 0.16695640080661986,
+              "lift": 0.6658808577307704
+            },
+            {
+              "predicted": 0.1957463971477238,
+              "observed": 0.2184827202558932,
+              "lift": 0.8713859454352689
+            },
+            {
+              "predicted": 0.26268891875012224,
+              "observed": 0.2959460399137751,
+              "lift": 1.1803369139950681
+            },
+            {
+              "predicted": 0.35288617066164457,
+              "observed": 0.3711842013768166,
+              "lift": 1.4804131689158069
+            },
+            {
+              "predicted": 0.4921779035200618,
+              "observed": 0.4735048678720445,
+              "lift": 1.888503980889785
+            },
+            {
+              "predicted": 0.8485688249348191,
+              "observed": 0.6593184979137692,
+              "lift": 2.6295941023375025
+            }
+          ]
+        },
+        "london": {
+          "deviance": 0.40881085834802927,
+          "top_decile_lift": 3.8926997879146836,
+          "cell_spearman": 0.8473798443326122,
+          "top10_cells_capture": 0.3222623115337746,
+          "crashes": 41851,
+          "cells": 2296,
+          "deciles": [
+            {
+              "predicted": 0.01062604266554465,
+              "observed": 0.003759106110491795,
+              "lift": 0.03464654325554417
+            },
+            {
+              "predicted": 0.020531824892785527,
+              "observed": 0.011381017810385502,
+              "lift": 0.10489539647713027
+            },
+            {
+              "predicted": 0.03149656868180418,
+              "observed": 0.020299172996655693,
+              "lift": 0.1870913335799385
+            },
+            {
+              "predicted": 0.04564159788437353,
+              "observed": 0.03183574002540637,
+              "lift": 0.29342038012281546
+            },
+            {
+              "predicted": 0.06383149309047069,
+              "observed": 0.04759806081974438,
+              "lift": 0.4386969201184765
+            },
+            {
+              "predicted": 0.0857245144599703,
+              "observed": 0.07318590724081611,
+              "lift": 0.6745323559338012
+            },
+            {
+              "predicted": 0.1130608770915129,
+              "observed": 0.10061441941254246,
+              "lift": 0.9273326508604616
+            },
+            {
+              "predicted": 0.14829106688238458,
+              "observed": 0.15145308894822804,
+              "lift": 1.3958972806819934
+            },
+            {
+              "predicted": 0.20507772999364932,
+              "observed": 0.22251892564554598,
+              "lift": 2.050889588095987
+            },
+            {
+              "predicted": 0.3607146754187495,
+              "observed": 0.4223530021777455,
+              "lift": 3.8926997879146836
+            }
+          ]
+        },
+        "paris": {
+          "deviance": 0.4472843979637075,
+          "top_decile_lift": 3.1904418149685383,
+          "cell_spearman": 0.7864170085458085,
+          "top10_cells_capture": 0.24971039340160325,
+          "crashes": 21581,
+          "cells": 1121,
+          "deciles": [
+            {
+              "predicted": 0.008076636243461291,
+              "observed": 0.00653108904582382,
+              "lift": 0.05699397330160365
+            },
+            {
+              "predicted": 0.01905386157542349,
+              "observed": 0.020602134551054002,
+              "lift": 0.17978586700018062
+            },
+            {
+              "predicted": 0.03126525106265898,
+              "observed": 0.0292040567089683,
+              "lift": 0.254851100129122
+            },
+            {
+              "predicted": 0.04619665214842325,
+              "observed": 0.05049646896405246,
+              "lift": 0.44066072040508186
+            },
+            {
+              "predicted": 0.06402650908350221,
+              "observed": 0.06844368926883662,
+              "lift": 0.5972783055753423
+            },
+            {
+              "predicted": 0.08697160300926883,
+              "observed": 0.08814315297615886,
+              "lift": 0.76918695675335
+            },
+            {
+              "predicted": 0.11772031062102296,
+              "observed": 0.11745340625497797,
+              "lift": 1.024964788155669
+            },
+            {
+              "predicted": 0.16136686185770607,
+              "observed": 0.16009132905007167,
+              "lift": 1.3970473943441868
+            },
+            {
+              "predicted": 0.2260202514713028,
+              "observed": 0.23937977909940528,
+              "lift": 2.088963210149335
+            },
+            {
+              "predicted": 0.3852486072302461,
+              "observed": 0.3656011045029737,
+              "lift": 3.1904418149685383
+            }
+          ]
+        },
+        "berlin": {
+          "deviance": 0.45520092848234295,
+          "top_decile_lift": 4.407269314519282,
+          "cell_spearman": 0.8277186267148056,
+          "top10_cells_capture": 0.3372854914196568,
+          "crashes": 25640,
+          "cells": 1128,
+          "deciles": [
+            {
+              "predicted": 0.015301747984075296,
+              "observed": 0.004168645454065749,
+              "lift": 0.03081025694724164
+            },
+            {
+              "predicted": 0.028098503853344114,
+              "observed": 0.011028441770882804,
+              "lift": 0.08151067977181649
+            },
+            {
+              "predicted": 0.042011937544672306,
+              "observed": 0.01910189435913672,
+              "lift": 0.1411811774038161
+            },
+            {
+              "predicted": 0.058630530297924775,
+              "observed": 0.03334916363252599,
+              "lift": 0.24648205557793312
+            },
+            {
+              "predicted": 0.07966609198328367,
+              "observed": 0.0533509234828496,
+              "lift": 0.3943140953078756
+            },
+            {
+              "predicted": 0.10591178514038765,
+              "observed": 0.07720316622691292,
+              "lift": 0.5706048678886468
+            },
+            {
+              "predicted": 0.1399393948972166,
+              "observed": 0.11445910290237467,
+              "lift": 0.8459616940878163
+            },
+            {
+              "predicted": 0.18490276985878115,
+              "observed": 0.17271767810026384,
+              "lift": 1.2765480058780185
+            },
+            {
+              "predicted": 0.2555141425896155,
+              "observed": 0.27134564643799475,
+              "lift": 2.0055025500228454
+            },
+            {
+              "predicted": 0.44304979544332757,
+              "observed": 0.5963060686015831,
+              "lift": 4.407269314519282
+            }
+          ]
+        },
+        "dubai": {
+          "deviance": 0.3460989209569649,
+          "top_decile_lift": 2.8772237980316553,
+          "cell_spearman": 0.6577964461441527,
+          "top10_cells_capture": 0.2665321676754091,
+          "crashes": 17844,
+          "cells": 1552,
+          "deciles": [
+            {
+              "predicted": 0.005049987751170145,
+              "observed": 0.0076321239548975996,
+              "lift": 0.11152036939610964
+            },
+            {
+              "predicted": 0.010926598523988095,
+              "observed": 0.016951752703842908,
+              "lift": 0.24769850890995204
+            },
+            {
+              "predicted": 0.017139490077641775,
+              "observed": 0.024277057605277288,
+              "lift": 0.3547356473755648
+            },
+            {
+              "predicted": 0.0242356427864313,
+              "observed": 0.03444043875124645,
+              "lift": 0.5032426719482735
+            },
+            {
+              "predicted": 0.03287300158474357,
+              "observed": 0.04218761985119276,
+              "lift": 0.6164442529433195
+            },
+            {
+              "predicted": 0.044180078221870055,
+              "observed": 0.05388509626447802,
+              "lift": 0.7873674321685127
+            },
+            {
+              "predicted": 0.06053236618778812,
+              "observed": 0.07582556667817282,
+              "lift": 1.1079609366397707
+            },
+            {
+              "predicted": 0.08501318601485025,
+              "observed": 0.10033367851800713,
+              "lift": 1.466072741653839
+            },
+            {
+              "predicted": 0.1255596449130855,
+              "observed": 0.1319372530970736,
+              "lift": 1.9278632382604002
+            },
+            {
+              "predicted": 0.27887099558500256,
+              "observed": 0.19690867947685345,
+              "lift": 2.8772237980316553
+            }
+          ]
+        }
+      }
+    },
+    "best_summary": null
+  },
+  "dubai_validation": null
+}

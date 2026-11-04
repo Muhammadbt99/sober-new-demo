@@ -46,3 +46,7 @@ desktop.ini
 
 # --- Tool output -------------------------------------------------------------
 .playwright-mcp/
+
+# --- Global model: downloaded source data and intermediate tables ------------
+API/MAPS/global_model/raw/
+API/MAPS/global_model/work/

@@ -1,0 +1,117 @@
+.departure-strip {
+  display: grid;
+  gap: 8px;
+}
+
+.departure-chart {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 2px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.departure-slot {
+  display: grid;
+  grid-template-rows: 14px 62px 16px 14px;
+  justify-items: center;
+  min-width: 0;
+  border-radius: 4px;
+  cursor: default;
+}
+
+.departure-slot:hover {
+  background: var(--color-panel-2);
+}
+
+.departure-track {
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  width: 100%;
+  border-bottom: 1px solid var(--color-line);
+}
+
+.departure-bar {
+  display: block;
+  width: min(100%, 26px);
+  border-radius: 4px 4px 0 0;
+  background: var(--color-faint);
+  opacity: 0.55;
+}
+
+.departure-slot.is-chosen .departure-bar {
+  background: var(--color-ink);
+  opacity: 1;
+}
+
+.departure-slot.is-recommended .departure-bar {
+  background: var(--color-brand);
+  opacity: 1;
+}
+
+/* Hatched, so the small hours read as different without relying on colour. */
+.departure-slot.is-small-hours:not(.is-chosen) .departure-bar {
+  background: repeating-linear-gradient(
+    135deg,
+    var(--color-faint) 0 2px,
+    transparent 2px 5px
+  );
+  opacity: 0.8;
+}
+
+.departure-tag,
+.departure-hour,
+.departure-role {
+  color: var(--color-muted);
+  font-size: 10.5px;
+  line-height: 14px;
+}
+
+.departure-tag,
+.departure-role,
+.departure-slot.is-chosen .departure-hour,
+.departure-slot.is-recommended .departure-hour {
+  color: var(--color-ink);
+}
+
+.departure-chart-loading {
+  align-items: end;
+  height: 106px;
+}
+
+.departure-chart-loading span {
+  height: 56px;
+  border-radius: 4px 4px 0 0;
+  background: var(--color-line);
+  opacity: 0.4;
+}
+
+.departure-text {
+  margin: 0;
+  color: var(--color-ink);
+  font-size: 12.5px;
+  line-height: 1.45;
+}
+
+.departure-use {
+  justify-self: start;
+  border: 1px solid var(--color-line);
+  border-radius: 6px;
+  background: var(--color-panel-2);
+  color: var(--color-ink);
+  padding: 5px 10px;
+  font-size: 12px;
+}
+
+.departure-use:hover {
+  border-color: var(--color-brand);
+}
+
+.departure-note {
+  margin: 0;
+  color: var(--color-faint);
+  font-size: 10.5px;
+  line-height: 1.5;
+}

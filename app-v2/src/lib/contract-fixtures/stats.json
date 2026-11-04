@@ -1,18 +1,20 @@
 {
-  "average_risk_score": 72.3,
+  "average_risk_score": 75.7,
   "most_dangerous_hour": {
     "average_score": 100.0,
     "hour": 14
   },
   "privacy_note": "No coordinates are stored. The log holds endpoint, hour, score and band only.",
   "risk_level_breakdown": {
-    "CRITICAL": 25,
-    "LOW": 10
+    "CRITICAL": 456,
+    "HIGH": 50,
+    "LOW": 94,
+    "MEDIUM": 84
   },
   "schema_version": "1.0.0",
   "scope": "NYC demo build; aggregate request outcomes only",
   "total_requests": {
-    "risk": 35,
-    "routes": 8
+    "risk": 684,
+    "routes": 139
   }
 }

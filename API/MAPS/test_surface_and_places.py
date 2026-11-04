@@ -103,7 +103,8 @@ def test_surface_agrees_with_risk_at_cell_centres(client):
         centre = by_cell[cell_id]
         point = client.get(f"/risk?lat={centre['lat']}&lon={centre['lon']}&hour=23&day=5").get_json()
         assert point["cell"] == cell_id
-        assert point["expected_rate"] == pytest.approx(centre["expected_rate"])
+        # /surface rounds rates to 6 significant figures (half the payload).
+        assert point["expected_rate"] == pytest.approx(centre["expected_rate"], rel=1e-5)
         assert point["risk_score"] == pytest.approx(centre["risk_score"])
         assert point["risk_level"] == centre["risk_level"]
 
@@ -213,3 +214,37 @@ def test_hotspots_without_a_point_keep_the_city_wide_list(client):
 def test_hotspots_near_rejects_bad_input(client, query):
     response = client.get(f"/hotspots?{query}")
     assert response.status_code == 400
+
+
+# --------------------------------------------------------------------------
+# Model card
+# --------------------------------------------------------------------------
+
+
+def test_model_card_reports_the_loaded_artifact(client):
+    """The Method screen's numbers must be the served model's, not typed-in copies."""
+    response = client.get("/model_card")
+    assert response.status_code == 200
+    card = response.get_json()
+    meta = risk_model.metadata
+    assert card["version"] == risk_model.info.version == meta["version"]
+    assert card["cells"] == risk_model.info.cell_count == len(risk_model.cells)
+    assert card["gate"]["passed"] is True
+    assert card["training_window"]["crashes"] == meta["training_window"]["crashes"]
+    for split in ("temporal_test", "holdout"):
+        block = card[split]
+        assert block["poisson_deviance"] == meta["model_metrics"][split]["poisson_deviance"]
+        assert block["baseline_deviance"] == meta["baseline"][split]["poisson_deviance"]
+        assert block["poisson_deviance"] < block["baseline_deviance"]
+        assert [row["decile"] for row in block["deciles"]] == list(range(1, 11))
+        lifts = [row["lift"] for row in block["deciles"]]
+        assert lifts == sorted(lifts)
+        assert math.isclose(lifts[-1], block["top_decile_lift"])
+
+
+def test_model_card_is_unavailable_without_a_model(client, monkeypatch):
+    monkeypatch.setattr(risk_model, "available", False)
+    monkeypatch.setattr(risk_model, "error", "RuntimeError: missing artifact")
+    response = client.get("/model_card")
+    assert response.status_code == 503
+    assert "not available" in response.get_json()["error"]

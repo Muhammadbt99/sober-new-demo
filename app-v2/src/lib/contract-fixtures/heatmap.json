@@ -15,7 +15,7 @@
       "data_quality": {
         "bars": "offline",
         "model": "live",
-        "weather": "fallback"
+        "weather": "live"
       },
       "error": false,
       "expected_rate": null,
@@ -34,18 +34,18 @@
       "data_quality": {
         "bars": "offline",
         "model": "live",
-        "weather": "fallback"
+        "weather": "live"
       },
       "error": false,
-      "expected_rate": 0.01873074632436581,
-      "expected_rate_per_km2_hour": 0.025294915040631957,
+      "expected_rate": 0.015169775188103387,
+      "expected_rate_per_km2_hour": 0.020486005625382032,
       "lat": 40.7,
       "lon": -73.98,
-      "model_points": 60.0,
+      "model_points": 50.0,
       "nightlife_points": 16,
-      "percentile": 99.03008078231292,
-      "risk_level": "CRITICAL",
-      "risk_score": 76.0
+      "percentile": 97.06041507512096,
+      "risk_level": "HIGH",
+      "risk_score": 66.0
     },
     {
       "cell": "882a1072ebfffff",
@@ -53,7 +53,7 @@
       "data_quality": {
         "bars": "offline",
         "model": "live",
-        "weather": "fallback"
+        "weather": "live"
       },
       "error": false,
       "expected_rate": null,
@@ -72,22 +72,22 @@
       "data_quality": {
         "bars": "offline",
         "model": "live",
-        "weather": "fallback"
+        "weather": "live"
       },
       "error": false,
-      "expected_rate": 0.015471819312145784,
-      "expected_rate_per_km2_hour": 0.02088564044593507,
+      "expected_rate": 0.010797597970169312,
+      "expected_rate_per_km2_hour": 0.014575839100426903,
       "lat": 40.72,
       "lon": -73.98,
       "model_points": 50.0,
       "nightlife_points": 40,
-      "percentile": 97.92144982993197,
+      "percentile": 91.48045581869111,
       "risk_level": "CRITICAL",
       "risk_score": 90.0
     }
   ],
   "model_cells": 2,
-  "model_version": "2026.10.29-1",
+  "model_version": "2026.11.03-1",
   "schema_version": "1.0.0",
   "total_points": 4,
   "warnings": [

@@ -152,3 +152,55 @@ export function weatherLabel(source: string | undefined): string {
   if (source === "stale") return "Cached weather";
   return `Weather: ${source}`;
 }
+
+/**
+ * The next real date a weekday and hour fall on, today included if that hour
+ * is still ahead. The URL stores only a weekday (0 = Monday), which alone
+ * cannot say which Wednesday is meant.
+ */
+export function nextDateFor(day: number, hour: number, now = new Date()): Date {
+  const date = new Date(now.getFullYear(), now.getMonth(), now.getDate(), hour);
+  const today = (now.getDay() + 6) % 7;
+  let ahead = (day - today + 7) % 7;
+  if (ahead === 0 && hour < now.getHours()) ahead = 7;
+  date.setDate(date.getDate() + ahead);
+  return date;
+}
+
+const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+
+/** "Today, Wed 4 Nov", "Tomorrow, Thu 5 Nov" or "Sat 7 Nov". */
+export function formatDateFor(day: number, hour: number, now = new Date()): string {
+  const date = nextDateFor(day, hour, now);
+  const label = `${DAY_SHORT[(date.getDay() + 6) % 7]} ${date.getDate()} ${MONTHS[date.getMonth()]}`;
+  const midnight = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  const days = Math.round((date.getTime() - midnight.getTime()) / 86_400_000 - hour / 24);
+  if (days === 0) return `Today, ${label}`;
+  if (days === 1) return `Tomorrow, ${label}`;
+  return label;
+}
+
+/** The next seven days from today, for the day picker. */
+export function upcomingDays(now = new Date()): { day: number; date: number; isToday: boolean }[] {
+  return Array.from({ length: 7 }, (_, offset) => {
+    const date = new Date(now.getFullYear(), now.getMonth(), now.getDate() + offset);
+    return { day: (date.getDay() + 6) % 7, date: date.getDate(), isToday: offset === 0 };
+  });
+}
+
+/** Whether a weekday and hour are the current hour today. */
+export function isNow(day: number, hour: number, now = new Date()): boolean {
+  return day === (now.getDay() + 6) % 7 && hour === now.getHours();
+}
+
+/** The date ``nextDateFor`` lands on, as YYYY-MM-DD in local time. */
+export function isoDateFor(day: number, hour: number, now = new Date()): string {
+  const date = nextDateFor(day, hour, now);
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  return `${date.getFullYear()}-${month}-${String(date.getDate()).padStart(2, "0")}`;
+}
+
+/** 20:00 to 05:59: the hours "Get home safe" is for. */
+export function isNightHour(hour: number): boolean {
+  return hour >= 20 || hour < 6;
+}
