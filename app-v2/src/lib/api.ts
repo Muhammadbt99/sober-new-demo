@@ -40,6 +40,8 @@ import {
   type GuidanceResponse as GuidanceResponseType,
   NightPlanResponse,
   type NightPlanResponse as NightPlanResponseType,
+  ResponseGap,
+  type ResponseGap as ResponseGapType,
   type SafeRouteResponse as SafeRouteResponseType,
   type SeverityResponse as SeverityResponseType,
   type StatsResponse as StatsResponseType,
@@ -322,6 +324,14 @@ export const api = {
         ...trafficParams(time),
       })}`,
       SafeRouteResponse,
+      signal,
+    );
+  },
+
+  responseGap(point: Point, time: TimeParams, signal?: AbortSignal): Promise<ResponseGapType> {
+    return request(
+      `/response_gap${query({ lat: coord(point.lat), lon: coord(point.lon), hour: time.hour, day: time.day })}`,
+      ResponseGap,
       signal,
     );
   },

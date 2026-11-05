@@ -31,6 +31,7 @@ from route_engine import (
 import context_model
 import providers
 import night_plan
+import response_gap
 import traffic
 from global_model.serve import GlobalModel, design_rows, rel_dow
 from severity_features import CLASS_NAMES, SEVERITY_FEATURES
@@ -1175,6 +1176,72 @@ def night_plan_route():
             stop=night_plan.rest_stop(stops or []),
         ),
         "pickup": pickup,
+    })
+
+
+HOSPITALS = response_gap.Hospitals()
+_gap_cache = {}
+
+
+def _gap_cells(region, hour, day_of_week):
+    """Every scored place of a region at an hour, for the response-gap sort."""
+    key = (region, hour, day_of_week)
+    if key in _gap_cache:
+        return _gap_cache[key]
+    if region == "nyc":
+        cells = [
+            {"cell": item["cell"], "lat": item["lat"], "lon": item["lon"], "name": item["name"], "percentile": item["percentile"]}
+            for item in risk_model.score_cells(hour, day_of_week)
+        ]
+    else:
+        model = GLOBAL_MODEL.regions[region]
+        rel_day = rel_dow(day_of_week, model.region.weekend_start)
+        # Street-grid cells only: open desert is far from everything and nobody is there.
+        rows = np.flatnonzero(model.table["junctions"].to_numpy() >= 5)
+        percentiles = model.percentile(model.slot(hour, rel_day)[rows])
+        cells = [
+            {"cell": model.table.index[row], "lat": float(model.lat[row]), "lon": float(model.lon[row]), "name": None, "percentile": float(percentile)}
+            for row, percentile in zip(rows, percentiles)
+        ]
+    if len(_gap_cache) > 48:
+        _gap_cache.clear()
+    _gap_cache[key] = cells
+    return cells
+
+
+@app.route("/response_gap", methods=["GET"])
+@limiter.limit("60/minute")
+def response_gap_route():
+    """If something goes wrong here, how far away is help?"""
+    coords, err = parse_coords()
+    if err:
+        return err
+    lat, lon = coords
+    time_override, err = parse_time_args()
+    if err:
+        return err
+    hour, day_of_week, _ = get_time_features(hour=time_override[0], day=time_override[1])
+    if in_model_area(lat, lon):
+        region, name = "nyc", "New York"
+    elif global_covers(lat, lon):
+        region, name = "uae", "the UAE"
+    else:
+        return jsonify({"available": False, "reason": "Hospital data covers New York and the UAE only."})
+    hospitals = HOSPITALS.region(region)
+    if hospitals.empty:
+        return jsonify({"available": False, "reason": "The hospital list is not available."})
+    return jsonify({
+        "available": True,
+        "region": region,
+        "region_name": name,
+        "hour": hour,
+        "day_of_week": day_of_week,
+        "far_km": response_gap.FAR_KM,
+        "high_percentile": response_gap.HIGH_PERCENTILE,
+        "hospitals": len(hospitals),
+        "note": response_gap.NOTE,
+        "here": response_gap.here(lat, lon, hospitals),
+        **response_gap.summarise(_gap_cells(region, hour, day_of_week), hospitals, centre=(lat, lon)),
     })
 
 

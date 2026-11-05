@@ -13,6 +13,8 @@ import { ErrorBlock, LoadingBlock, Notice } from "@/components/DataState";
 import { TrendStrip } from "@/components/TrendStrip";
 import { ComparePanel } from "@/features/explore/ComparePanel";
 import { DangerProfileCard } from "@/features/explore/DangerProfileCard";
+import { ResponseGapCard } from "@/features/explore/ResponseGapCard";
+import type { ResponseGap } from "@/lib/contract";
 import { NearbyStops } from "@/features/explore/NearbyStops";
 import { SeverityLab } from "@/features/explore/SeverityLab";
 import { PlaceSearch } from "@/features/plan/PlaceSearch";
@@ -98,6 +100,10 @@ type ExplorePanelProps = {
   onExplorePlace: (place: Place) => void;
   /** Kinds of crash the driver's check-in points to. */
   flaggedDangers: string[];
+  responseGap: ResponseGap | undefined;
+  responseGapLoading: boolean;
+  responseGapOn: boolean;
+  onResponseGap: (on: boolean) => void;
   /** Open the planner with this place as the origin. */
   onPlanFromHere: (name: string) => void;
   trend: RiskTrendResponse | undefined;
@@ -129,6 +135,10 @@ type ExplorePanelProps = {
 
 export function ExplorePanel({
   flaggedDangers,
+  responseGap,
+  responseGapLoading,
+  responseGapOn,
+  onResponseGap,
   point,
   hour,
   day,
@@ -387,6 +397,14 @@ export function ExplorePanel({
               onLayer={onDangerLayer}
               validated={validatedDanger}
               flagged={flaggedDangers}
+            />
+
+            <ResponseGapCard
+              data={responseGap}
+              loading={responseGapLoading}
+              on={responseGapOn}
+              onToggle={onResponseGap}
+              onPlace={onExplorePlace}
             />
 
             {(estimated || !noSignal) && (

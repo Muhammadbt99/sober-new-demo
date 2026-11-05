@@ -140,6 +140,8 @@ export type UrlState = {
   sunMode: "live" | "dock";
   /** Explore map layer: one kind of crash (`layer=impaired`), or null for overall risk. */
   dangerLayer: DangerLayer | null;
+  /** Explore map layer: where high crash risk is far from a hospital (`gap=1`). */
+  responseGap: boolean;
 };
 
 function pointParam(value: string | null): Point | null {
@@ -223,6 +225,7 @@ export function useUrlState() {
       compare: pointParam(searchParams.get("cmp")),
       picking: searchParams.get("pick") === "1",
       sunMode: searchParams.get("sun") === "dock" ? "dock" : "live",
+      responseGap: searchParams.get("gap") === "1",
       dangerLayer: isDangerLayer(searchParams.get("layer"))
         ? (searchParams.get("layer") as DangerLayer)
         : null,

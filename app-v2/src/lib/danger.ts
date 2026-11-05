@@ -75,3 +75,19 @@ export type DangerLayer = (typeof DANGER_LAYERS)[number];
 export function isDangerLayer(value: string | null): value is DangerLayer {
   return value !== null && (DANGER_LAYERS as readonly string[]).includes(value);
 }
+
+/** The response-gap layer: crash risk against distance to a mapped hospital. */
+export const GAP_COLORS: Record<string, string> = {
+  gap: "#ff5268",
+  covered: "#f3c15d",
+  remote: "#7fb6ff",
+  near: "#4f9d8a",
+  none: "#4d5a6b",
+};
+
+export const GAP_LEGEND = [
+  { id: "gap", label: "HIGH RISK, FAR" },
+  { id: "covered", label: "HIGH RISK, NEAR" },
+  { id: "remote", label: "LOWER RISK, FAR" },
+  { id: "near", label: "LOWER RISK, NEAR" },
+];

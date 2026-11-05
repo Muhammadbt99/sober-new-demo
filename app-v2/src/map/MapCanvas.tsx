@@ -18,7 +18,7 @@ import { cellToBoundary } from "h3-js";
 import type { Coverage, Hotspot, RiskLevel, Route, SafeStop } from "@/lib/contract";
 import type { Point } from "@/lib/api";
 import { RISK_COLORS, formatDuration, formatPercent } from "@/lib/risk";
-import { LAYER_STEPS, dangerMeta } from "@/lib/danger";
+import { GAP_COLORS, LAYER_STEPS, dangerMeta } from "@/lib/danger";
 import { segmentPaths, type LonLat } from "@/lib/route-geometry";
 import { routeLabel } from "@/lib/routes";
 import { stopKey, stopMeta } from "@/lib/stops";
@@ -156,6 +156,10 @@ export type MapCell = {
   coverage: Coverage;
   /** With a danger layer on: expected rate of that kind of crash vs a typical cell-hour. */
   danger_rate_ratio?: number | null;
+  /** With the response-gap layer on: how this place sorts, and its nearest hospital. */
+  gap_quadrant?: string | null;
+  gap_km?: number | null;
+  gap_hospital?: string | null;
   /** "global_model" for the global crash model's cells (the UAE). */
   source?: string;
 };
@@ -195,6 +199,8 @@ type MapCanvasProps = {
   picking: boolean;
   /** Explore: colour the hexes by one kind of crash instead of overall risk. */
   dangerLayer?: string | null;
+  /** Explore: colour the hexes by crash risk against distance to a hospital. */
+  gapLayer?: boolean;
   /** The route being driven in the road simulation, if any. */
   drive?: DriveTrip | null;
   onDriveEnd?: () => void;
@@ -259,6 +265,9 @@ function hexCollection(cells: MapCell[]): FeatureCollection {
         source: cell.source ?? null,
         // -1 marks "no value" (thin data, or no layer), which the colour ramp greys out.
         danger: cell.danger_rate_ratio ?? -1,
+        gap: cell.gap_quadrant ?? "none",
+        gapKm: cell.gap_km ?? -1,
+        gapHospital: cell.gap_hospital ?? null,
       },
       geometry: { type: "Polygon", coordinates: [ring] },
     });
@@ -407,6 +416,11 @@ function dangerColorExpression() {
     stops.push(step.color);
   });
   return ["case", ["<", ["get", "danger"], 0], "#4d5a6b", ["step", ["get", "danger"], ...stops]];
+}
+
+function gapColorExpression() {
+  const pairs = Object.entries(GAP_COLORS).filter(([id]) => id !== "none").flat();
+  return ["match", ["get", "gap"], ...pairs, GAP_COLORS.none];
 }
 
 function routeBounds(routes: Route[], selectedRoute: number) {
@@ -798,6 +812,7 @@ export function MapCanvas({
   compareTarget,
   picking,
   dangerLayer = null,
+  gapLayer = false,
   drive = null,
   onDriveEnd = () => {},
 }: MapCanvasProps) {
@@ -831,6 +846,8 @@ export function MapCanvas({
   exploreModeRef.current = exploreMode;
   const dangerLayerRef = useRef(dangerLayer);
   dangerLayerRef.current = dangerLayer;
+  const gapLayerRef = useRef(gapLayer);
+  gapLayerRef.current = gapLayer;
   const pointMarkerRef = useRef<maplibregl.Marker | null>(null);
   const tipRef = useRef<maplibregl.Popup | null>(null);
   /** The last place a reveal flew to, so the explore pan does not fight it. */
@@ -1248,7 +1265,12 @@ export function MapCanvas({
           const line = document.createElement("span");
           const layer = dangerLayerRef.current;
           const danger = Number(props.danger);
-          if (layer) {
+          if (gapLayerRef.current) {
+            const km = Number(props.gapKm);
+            line.textContent =
+              km >= 0 ? `${km} km to ${String(props.gapHospital)}` : "No distance for this cell";
+            line.style.color = GAP_COLORS[String(props.gap)] ?? "";
+          } else if (layer) {
             line.textContent =
               danger >= 0
                 ? `${dangerMeta(layer).short}: ${danger.toFixed(1)}× a typical NYC hour`
@@ -1757,10 +1779,14 @@ export function MapCanvas({
     // overall risk again.
     const map = mapRef.current;
     if (!map || !ready || !map.getLayer(RISK_FILL)) return;
-    const colour = dangerLayer ? dangerColorExpression() : fillColorExpression();
+    const colour = gapLayer
+      ? gapColorExpression()
+      : dangerLayer
+        ? dangerColorExpression()
+        : fillColorExpression();
     map.setPaintProperty(RISK_FILL, "fill-color", colour as never);
     map.setPaintProperty(RISK_OUTLINE, "line-color", colour as never);
-  }, [dangerLayer, ready]);
+  }, [dangerLayer, gapLayer, ready]);
 
   useEffect(() => {
     // The surface is the subject in Explore and the backdrop in Plan.

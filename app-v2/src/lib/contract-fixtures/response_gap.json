@@ -1,0 +1,155 @@
+{
+  "available": true,
+  "cells": [
+    {
+      "cell": "882a100123fffff",
+      "hospital": "Saint Barnabas Hospital",
+      "km": 1.5,
+      "quadrant": "covered"
+    },
+    {
+      "cell": "882a100127fffff",
+      "hospital": "James J Peters Veterans Affairs Medical Center",
+      "km": 0.8,
+      "quadrant": "covered"
+    },
+    {
+      "cell": "882a100131fffff",
+      "hospital": "Saint Barnabas Hospital",
+      "km": 1.7,
+      "quadrant": "covered"
+    },
+    {
+      "cell": "882a100133fffff",
+      "hospital": "Saint Barnabas Hospital",
+      "km": 1.9,
+      "quadrant": "covered"
+    },
+    {
+      "cell": "882a100135fffff",
+      "hospital": "Saint Barnabas Hospital",
+      "km": 0.9,
+      "quadrant": "covered"
+    },
+    {
+      "cell": "882a100137fffff",
+      "hospital": "Saint Barnabas Hospital",
+      "km": 1.0,
+      "quadrant": "near"
+    },
+    {
+      "cell": "882a10013bfffff",
+      "hospital": "NYC Health + Hospitals/Jacobi",
+      "km": 1.2,
+      "quadrant": "near"
+    },
+    {
+      "cell": "882a100181fffff",
+      "hospital": "Montefiore Westchester Square Campus",
+      "km": 2.4,
+      "quadrant": "near"
+    }
+  ],
+  "counts": {
+    "covered": 478,
+    "gap": 0,
+    "near": 557,
+    "remote": 87
+  },
+  "day_of_week": 4,
+  "far_km": 5.0,
+  "here": {
+    "emergency_tagged": true,
+    "hospital": "Mount Sinai West",
+    "km": 1.3
+  },
+  "high_percentile": 75.0,
+  "hospitals": 94,
+  "hour": 18,
+  "note": "Distance is a straight line to the nearest hospital on OpenStreetMap, so it can cross water. It is not a drive or an ambulance time, and not every mapped hospital has an emergency department.",
+  "ranked": [
+    {
+      "cell": "882a100c8dfffff",
+      "hospital": "Brookdale Hospital Medical Center",
+      "km": 4.6,
+      "lat": 40.67907,
+      "lon": -73.867564,
+      "name": "East New York-City Line",
+      "percentile": 96.2,
+      "quadrant": "covered"
+    },
+    {
+      "cell": "882a100cebfffff",
+      "hospital": "Wyckoff Heights Medical Center",
+      "km": 4.5,
+      "lat": 40.686931,
+      "lon": -73.869989,
+      "name": "Cypress Hills",
+      "percentile": 90.3,
+      "quadrant": "covered"
+    },
+    {
+      "cell": "882a1005b3fffff",
+      "hospital": "Jamaica Hospital Medical Center",
+      "km": 4.4,
+      "lat": 40.666399,
+      "lon": -73.743212,
+      "name": "Springfield Gardens (South)-Brookville",
+      "percentile": 95.5,
+      "quadrant": "covered"
+    },
+    {
+      "cell": "882a100cd7fffff",
+      "hospital": "Jamaica Hospital Medical Center",
+      "km": 4.4,
+      "lat": 40.666487,
+      "lon": -73.843605,
+      "name": "Howard Beach-Lindenwood",
+      "percentile": 85.5,
+      "quadrant": "covered"
+    },
+    {
+      "cell": "882a100c81fffff",
+      "hospital": "Brookdale Hospital Medical Center",
+      "km": 4.3,
+      "lat": 40.67121,
+      "lon": -73.865139,
+      "name": "East New York-City Line",
+      "percentile": 94.2,
+      "quadrant": "covered"
+    },
+    {
+      "cell": "882a103a6dfffff",
+      "hospital": "Long Island Jewish Valley Stream",
+      "km": 4.3,
+      "lat": 40.664027,
+      "lon": -73.732452,
+      "name": "Rosedale",
+      "percentile": 91.1,
+      "quadrant": "covered"
+    },
+    {
+      "cell": "882a100c89fffff",
+      "hospital": "Jamaica Hospital Medical Center",
+      "km": 4.3,
+      "lat": 40.676709,
+      "lon": -73.856794,
+      "name": "Ozone Park",
+      "percentile": 75.1,
+      "quadrant": "covered"
+    },
+    {
+      "cell": "882a1005bbfffff",
+      "hospital": "Long Island Jewish Valley Stream",
+      "km": 4.2,
+      "lat": 40.671889,
+      "lon": -73.734854,
+      "name": "Rosedale",
+      "percentile": 91.3,
+      "quadrant": "covered"
+    }
+  ],
+  "region": "nyc",
+  "region_name": "New York",
+  "schema_version": "1.0.0"
+}

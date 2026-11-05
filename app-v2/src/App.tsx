@@ -19,12 +19,13 @@ import {
   useLocationAlerts,
   useNearestSafe,
   useRisk,
+  useResponseGap,
   useSafeRoute,
   useSurface,
   useTrend,
 } from "@/lib/queries";
 import { inNycBox, inUaeBox } from "@/lib/places";
-import { DANGER_META, LAYER_STEPS } from "@/lib/danger";
+import { DANGER_META, GAP_COLORS, GAP_LEGEND, LAYER_STEPS } from "@/lib/danger";
 import { RISK_COLORS, formatDateFor, formatHour } from "@/lib/risk";
 import { EMPTY_CHECK_IN, activeGroups, type CheckIn } from "@/lib/checkin";
 import { routeKey, trafficNote } from "@/lib/routes";
@@ -136,7 +137,9 @@ function AppFrame() {
   const regional = inUae && !regionSurface.isError;
   const sampled = (!inNyc && !regional) || surface.isError;
   const heatmap = useHeatmap(point, time, sampled);
-  const cells = useMemo<MapCell[]>(() => {
+  const gapData = useResponseGap(point, time, state.panel === "explore");
+  const gapOn = state.panel === "explore" && state.responseGap;
+  const baseCells = useMemo<MapCell[]>(() => {
     const city = surface.data?.cells ?? [];
     const region = regional
       ? (regionSurface.data?.cells ?? []).map((cell) => ({ ...cell, source: "global_model" }))
@@ -145,6 +148,14 @@ function AppFrame() {
     const all = [...city, ...region, ...grid];
     return all.length === 0 ? NO_CELLS : all;
   }, [surface.data, regionSurface.data, heatmap.data, sampled, regional]);
+  const cells = useMemo<MapCell[]>(() => {
+    if (!gapOn) return baseCells;
+    const byCell = new Map((gapData.data?.cells ?? []).map((item) => [item.cell, item]));
+    return baseCells.map((cell) => {
+      const found = cell.cell ? byCell.get(cell.cell) : undefined;
+      return { ...cell, gap_quadrant: found?.quadrant ?? null, gap_km: found?.km ?? null, gap_hospital: found?.hospital ?? null };
+    });
+  }, [baseCells, gapData.data, gapOn]);
   // Crash clusters near the point being explored (none outside New York).
   const hotspots = useHotspots(point);
   const trend = useTrend(point, state.day);
@@ -376,7 +387,8 @@ function AppFrame() {
           onDriveEnd={endDrive}
           reveal={reveal}
           exploreMode={state.panel === "explore"}
-          dangerLayer={dangerLayer}
+          dangerLayer={gapOn ? null : dangerLayer}
+          gapLayer={gapOn}
         />
       </div>
 
@@ -426,7 +438,11 @@ function AppFrame() {
           surface={surface.data}
           regionSurface={regional ? regionSurface.data : undefined}
           dangerLayer={state.dangerLayer}
-          onDangerLayer={(layer) => update({ layer })}
+          onDangerLayer={(layer) => update({ layer, gap: null })}
+          responseGap={gapData.data}
+          responseGapLoading={gapData.isLoading}
+          responseGapOn={gapOn}
+          onResponseGap={(on) => update({ gap: on ? "1" : null, layer: null })}
           placeName={state.placeName}
           onExplorePlace={exploreTo}
           onPlanFromHere={(name) => {
@@ -555,7 +571,21 @@ function AppFrame() {
             onSunMode={(mode) => update({ sun: mode === "dock" ? "dock" : null })}
           />
 
-          {dangerLayer ? (
+          {gapOn ? (
+            <div className="map-legend" aria-label="Response gap legend">
+              <span className="legend-title">Risk and distance to a hospital</span>
+              {GAP_LEGEND.map((row) => (
+                <span key={row.id} className="legend-row">
+                  <span className="legend-swatch" style={{ background: GAP_COLORS[row.id] }} />
+                  {row.label}
+                </span>
+              ))}
+              <span className="legend-row legend-note">
+                <Info size={9} />
+                straight line, not a drive
+              </span>
+            </div>
+          ) : dangerLayer ? (
             <div className="map-legend" aria-label={`${DANGER_META[dangerLayer]?.label ?? "Danger"} legend`}>
               <span className="legend-row legend-title">
                 {DANGER_META[dangerLayer]?.short ?? dangerLayer} vs a typical NYC hour

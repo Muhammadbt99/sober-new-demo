@@ -1,0 +1,333 @@
+region,lat,lon,name,emergency
+nyc,40.880085,-73.879844,Montefiore Medical Center West Campus Moses Division Hospital,yes
+nyc,40.585604,-74.08614,Staten Island University Hospital,yes
+nyc,40.738514,-73.974935,NYC Health + Hospitals/Bellevue,yes
+nyc,40.742277,-73.973184,NYU Langone Health - Tisch Hospital,yes
+nyc,40.816799,-73.924515,Lincoln Hospital,yes
+nyc,40.585771,-73.964996,NYC Health + Hospitals: South Brooklyn Health,yes
+nyc,40.903296,-73.968941,Englewood Hospital Medical Center,yes
+nyc,40.613965,-73.948434,Maimonides Midwood Community Hospital,yes
+nyc,40.839632,-73.941412,Morgan Stanley Children's Hospital,yes
+nyc,40.745124,-73.885797,Elmhurst Hospital,yes
+nyc,40.667685,-73.978969,NewYork-Presbyterian Brooklyn Methodist Hospital,yes
+nyc,40.790145,-73.952411,The Mount Sinai Hospital,yes
+nyc,40.791901,-74.073682,Hudson Regional Hospital,yes
+nyc,40.755761,-73.81717,Flushing Hospital Medical Center,yes
+nyc,40.947137,-74.203846,St. Joseph's Wayne Hospital,yes
+nyc,40.858785,-74.137546,St. Mary's General Hospital,yes
+nyc,40.811239,-74.204517,Mountainside Hospital,yes
+nyc,40.612995,-74.291208,Robert Wood Johnson University Hospital At Rahway,yes
+nyc,40.854995,-73.84675,NYC Health + Hospitals/Jacobi,yes
+nyc,40.850192,-73.846113,Jack D. Weiler Hospital—Einstein Campus,yes
+nyc,40.942114,-73.83685,NewYork-Presbyterian - Lawrence Hospital,yes
+nyc,40.912782,-73.840188,Montefiore Mount Vernon Hospital,yes
+nyc,40.804571,-73.669193,Saint Francis Hospital,yes
+nyc,40.598662,-73.75347,Saint John's Episcopal Hospital,yes
+nyc,40.656526,-73.944001,Kings County Hospital Center,yes
+nyc,40.655124,-73.911821,Brookdale Hospital Medical Center,yes
+nyc,40.700206,-73.816552,Jamaica Hospital Medical Center,yes
+nyc,40.717947,-73.805872,Queens Hospital Center,yes
+nyc,40.699555,-73.942231,NYC Health + Hospitals/Woodhull,yes
+nyc,40.690916,-73.977952,Brooklyn Hospital Center,yes
+nyc,40.773645,-73.961023,Lenox Hill Hospital,yes
+nyc,40.78485,-73.945036,NYC Health + Hospitals/Metropolitan,yes
+nyc,40.814072,-73.938946,NYC Health + Hospitals/Harlem,yes
+nyc,40.873327,-73.912825,NewYork-Presbyterian/Allen Hospital,yes
+nyc,40.853306,-73.891263,Saint Barnabas Hospital,yes
+nyc,40.843382,-73.91031,BronxCare Hospital Center,yes
+nyc,40.831436,-73.903148,Bronx-Lebanon Hospital Center Fulton Division,yes
+nyc,40.740094,-74.190173,University Hospital,yes
+nyc,40.646891,-74.020718,NYU Langone Hospital – Brooklyn,yes
+nyc,40.710475,-74.005041,NewYork-Presbyterian Lower Manhattan Hospital,yes
+nyc,40.63901,-73.997893,Maimonides Hospital,yes
+nyc,40.517121,-74.197248,Staten Island University Hospital South,yes
+nyc,40.77485,-73.701902,North Shore University Hospital,yes
+nyc,40.753889,-73.708333,Cohen’s Children’s Medical Center,yes
+nyc,40.737778,-74.000833,Lenox Health Greenwich Village,yes
+nyc,40.741459,-74.033835,Hoboken University Medical Center,yes
+nyc,40.841823,-73.942473,Columbia University Irving Medical Center,yes
+nyc,40.736948,-73.976527,Veteran Affairs New York Harbor Healthcare System,yes
+nyc,40.607764,-74.023796,VA New York Harbor Healthcare System Brooklyn Campus,yes
+nyc,40.883778,-74.055409,Hackensack University Medical Center,yes
+nyc,40.88355,-74.009329,Holy Name Medical Center,yes
+nyc,40.90413,-74.165336,St. Joseph’s University Medical Center,yes
+nyc,40.618562,-73.942986,Mount Sinai Brooklyn,yes
+nyc,40.71501,-74.050858,Jersey City Medical Center,yes
+nyc,40.744046,-74.173962,Saint Michael's Medical Center,yes
+nyc,40.75227,-74.234037,VA New Jersey Health Care System,yes
+nyc,40.709739,-74.212467,Newark Beth Israel Medical Center,yes
+nyc,40.786228,-74.176341,Clara Maass Medical Center,yes
+nyc,40.636194,-74.105317,Richmond University Medical Center,yes
+nyc,40.764748,-73.953952,NewYork-Presbyterian / Weill Cornell Medical Center,yes
+nyc,40.794174,-73.995532,Palisades Medical Center,yes
+nyc,40.658838,-74.214437,Trinitas Regional Medical Center Williamson Campus,yes
+nyc,40.729088,-73.851666,Long Island Jewish Forest Hills,yes
+nyc,40.754568,-74.213579,CareWell Health Medical Center,yes
+nyc,40.667955,-74.112417,Bayonne Medical Center,yes
+nyc,40.518886,-74.28099,Raritan Bay Medical Center,yes
+nyc,40.913366,-73.788291,Montefiore New Rochelle,yes
+nyc,40.893364,-73.861324,Montefiore Medical Center - Wakefield Campus,yes
+nyc,40.928793,-73.89748,Saint Joseph's Medical Center,yes
+nyc,40.681154,-73.686224,Long Island Jewish Valley Stream,yes
+nyc,40.659156,-73.932937,Kingsbrook Jewish Medical Center,yes
+nyc,40.746872,-73.825237,NewYork-Presbyterian/Queens,yes
+nyc,40.768091,-73.924781,Mount Sinai Queens,yes
+nyc,40.678385,-73.936773,Interfaith Medical Center,yes
+nyc,40.732957,-73.982925,Mount Sinai Beth Israel,yes
+nyc,40.805187,-73.960998,Mount Sinai Morningside,yes
+nyc,40.867381,-73.905302,James J Peters Veterans Affairs Medical Center,yes
+nyc,40.84088,-73.848529,Montefiore Westchester Square Campus,yes
+nyc,40.769807,-73.987153,Mount Sinai West,yes
+nyc,40.704217,-73.917616,Wyckoff Heights Medical Center,yes
+nyc,40.756861,-73.705687,Long Island Jewish Medical Center,yes
+nyc,40.588008,-74.091044,Staten Island University Hospital,
+nyc,40.745891,-73.981602,Hassenfeild Children's Hospital at NYU Lagone,
+nyc,40.698085,-74.040982,Hospital Extension,
+nyc,40.766195,-74.281375,Essex County Animal Hospital,
+nyc,40.718152,-73.770422,Holliswood Hospital,
+nyc,40.728753,-73.97925,"NYC Health + Hospitals/Gotham Health, Roberto Clemente Center",
+nyc,40.693756,-73.781317,Jamaica Hospital Medical Center,
+nyc,40.723569,-73.838175,Parkway Hospital,
+nyc,40.801488,-73.898087,Riverside Hospital,
+nyc,40.89804,-74.07429,Select Specialty Hospital - Northeast NJ,
+nyc,40.77039,-73.941943,NYC Health + Hospitals/Coler,
+nyc,40.851965,-74.234808,Essex County Hospital Center,
+nyc,40.595573,-74.09037,Carmel Richmond,
+uae,25.029261,55.114703,Lifeline Hospital,yes
+uae,24.417226,54.461587,Al Noor Hospital,yes
+uae,25.244184,55.318893,Rashid Hospital,yes
+uae,25.768263,55.976884,RAK Hospital,yes
+uae,25.277364,55.348399,Canadian Specialist Hospital,yes
+uae,25.179174,55.247307,Medcare Orthopaedics & Spine Hospital,yes
+uae,25.369924,51.551564,The Pearl International Hospital,yes
+uae,25.337974,56.341875,Khorfakkan Hospital,yes
+uae,24.33046,54.614984,Royal Wing Mafraq Hospital,yes
+uae,25.166976,51.587837,Al Wakrah Hospital,yes
+uae,25.71555,51.516025,Al Khor Hamad Hospital,yes
+uae,25.280291,55.313049,Belhoul Speciality Hospital,yes
+uae,25.282784,55.318573,Al Kuwait Hospital,yes
+uae,25.623182,55.838888,Sheikh Khalifa Specialty Hospital,yes
+uae,25.341672,55.432114,Al Qassimi Hospital,yes
+uae,25.382016,55.462681,Gulf Medical Centre Hospital [GMC],yes
+uae,25.097096,55.183626,Saudi German Hospital,yes
+uae,25.235482,55.313053,American Hospital,yes
+uae,23.230832,56.426837,Ibri Hospital,yes
+uae,24.196116,55.649407,Tawam Hospital,yes
+uae,25.289992,55.369275,NMC Specialty Hospital,yes
+uae,25.370765,55.414462,Kuwaiti Hospital,yes
+uae,25.197169,55.237621,Neuro Spinal Hospital,yes
+uae,25.249822,55.345507,Prime Hospital,yes
+uae,24.084596,53.498769,Al Marfa Hospital,yes
+uae,25.368628,55.404412,Zulekha Hospital,yes
+uae,25.140035,55.203749,Quttainah Specialized Hospital,yes
+uae,25.161135,55.230487,Med Care Hospital,yes
+uae,25.151517,56.350813,Al Sharq Hospital,yes
+uae,25.126147,56.315184,Fujairah Hospital,yes
+uae,25.105743,55.180833,Al Zahra Hospital,yes
+uae,24.479144,54.381011,Burjeel Hospital,yes
+uae,25.222743,55.318601,Latifa Hospital Women and Children,yes
+uae,24.53915,54.773219,ZMC military hospital,yes
+uae,25.29349,51.502814,Hamad General Hospital,yes
+uae,25.292824,51.51267,Rumailah Hospital,yes
+uae,25.225512,55.318946,Al Jalila Children's Hospital,yes
+uae,25.276596,55.346069,New Medical Centre,yes
+uae,25.173295,51.595396,Al Wakra Healthcare Center,yes
+uae,25.234785,55.436419,Smilecare Medical Center LLC 042855066,yes
+uae,25.085513,55.143886,Health Avenue Polyclinics,yes
+uae,25.280686,51.505972,Pediatric Emergency Centre,yes
+uae,24.521252,54.396587,Bn Medical Center,yes
+uae,24.354779,54.538603,Burjeel Medical City,yes
+uae,24.324979,54.613463,Sheikh Shakhbout Medical City,yes
+uae,24.468935,54.365869,Sheikh Khalifa Medical City,yes
+uae,24.229991,55.73664,Sheikh Tahnoon bin Mohammed Medical City,yes
+uae,23.147398,53.807036,Liwa Hospital,
+uae,24.21458,55.7578,Specialised Medical Care Hospital,
+uae,25.101339,55.160868,Welcare Hospital,
+uae,25.270347,55.314549,Al Maktoum Hospital,
+uae,25.360161,55.394716,NMC Royal Hospital - Block B,
+uae,24.490093,54.373124,National Hospital,
+uae,25.299596,55.489687,University Hospital Sharjah,
+uae,25.573865,55.560206,Umm Al Quwain Hospital,
+uae,25.085336,55.141799,Emirates Hospital,
+uae,24.490905,54.360459,Al Noor Hospital,
+uae,24.487681,54.364913,LLH Hospital,
+uae,24.572759,54.694675,Al Rahba Hospital,
+uae,25.29868,51.508173,Hamad Hospital gate 9,
+uae,24.224446,55.76842,Al Noor Hospital,
+uae,24.483789,54.3611,NMC Specialty Hospital,
+uae,25.308348,55.371595,W. Wilson Specialized Hospital,
+uae,25.225707,55.377114,Rashid hospital,
+uae,25.002922,55.153739,NMC hospital DIP,
+uae,24.452454,54.393306,Brightpoint Royal Women's Hospital,
+uae,24.202633,55.74815,nmc hospital,
+uae,25.501204,55.599249,Sheikh Khalifa General Hospital,
+uae,25.407857,55.442522,Kuwaiti Hospital,
+uae,25.402913,55.442483,Amina Hospital,
+uae,24.464534,54.36477,Nation Hospital,
+uae,24.489523,54.37003,Al Raha Hospital Abu Dhabi,
+uae,24.465532,54.385503,Al Noor Hospital Family Care Centre,
+uae,25.257415,55.306581,Medeor 24x7 Hospital,
+uae,24.339092,54.55428,NMC Royal Hospital - Mohammed Bin Zayed City,
+uae,23.899342,52.801826,Ghayathi Community Hospital,
+uae,25.687669,55.965903,Digdagah Hospital,
+uae,24.231025,55.731471,HR building - Al Ain hospital,
+uae,24.231034,55.733565,Emergency Department - Al Ain hospital,
+uae,24.459686,54.378942,Universal Hospital,
+uae,25.319857,55.363298,New Hope Hospital,
+uae,24.206286,55.662487,Burjeel Royal Asharej Hospital,
+uae,24.085668,52.665187,RUWAIS HOSPITAL,
+uae,24.360837,54.521005,LIFE CARE HOSPITAL MISAFFAH,
+uae,24.378919,54.516031,LIFE LINE HOSPITAL MISAFFAH,
+uae,24.908941,55.118548,Shifa International Hospitals DWC,
+uae,25.223167,55.315815,Latifa Hospital,
+uae,25.367976,51.525924,The view hospital,
+uae,25.35874,55.405878,Burjeel speciality hospital sharjah,
+uae,24.487876,54.359903,Al Ahalia Hospital,
+uae,25.285088,55.321649,Dubai Hospital,
+uae,24.230196,55.742704,NMC Specialty Hospital Al Ain,
+uae,24.32832,54.61351,Al Mafraq Hospital,
+uae,25.58809,56.266259,Dibba Hospital,
+uae,25.248935,55.283365,International Modern Hospital,
+uae,25.392392,55.481635,Ajman Specialty General Hospital,
+uae,24.800483,56.12737,Hatta Hospital,
+uae,25.416585,55.495927,Sheikh Khalifa Hospital General - Outpatient Department,
+uae,24.252663,55.803789,Buraimi Hospital,
+uae,24.245744,55.721018,Universal Hospital,
+uae,24.206939,55.759765,Oasis Hospital,
+uae,24.186067,55.780732,Military Hospital,
+uae,25.230385,55.269211,Iranian Hospital Dubai,
+uae,25.315075,55.518274,Royal Hospital,
+uae,25.23695,55.275254,Belhoul European Hospital,
+uae,25.281349,55.36499,"GMC Hospital,",
+uae,25.799567,55.975203,Al Zahrawi Hospital,
+uae,25.121818,55.386846,Fakeeh University Hospital,
+uae,24.499453,54.376278,Al Salama Hospital,
+uae,24.419177,54.452969,Healthpoint Hospital,
+uae,25.291334,55.384085,"Zulekha Hospital, Dubai",
+uae,25.232012,55.317757,Emirates Speciality Hospital,
+uae,24.043881,51.759016,Al Sila Hospital,
+uae,24.42067,54.430965,Zayed Military Hospital,
+uae,24.413622,54.570394,NMC Royal Hospital Khalifa City,
+uae,25.250547,55.342487,Al Garhoud Private Hospital,
+uae,25.246901,55.340122,Mediclinic Welcare Hospital,
+uae,25.311985,55.375109,Euro Arabian Hospital,
+uae,24.456054,54.339934,Nmc Royal Hospital Al Bateen,
+uae,25.373413,55.399322,Emirates European Hospital,
+uae,24.470877,54.382885,Seha Emirates Hospital L.L.C.,
+uae,24.287927,54.646989,Al Noor Family Hospital,
+uae,25.267055,51.514809,Turkish Hospital,
+uae,25.252636,55.288933,Aster Hospital,
+uae,24.245949,55.724121,Ain Al Khaleej Hospital,
+uae,25.34213,55.388574,Medcare Hospital,
+uae,25.360104,55.390276,Thumbay Hospital,
+uae,25.360984,55.398184,Central Private Hospital,
+uae,25.015676,55.086978,Cedars Jebel Ali Free Hospital,
+uae,25.132011,56.340996,Thumbay Hospital Fujairah,
+uae,25.126093,56.34299,Maternity Hospital,
+uae,25.035568,56.344307,Kalba Hospital,
+uae,25.298826,56.164597,Masafi Hospital,
+uae,24.332567,54.53081,Phoenix Hospital,
+uae,25.647107,55.957625,Abdullah Bin Omran Hospital,
+uae,25.796697,55.982549,Hospital Ibrahim bin Hamad Obaidullah,
+uae,25.112583,55.25481,Kings Hospital,
+uae,24.821075,56.074057,Masfut Hospital,
+uae,25.177733,55.806244,Al Batayeh Military Hospital,
+uae,24.491774,54.412712,Reem Hospital,
+uae,25.152993,55.201332,Dubai London Clinic & Specialty Hospital,
+uae,25.1833,55.242678,MedCare Hospital,
+uae,24.362598,54.524265,Al Ahalia hospital,
+uae,24.224078,55.758804,Burjeel Royal Hospital,
+uae,25.258643,51.556055,Aster Medical Hospital,
+uae,25.013341,51.558804,Mesaieed Hospital,
+uae,25.643593,56.249921,Dibba Hospital,
+uae,26.142351,56.15257,Bukha Hospital,
+uae,26.182598,56.252174,Khasab Hospital,
+uae,25.277703,55.395513,Aster Hospital,
+uae,25.291973,51.509811,HMC Heart Hospital,
+uae,25.255507,51.534374,Al Emadi Hospital,
+uae,25.274251,51.503293,Doha Clinic Hospital,
+uae,25.29351,51.500717,Hamad Women's Hospital,
+uae,25.075784,55.246431,Neuro Spinal Hospital,
+uae,25.230667,55.322654,Mediclinic City Hospital,
+uae,24.492981,54.360057,Franco Emirien,
+uae,24.473577,54.318838,Burjeel MHPC,
+uae,25.049023,55.129978,Aster Medical,
+uae,24.396737,54.501102,Danat Al Emarat,
+uae,24.457085,54.380851,Beverly Hills,
+uae,24.435164,54.403119,Al Mushrif Children's Specialty Center,
+uae,24.464087,54.379464,All Care Medical,
+uae,24.462092,54.370165,Ultra Care,
+uae,24.700344,56.457138,مجمع صحي شناص - غسيل الكلى,
+uae,25.198231,55.276465,Mediclinic,
+uae,24.296722,54.638531,دكتور اسنان,
+uae,25.272835,51.513343,KKT الدوحة,
+uae,24.288073,55.763839,مركز هيلي الصحي,
+uae,25.771954,55.976593,Mustashfa Sagar,
+uae,24.480514,54.36974,Medeor,
+uae,24.454178,54.613563,Medeor,
+uae,25.207071,51.525366,Naufar,
+uae,24.337445,54.532125,New National Medical,
+uae,24.227418,55.764393,Tahya Home Health Care,
+uae,24.220587,55.771957,Happy Life Home Health Care,
+uae,23.637305,55.566476,مستشفي الوقن,
+uae,25.418362,55.501781,THUMBAY MEDI City,
+uae,25.282166,55.388474,mediclinic qusais,
+uae,24.451483,54.404618,Parking.accomodition,
+uae,25.784677,55.938115,Adm.ras.alkhaima.muncipality,
+uae,24.361052,54.509597,Alkhaled.car.samweel,
+uae,24.471626,54.342787,Asd.saadiat,
+uae,23.797891,54.162871,infinity,
+uae,23.658182,53.727612,مستشفى,
+uae,25.099527,55.200448,American,
+uae,24.436245,54.58835,Amana health care,
+uae,24.194474,54.849445,تجمعات مستشفى كرونا razeen 4,
+uae,25.237402,55.293185,DHA central service complex,
+uae,24.277296,55.764857,مركز شرطة هيلي,
+uae,25.184371,55.259655,Nexx Home Healthcare Services,
+uae,25.26391,51.520052,Reyada Medical,
+uae,25.256498,55.331371,Al Shoala Building,
+uae,24.46013,54.363499,The American Surgecentre,
+uae,25.232976,55.326034,DHCC Bldg 24,
+uae,24.497217,54.387704,Cleveland Clinic Abu Dhabi,
+uae,25.285577,51.543515,Bone & Joint Centre,
+uae,25.110057,55.200854,Al Noor Training Centre for Persons with Disabilities,
+uae,25.233719,55.318487,Al Razi Building (DHCC Bldg 64),
+uae,25.148241,56.350849,Preventative Medecine Department,
+uae,25.387524,51.521492,Alfardan Medical with Northwestern Medical,
+uae,25.065392,55.24892,Mediclinic Parkview,
+uae,25.297644,55.369755,Sahara Healthcare City,
+uae,25.184627,55.22821,Yugen Care By Dr Gehad,
+uae,24.502569,54.651933,Gulf International Cancer Center,
+uae,25.23207,55.320873,Doctor Sulaiman Al Habib,
+uae,24.463036,54.367749,,
+uae,25.635456,56.267094,,
+uae,23.564051,56.254383,,
+uae,24.443264,54.398239,,
+uae,24.484203,54.367491,,
+uae,23.650785,53.704486,,
+uae,24.34794,54.521121,,
+uae,24.341068,54.537347,,
+uae,24.343867,54.537223,,
+uae,23.641084,53.708182,,
+uae,25.320787,55.408179,,
+uae,24.462209,54.356021,,
+uae,24.475498,54.374232,,
+uae,25.792152,55.939927,,
+uae,24.475705,52.309347,,
+uae,25.413976,55.471482,,
+uae,25.27938,55.892299,,
+uae,24.441576,55.78792,,
+uae,25.273705,55.364406,,
+uae,25.212016,55.272214,,
+uae,24.332022,55.8207,,
+uae,24.101609,52.736285,,
+uae,25.391376,51.513876,,
+uae,25.297714,55.34721,,
+uae,25.155393,55.323644,,
+uae,24.069349,51.761296,,
+uae,24.463354,54.386659,,
+uae,25.263284,51.505343,,
+uae,25.173467,56.09178,,
+uae,25.299734,51.505395,,
+uae,25.294419,51.509607,,
+uae,25.29772,51.500211,,

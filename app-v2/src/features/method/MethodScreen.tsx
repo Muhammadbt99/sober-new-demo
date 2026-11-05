@@ -494,6 +494,44 @@ export function MethodScreen({
           </div>
         </section>
 
+        <section className="method-section">
+          <div className="method-section-head">
+            <span className="paper-label">12 / Response gap</span>
+            <h2>If something goes wrong here, how far away is help?</h2>
+          </div>
+          <div className="limits-grid">
+            <div>
+              <span className="paper-label">What it does</span>
+              <p>
+                Explore sorts each scored place by two questions: is its crash risk at the 75th
+                percentile or above at this hour, and is a mapped hospital 5 km or more away? High
+                risk and far is the gap. Both lines are design choices, not response-time
+                standards.
+              </p>
+            </div>
+            <div>
+              <span className="paper-label">Hospitals</span>
+              <p>
+                From OpenStreetMap, around New York (nearby New Jersey included) and in the UAE,
+                after dropping clinics, dental and eye centres, duplicates, and places marked as
+                having no emergency care. Most UAE entries do not say either way, so a mapped
+                hospital is not a confirmed emergency department. A hospital missing from the map
+                would show as a gap that is not real, so treat each one as a place to check.
+              </p>
+            </div>
+            <div>
+              <span className="paper-label">What it does not say</span>
+              <p>
+                The distance is a straight line from the middle of a map cell, so it can cross a
+                river. It is not a drive or an ambulance time, and it knows nothing about ambulance
+                stations, traffic or bridges. In the UAE only street-grid areas are sorted, and
+                risk there is ranked on Dubai&apos;s scale. New York has no high-risk place past
+                the 5 km line, so the list there shows the furthest instead of moving the line.
+              </p>
+            </div>
+          </div>
+        </section>
+
         <section className="method-section method-provenance">
           <div>
             <span className="paper-label">Sources</span>

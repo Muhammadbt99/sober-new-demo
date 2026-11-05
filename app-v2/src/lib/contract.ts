@@ -599,6 +599,48 @@ export const RouteTraffic = z.object({
 });
 export type RouteTraffic = z.infer<typeof RouteTraffic>;
 
+export const ResponseGap = z.object({
+  schema_version: z.string(),
+  available: z.boolean(),
+  reason: z.string().optional(),
+  region: z.string().optional(),
+  region_name: z.string().optional(),
+  far_km: z.number().optional(),
+  high_percentile: z.number().optional(),
+  hospitals: z.number().optional(),
+  note: z.string().optional(),
+  here: z
+    .object({ km: z.number(), hospital: z.string(), emergency_tagged: z.boolean() })
+    .nullable()
+    .optional(),
+  counts: z.record(z.string(), z.number()).optional(),
+  cells: z
+    .array(
+      z.object({
+        cell: z.string(),
+        km: z.number(),
+        quadrant: z.enum(["gap", "covered", "remote", "near"]),
+        hospital: z.string(),
+      }),
+    )
+    .optional(),
+  ranked: z
+    .array(
+      z.object({
+        cell: z.string(),
+        lat: z.number(),
+        lon: z.number(),
+        name: z.string().nullable(),
+        percentile: z.number(),
+        km: z.number(),
+        quadrant: z.string(),
+        hospital: z.string(),
+      }),
+    )
+    .optional(),
+});
+export type ResponseGap = z.infer<typeof ResponseGap>;
+
 export const NightStep = z.object({
   kind: z.enum(["now", "danger", "best", "when", "care", "drive", "stop", "arrive", "pickup"]),
   /** On a drive step: the worst risk on that part of the road. */

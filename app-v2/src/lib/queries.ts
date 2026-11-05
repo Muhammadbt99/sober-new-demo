@@ -178,6 +178,17 @@ export function useSafeRoute(
   });
 }
 
+export function useResponseGap(point: Point, time: TimeParams, enabled: boolean) {
+  return useQuery({
+    queryKey: ["response-gap", point.lat.toFixed(3), point.lon.toFixed(3), time.hour, time.day],
+    queryFn: ({ signal }) => api.responseGap(point, time, signal),
+    enabled,
+    staleTime: 5 * MINUTE,
+    retry: false,
+    placeholderData: (previous) => previous,
+  });
+}
+
 export function useNightPlan(
   origin: Point,
   destination: Point,
