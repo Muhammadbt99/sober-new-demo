@@ -330,6 +330,12 @@ export function ExplorePanel({
                 places and hours here; it does not count crashes.
               </Notice>
             )}
+            {learned && risk.context?.fast_road && risk.risk_score < 50 && (
+              <Notice tone="warn">
+                Fast road. This score is built from crash patterns by place and does not see traffic
+                volume or speed, so a low score here does not mean the road is safe.
+              </Notice>
+            )}
 
             {alerts.data && alerts.data.total_alerts > 0 && (
               <Notice tone="warn">
@@ -341,7 +347,9 @@ export function ExplorePanel({
 
             {risk.coverage === "rule_based_only" && (
               <Notice tone="warn">
-                {noSignal
+                {risk.coverage_reason === "no_road_here"
+                  ? "No mapped road here. This looks like open water or empty land, so S.O.B.E.R. will not give a risk band."
+                  : noSignal
                   ? "Outside the NYC model surface. S.O.B.E.R. has no crash data here, so it will not give a risk band. Try somewhere in New York City."
                   : "Outside the NYC model surface. No crash points are shown; only the nightlife component contributes to this score."}
               </Notice>

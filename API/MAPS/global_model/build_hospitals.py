@@ -15,6 +15,15 @@ health entries need cleaning before anyone is told how far away help is:
 * the same hospital mapped twice, as a point and an outline say, is kept once;
 * entries emptied by their mappers ("تمت ازالته" means "removed") are dropped.
 
+The UAE rows get a stricter rule on top of that (``uae_hospital``), because the
+loose one let in Qatar and Oman, unnamed entries, police stations, car parks and
+dentists. In order: a blank name is dropped; a point outside the UAE is dropped
+(``providers.country_offline``); junk names are dropped; the hand-checked major
+hospitals in ``UAE_MAJOR`` are kept, whatever their tags; anything else is kept
+only if its name says "hospital" or "مستشفى". An ``emergency=yes`` tag does not
+rescue a UAE name, since several such entries are small clinics. The NYC rows
+are unchanged by this rule.
+
 The list is written to ``artifacts/hospitals.csv`` so the app does not need the
 raw extracts. It says where OpenStreetMap has a hospital, not which are open.
 """
@@ -26,6 +35,8 @@ import re
 
 import osmium
 import pandas as pd
+
+from providers import country_offline
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 RAW = os.path.join(HERE, "raw", "osm")
@@ -51,6 +62,23 @@ HOSPITAL_NAME = re.compile(r"hospital|mediclinic", re.IGNORECASE)
 #: Real hospitals OpenStreetMap has under another tag. Checked by hand.
 MAPPED_WITHOUT_THE_TAG = {"Latifa Hospital"}
 SAME_PLACE_M = 200.0
+
+#: UAE names that are never junk: their mappers tag some of them as clinics, and
+#: some have no "hospital" in the name. Matched case-insensitively.
+UAE_MAJOR = {
+    "burjeel medical city",
+    "sheikh shakhbout medical city",
+    "sheikh khalifa medical city",
+    "sheikh tahnoon bin mohammed medical city",
+    "cleveland clinic abu dhabi",
+    "danat al emarat",
+    "mediclinic parkview",
+    "mustashfa sagar",
+    "doctor sulaiman al habib",
+    "thumbay medi city",
+}
+UAE_JUNK = re.compile(r"family care cent|outpatient|hr building|buraimi|كرونا|^مستشفى$", re.IGNORECASE)
+UAE_HOSPITAL_WORD = re.compile(r"hospital|مستشفى", re.IGNORECASE)
 
 
 def _metres(a: tuple[float, float], b: tuple[float, float]) -> float:
@@ -83,12 +111,29 @@ def merge_duplicates(rows: list[dict]) -> list[dict]:
     return kept
 
 
-def extract(path: str, box: tuple[float, float, float, float]) -> list[dict]:
+def uae_hospital(name: str, lat: float, lon: float) -> bool:
+    """The strict UAE rule, applied to rows the extraction has already found."""
+    name = (name or "").strip()
+    if not name:
+        return False
+    if country_offline(lat, lon) != "AE":
+        return False
+    if UAE_JUNK.search(name):
+        return False
+    if name.lower() in UAE_MAJOR:
+        return True
+    return UAE_HOSPITAL_WORD.search(name) is not None
+
+
+def extract(path: str, box: tuple[float, float, float, float], extra_names: frozenset[str] = frozenset()) -> list[dict]:
     """Hospitals in a box, in three light passes.
 
     Asking osmium for every location, or for assembled areas, holds the whole
     extract's nodes in memory, which took a 16 GB machine down on the 257 MB Gulf
     file. So: find the hospitals, then read only the ways and nodes they use.
+
+    Entries whose lower-cased name is in ``extra_names`` are always candidates,
+    whatever their tags, and skip ``keep()``; the UAE rule judges them later.
     """
     south, west, north, east = box
     found: list[dict] = []
@@ -97,6 +142,7 @@ def extract(path: str, box: tuple[float, float, float, float]) -> list[dict]:
     ):
         tags = dict(item.tags)
         name = tags.get("name:en") or tags.get("name") or ""
+        wanted = name.lower() in extra_names
         # Some major hospitals are mapped only as a building (Mediclinic Parkview),
         # but so are outpatient centres, so the name has to say so too.
         hospital = (
@@ -104,9 +150,9 @@ def extract(path: str, box: tuple[float, float, float, float]) -> list[dict]:
             or tags.get("healthcare") == "hospital"
             or (tags.get("building") == "hospital" and HOSPITAL_NAME.search(name) is not None)
         )
-        if not hospital and not (item.is_node() and name in MAPPED_WITHOUT_THE_TAG):
+        if not (hospital or wanted or (item.is_node() and name in MAPPED_WITHOUT_THE_TAG)):
             continue
-        if not keep(name, tags.get("emergency")):
+        if not wanted and not keep(name, tags.get("emergency")):
             continue
         row = {"name": name, "emergency": tags.get("emergency") or "", "at": None, "nodes": [], "ways": []}
         if item.is_node():
@@ -148,7 +194,12 @@ def extract(path: str, box: tuple[float, float, float, float]) -> list[dict]:
 def main() -> None:
     frames = []
     for region, spec in REGIONS.items():
-        rows = merge_duplicates(extract(os.path.join(RAW, spec["file"]), spec["box"]))
+        if region == "uae":
+            rows = extract(os.path.join(RAW, spec["file"]), spec["box"], extra_names=frozenset(UAE_MAJOR))
+            rows = [row for row in rows if uae_hospital(row["name"], row["lat"], row["lon"])]
+        else:
+            rows = extract(os.path.join(RAW, spec["file"]), spec["box"])
+        rows = merge_duplicates(rows)
         print(region, len(rows), "hospitals,", sum(1 for row in rows if row["emergency"] == "yes"), "tagged with emergency care")
         frames.append(pd.DataFrame(rows).assign(region=region))
     pd.concat(frames)[["region", "lat", "lon", "name", "emergency"]].to_csv(OUTPUT, index=False, encoding="utf-8")

@@ -16,6 +16,7 @@ from main import (
 )
 from features import NYC_BBOX, in_model_area
 from crash_model import risk_model
+from crash_model.model import action_for_band, risk_band
 from crash_model.danger_types import GROUP_IDS as DANGER_GROUP_IDS, Area, DangerTypes
 from route_engine import (
     choose_recommended,
@@ -112,6 +113,58 @@ def is_global_answer(result):
     return (result.get("context") or {}).get("method") == "global_model"
 
 
+#: ``coverage_reason`` of a point with no mapped road: open water or empty land.
+NO_ROAD_REASON = "no_road_here"
+
+
+def no_road_answer(cell):
+    """The honest "nothing to score" answer: no risk band, so the app shows no signal."""
+    return {
+        "cell": cell,
+        "coverage": "rule_based_only",
+        "coverage_reason": NO_ROAD_REASON,
+        "model_available": True,
+        "model_version": None,
+        "expected_rate": None,
+        "expected_rate_per_km2_hour": None,
+        "percentile": None,
+        "model_points": 0,
+        "nightlife_points": 0,
+        "risk_score": 0,
+        "risk_level": risk_band(0),
+        "action": action_for_band(risk_band(0)),
+        "reasons": ["No mapped road here (open water or empty land), so there is nothing to score"],
+        "cell_area_km2": None,
+    }
+
+
+def nothing_here(lat, lon, hint, lookup_road, road=None):
+    """True when a point is open water or empty land: no road, nothing to score.
+
+    A point on a real route is always scored. Inside the UAE the global model's
+    table holds every cell with a mapped road (and its neighbours), so a point
+    the table does not reach has none. Elsewhere a point must be off the land map
+    and have no road: the land map alone is too coarse at the coast. A bulk caller
+    has only the road it sampled nearby; a single point needs a finished empty
+    lookup, because a failed lookup proves nothing.
+    """
+    if hint:
+        return False
+    if (
+        providers.country_offline(lat, lon) == "AE"
+        and GLOBAL_ENABLED and GLOBAL_MODEL is not None and GLOBAL_MODEL.available
+    ):
+        return True
+    if providers.on_land(lat, lon) is not False:
+        return False
+    if not lookup_road:
+        return not road
+    if road == {}:
+        # The caller's lookup came back empty, maybe unfinished: ask once (cached when done).
+        providers.road_at(lat, lon)
+    return providers.no_road_found(lat, lon)
+
+
 # Started once both models exist (the warm-up uses them).
 threading.Thread(target=_warm_up_model, name="model-warm-up", daemon=True).start()
 
@@ -181,6 +234,8 @@ def score_point(lat, lon, hour, day_of_week, *, weather=None, bars=None, road=No
         # Bulk scoring (a heatmap, a route): everything was fetched once by the
         # caller. Never look anything up per point here.
         country = country or (road or {}).get("country")
+    if nothing_here(lat, lon, hint, lookup_road, road):
+        return no_road_answer(result.get("cell"))
     return context_model.estimate(
         lat, lon, hour, day_of_week,
         cell=result.get("cell"),
@@ -823,10 +878,10 @@ def safe_route():
     estimated = coverage == "context"
     # Outside the trained area the totals are relative-risk units, not crash
     # counts, so say "estimated risk" and quote the percentage only.
-    measure = "estimated risk" if estimated else "expected injury crashes"
+    measure = "estimated risk" if estimated else "crash exposure"
     amount = (
         f"{reduction_percent:.1f}%" if estimated
-        else f"{reduction:.4f} per trip ({reduction_percent:.1f}%)"
+        else f"{reduction:.4f} ({reduction_percent:.1f}%)"
     )
     if detour["attempted"] and detour["scored_count"]:
         if detour["improved"]:
@@ -836,7 +891,7 @@ def safe_route():
             )
         else:
             text = (
-                "No synthesized detour reduced expected exposure; the fastest "
+                "No synthesized detour reduced crash exposure; the fastest "
                 "route remains the lowest-exposure option"
             )
     elif len(scored_routes) > 1:
@@ -860,7 +915,7 @@ def safe_route():
         else:
             extra = (best["duration_min"] or 0) - (fastest["duration_min"] or 0)
             text = (
-                f"Worth the extra time: {reduction_percent:.0f}% less {measure.replace('expected ', '')} "
+                f"Worth the extra time: {reduction_percent:.0f}% less {measure} "
                 f"than the fastest route for {extra:.0f} more minutes"
             )
 
@@ -2223,6 +2278,18 @@ def hotspots():
     return jsonify(payload)
 
 
+def stops_to_send(stops_by_distance, closest=10, per_kind=3):
+    """The closest stops, plus the nearest police and hospitals however far down they are.
+
+    Without the extra rows, ten car parks nearer than the hospital hide it from the client.
+    """
+    keep = list(stops_by_distance[:closest])
+    for kind in ("police", "hospital"):
+        extra = [s for s in stops_by_distance if s.get("type") == kind][:per_kind]
+        keep.extend(s for s in extra if s not in keep)
+    return sorted(keep, key=lambda stop: stop["distance_m"])
+
+
 @app.route("/nearest_safe", methods=["GET"])
 def nearest_safe():
     coords, err = parse_coords()
@@ -2257,7 +2324,7 @@ def nearest_safe():
         "nearest_stop": nearest,
         "total_found": len(stops),
         "search_radius_m": radius,
-        "stops": stops_by_distance[:10],
+        "stops": stops_to_send(stops_by_distance),
         "message": f"Nearest safe stop: {nearest['name']} ({nearest['distance_m']}m away)",
     })
 
@@ -2327,6 +2394,7 @@ def risk_compare():
             "cell": result["cell"],
             "place": place_for(lat, lon, result),
             "coverage": result["coverage"],
+            "coverage_reason": result.get("coverage_reason"),
             "data_quality": {
                 "model": "live" if result["model_available"] else "unavailable",
                 "weather": weather_source,
@@ -2342,7 +2410,19 @@ def risk_compare():
 
     safer = "A" if score_a < score_b else "B" if score_b < score_a else "EQUAL"
     difference = abs(score_a - score_b)
-    if safer == "A":
+    no_road = [
+        tag for tag, payload in (("A", payload_a), ("B", payload_b))
+        if payload["coverage_reason"] == NO_ROAD_REASON
+    ]
+    if no_road:
+        # A 0 here means "nothing to score", so it must not read as "safer".
+        safer, difference = "EQUAL", 0.0
+        recommendation = (
+            f"Location {no_road[0]} has no mapped road, so there is nothing to compare"
+            if len(no_road) == 1
+            else "Neither location has a mapped road, so there is nothing to compare"
+        )
+    elif safer == "A":
         recommendation = f"Location A is safer by {difference:.1f} points"
     elif safer == "B":
         recommendation = f"Location B is safer by {difference:.1f} points"

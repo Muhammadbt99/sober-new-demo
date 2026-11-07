@@ -311,3 +311,179 @@ class TestCrashOnlyCritical:
 
         assert score_total(99.5, 60.0, 16.0) == 76.0
         assert score_total(60.0, 30.0, 16.0) == 46.0
+
+
+# --------------------------------------------------------------------------- no road here
+
+EMPTY_QUARTER = (23.5, 55.0)
+OPEN_GULF = (25.6, 55.2)
+PARIS = (48.85, 2.35)
+
+
+@pytest.fixture
+def offline_lookups(monkeypatch):
+    """No network: a private road cache, and each point's road lookup outcome.
+
+    ``"empty"`` is a finished lookup that found no road, ``"fail"`` a failed one
+    (nothing cached), a dict a road found.
+    """
+    import providers
+
+    outcomes = {}
+
+    def fake_road_at(lat, lon, fallback=True):
+        key = (round(lat, 4), round(lon, 4))
+        outcome = outcomes.get(key, "fail")
+        if outcome == "empty":
+            providers._road_cache.put(key, {})
+            return None
+        if isinstance(outcome, dict):
+            providers._road_cache.put(key, outcome)
+            return outcome
+        return None
+
+    monkeypatch.setattr(providers, "_road_cache", providers.TTLCache(3600))
+    monkeypatch.setattr(providers, "road_at", fake_road_at)
+    monkeypatch.setattr(providers, "country_at", lambda lat, lon: providers.country_offline(lat, lon))
+    monkeypatch.setattr(providers, "current_weather", lambda lat, lon: None)
+    monkeypatch.setattr(app_module, "get_weather_ex", lambda lat, lon: ((20, 0, 0), "live"))
+    monkeypatch.setattr(app_module, "get_bars_ex", lambda lat, lon, radius=1000: (0, "live"))
+    return outcomes
+
+
+def _key(point):
+    return (round(point[0], 4), round(point[1], 4))
+
+
+def _risk(client, point, hour=23, day=3):
+    return client.get(f"/risk?lat={point[0]}&lon={point[1]}&hour={hour}&day={day}").get_json()
+
+
+@needs_model
+def test_empty_quarter_has_no_score(client, offline_lookups):
+    data = _risk(client, EMPTY_QUARTER)
+    assert data["coverage"] == "rule_based_only"
+    assert data["coverage_reason"] == "no_road_here"
+    assert data["risk_score"] == 0
+    assert data["percentile"] is None
+    assert data["context"] is None
+
+
+@needs_model
+def test_open_gulf_with_a_finished_empty_road_lookup_has_no_score(client, offline_lookups, monkeypatch):
+    import providers
+
+    offline_lookups[_key(OPEN_GULF)] = "empty"
+    monkeypatch.setattr(providers, "country_offline", lambda lat, lon, reach_deg=0.6: None)
+    data = _risk(client, OPEN_GULF)
+    assert data["coverage"] == "rule_based_only"
+    assert data["coverage_reason"] == "no_road_here"
+    assert data["risk_score"] == 0
+
+
+@needs_model
+def test_open_gulf_with_a_failed_road_lookup_keeps_the_estimate(client, offline_lookups, monkeypatch):
+    import providers
+
+    offline_lookups[_key(OPEN_GULF)] = "fail"
+    monkeypatch.setattr(providers, "country_offline", lambda lat, lon, reach_deg=0.6: None)
+    data = _risk(client, OPEN_GULF)
+    assert data["coverage_reason"] != "no_road_here"
+    assert data["coverage"] == "context"
+    assert data["context"] is not None
+
+
+@needs_model
+def test_a_dubai_point_in_the_table_keeps_the_global_model(client, offline_lookups):
+    data = _risk(client, DOWNTOWN_DUBAI)
+    assert data["context"]["method"] == "global_model"
+    assert data["coverage_reason"] != "no_road_here"
+
+
+@needs_model
+def test_paris_with_no_road_found_keeps_the_estimate(client, offline_lookups):
+    offline_lookups[_key(PARIS)] = "empty"
+    data = _risk(client, PARIS)
+    assert data["coverage"] == "context"
+    assert data["coverage_reason"] != "no_road_here"
+    assert (data["context"] or {}).get("method") != "global_model"
+
+
+def test_road_lookups_that_fail_are_not_taken_as_no_road(monkeypatch):
+    import providers
+
+    monkeypatch.setattr(providers, "_road_cache", providers.TTLCache(3600))
+    assert providers.no_road_found(*OPEN_GULF) is False
+    providers._road_cache.put(_key(OPEN_GULF), {})
+    assert providers.no_road_found(*OPEN_GULF) is True
+    providers._road_cache.put(_key(OPEN_GULF), {"name": "x", "class": "primary", "country": "AE"})
+    assert providers.no_road_found(*OPEN_GULF) is False
+
+
+@needs_model
+def test_fast_road_flag_follows_the_motorway_and_trunk_length():
+    table = GLOBAL.regions["uae"].table
+    major = (table["km_motorway"] + table["km_trunk"]).fillna(0)
+    fast = table[major >= 0.3].iloc[0]
+    slow = table[major < 0.3].iloc[0]
+    assert GLOBAL.score(float(fast["lat"]), float(fast["lon"]), 23, 5)["context"]["fast_road"] is True
+    assert GLOBAL.score(float(slow["lat"]), float(slow["lon"]), 23, 5)["context"]["fast_road"] is False
+
+
+@pytest.mark.parametrize("lat, lon", [(26.0, 54.5), (25.6, 55.2), (26.8, 52.0), (27.0, 50.5), (36.0, -40.0)])
+def test_open_water_is_off_the_land_map_even_where_a_country_outline_reaches(lat, lon):
+    import providers
+
+    assert providers.on_land(lat, lon) is False
+
+
+@pytest.mark.parametrize(
+    "lat, lon",
+    [(25.2, 55.27), (35.7, 51.4), (29.6, 52.5), (25.28, 51.52), (48.85, 2.35), (-33.9, 151.2), (23.5, 55.0)],
+)
+def test_cities_and_desert_are_on_the_land_map(lat, lon):
+    import providers
+
+    assert providers.on_land(lat, lon) is True
+
+
+def test_gulf_water_inside_a_coarse_outline_has_no_score(client, offline_lookups, monkeypatch):
+    """(26.0, 54.5) is sea, but the Iran outline reaches it, so the country check said land."""
+    import providers
+
+    assert providers.country_offline(26.0, 54.5) == "IR"
+
+    def finished_empty(lat, lon, fallback=True):
+        providers._road_cache.put((round(lat, 4), round(lon, 4)), {})
+
+    monkeypatch.setattr(providers, "road_at", finished_empty)
+    data = client.get("/risk?lat=26.0&lon=54.5&hour=18&day=4").get_json()
+    assert data["coverage_reason"] == "no_road_here"
+    assert data["risk_score"] == 0
+
+
+def test_bulk_scoring_at_sea_needs_no_lookup_but_a_sampled_road_keeps_the_estimate():
+    import app as api
+
+    assert api.nothing_here(26.0, 54.5, {}, False, None) is True
+    assert api.nothing_here(26.0, 54.5, {}, False, {"class": "primary"}) is False
+    assert api.nothing_here(26.0, 54.5, {"speed_kmh": 40}, False, None) is False
+
+
+@pytest.mark.parametrize(
+    "answer, no_road",
+    [
+        ({"category": "boundary", "type": "administrative", "name": "A county"}, True),
+        ({"category": "natural", "type": "bay", "name": "A bay"}, True),
+        ({"error": "Unable to geocode"}, True),
+        ({"category": "highway", "type": "pedestrian", "name": "Calle del Nonzolo"}, False),
+        ({"category": "building", "type": "yes", "name": "A building"}, False),
+    ],
+)
+def test_the_backup_lookup_only_counts_as_no_road_when_nothing_is_at_the_point(monkeypatch, answer, no_road):
+    import providers
+
+    monkeypatch.setattr(providers, "_road_cache", providers.TTLCache(60, limit=8))
+    monkeypatch.setattr(providers, "_nominatim", lambda *args, **kwargs: answer)
+    providers._road_nominatim(26.0, 54.5, (26.0, 54.5))
+    assert providers.no_road_found(26.0, 54.5) is no_road

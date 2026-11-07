@@ -359,6 +359,9 @@ class GlobalModel:
                 "country_name": region.region.name,
                 "road_class": (road or {}).get("class"),
                 "road_name": (road or {}).get("name"),
+                # Motorway or trunk road in the cell: the crash counts here say
+                # nothing about traffic volume, so the app says so.
+                "fast_road": float(record.get("km_motorway", 0) + record.get("km_trunk", 0)) >= 0.3,
                 "relative_rate": round(rate, 4),
                 "time_ratio": round(time_ratio, 2),
                 "index": round(rate, 4),

@@ -23,7 +23,7 @@ export const PRESENT_STEPS: PresentStep[] = [
   {
     id: "routes",
     title: "Fastest vs safest",
-    caption: "The comparison is expected injury crashes, not average risk score.",
+    caption: "The comparison is crash exposure, not average risk score.",
   },
   {
     id: "segment",

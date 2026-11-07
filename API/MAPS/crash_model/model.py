@@ -548,16 +548,38 @@ class RiskModel:
         quoting the previous model.
         """
         meta = self.metadata
+        fair_all = (meta.get("baseline") or {}).get("fair") or {}
 
         def split(name: str) -> dict:
             model = (meta.get("model_metrics") or {}).get(name) or {}
             baseline = (meta.get("baseline") or {}).get(name) or {}
+            # The fair comparison (baseline tuned on validation, both sides refit on
+            # train+validation, weighted deciles) replaces the older numbers when present.
+            fair = fair_all.get(name) or {}
+            if fair:
+                baseline_deviance = fair.get("poisson_deviance")
+                baseline_lift = fair.get("top_decile_lift")
+                top_lift = fair.get("model_top_decile_lift")
+            else:
+                baseline_deviance = baseline.get("poisson_deviance")
+                baseline_lift = baseline.get("top_decile_lift")
+                top_lift = model.get("top_decile_lift")
+            # Deciles and their monotonic flag must come from the same table as the lift.
+            rows = fair.get("model_calibration") if fair else None
+            if rows is None:
+                rows = model.get("calibration") or []
+                monotonic = model.get("monotonic_deciles")
+            else:
+                observed = [row.get("observed_rate") or 0.0 for row in rows]
+                monotonic = all(
+                    observed[i] <= observed[i + 1] * 1.05 for i in range(len(observed) - 1)
+                )
             return {
                 "poisson_deviance": model.get("poisson_deviance"),
-                "baseline_deviance": baseline.get("poisson_deviance"),
-                "top_decile_lift": model.get("top_decile_lift"),
-                "baseline_top_decile_lift": baseline.get("top_decile_lift"),
-                "monotonic_deciles": model.get("monotonic_deciles"),
+                "baseline_deviance": baseline_deviance,
+                "top_decile_lift": top_lift,
+                "baseline_top_decile_lift": baseline_lift,
+                "monotonic_deciles": monotonic,
                 "deciles": [
                     {
                         "decile": row.get("decile"),
@@ -565,7 +587,7 @@ class RiskModel:
                         "observed_rate": row.get("observed_rate"),
                         "lift": row.get("lift"),
                     }
-                    for row in model.get("calibration") or []
+                    for row in rows
                 ],
             }
 

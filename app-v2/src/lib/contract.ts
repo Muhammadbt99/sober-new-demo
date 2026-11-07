@@ -231,6 +231,8 @@ export const RiskResponse = z.object({
       /** This hour against the place's average hour of the week. */
       time_ratio: z.number().optional(),
       trained_on: z.string().optional(),
+      /** A motorway or trunk road in the cell: crash counts here do not see traffic volume. */
+      fast_road: z.boolean().optional(),
     })
     .passthrough()
     .nullable()
@@ -463,6 +465,7 @@ const CompareLocation = z.object({
   cell: z.string().nullable(),
   place: PlaceName,
   coverage: Coverage,
+  coverage_reason: z.string().nullable().optional(),
   data_quality: DataQuality,
   warnings: z.array(z.string()),
 });

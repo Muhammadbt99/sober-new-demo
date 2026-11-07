@@ -183,6 +183,143 @@
       "monotonic_deciles": true,
       "top_decile_lift": 1.7068068958530223,
       "base_rate": 0.00527626220819496
+    },
+    "fair": {
+      "shrink_hours": 500.0,
+      "temporal_test": {
+        "poisson_deviance": 0.037161216309832094,
+        "top_decile_lift": 3.1172400359955414,
+        "model_top_decile_lift": 3.5819881143142647,
+        "model_calibration": [
+          {
+            "decile": 1,
+            "predicted_rate": 7.491041418236513e-05,
+            "observed_rate": 9.62776758202285e-05,
+            "lift": 0.02753017352806094
+          },
+          {
+            "decile": 2,
+            "predicted_rate": 0.00027859817079859496,
+            "observed_rate": 0.0003048941237961841,
+            "lift": 0.08718311970334724
+          },
+          {
+            "decile": 3,
+            "predicted_rate": 0.0006694375787886564,
+            "observed_rate": 0.000685414471735708,
+            "lift": 0.19599122210596254
+          },
+          {
+            "decile": 4,
+            "predicted_rate": 0.0010952326697361904,
+            "observed_rate": 0.0010544634981413936,
+            "lift": 0.30151915109628613
+          },
+          {
+            "decile": 5,
+            "predicted_rate": 0.001717392223779221,
+            "observed_rate": 0.0016756408581298386,
+            "lift": 0.47914205657767944
+          },
+          {
+            "decile": 6,
+            "predicted_rate": 0.002575586820516765,
+            "observed_rate": 0.0024918104940295123,
+            "lift": 0.7125221367803571
+          },
+          {
+            "decile": 7,
+            "predicted_rate": 0.003674295680533736,
+            "observed_rate": 0.003660679533981972,
+            "lift": 1.046755044121772
+          },
+          {
+            "decile": 8,
+            "predicted_rate": 0.005311010206578292,
+            "observed_rate": 0.005061584908774562,
+            "lift": 1.4473377102057206
+          },
+          {
+            "decile": 9,
+            "predicted_rate": 0.007588590626696973,
+            "observed_rate": 0.0074135509808856935,
+            "lift": 2.119871956028541
+          },
+          {
+            "decile": 10,
+            "predicted_rate": 0.012831544943527704,
+            "observed_rate": 0.01252681862358572,
+            "lift": 3.5819881143142647
+          }
+        ]
+      },
+      "holdout": {
+        "poisson_deviance": 0.05565390540501631,
+        "top_decile_lift": 1.6270496685605111,
+        "model_top_decile_lift": 2.162596092375657,
+        "model_calibration": [
+          {
+            "decile": 1,
+            "predicted_rate": 0.0005478870374222474,
+            "observed_rate": 0.0009838549705824301,
+            "lift": 0.18646817230848212
+          },
+          {
+            "decile": 2,
+            "predicted_rate": 0.0009377107384751646,
+            "observed_rate": 0.0017807304734168514,
+            "lift": 0.33749847963413665
+          },
+          {
+            "decile": 3,
+            "predicted_rate": 0.0013046158517504177,
+            "observed_rate": 0.0024702966746619286,
+            "lift": 0.4681906579292297
+          },
+          {
+            "decile": 4,
+            "predicted_rate": 0.001720518126031774,
+            "observed_rate": 0.0035798703400386433,
+            "lift": 0.6784860567540554
+          },
+          {
+            "decile": 5,
+            "predicted_rate": 0.002246221765223858,
+            "observed_rate": 0.0047751071640706,
+            "lift": 0.9050170320675158
+          },
+          {
+            "decile": 6,
+            "predicted_rate": 0.0029000092752116576,
+            "observed_rate": 0.005759058640641485,
+            "lift": 1.091503494973517
+          },
+          {
+            "decile": 7,
+            "predicted_rate": 0.003605104458259169,
+            "observed_rate": 0.006427129166600261,
+            "lift": 1.2181216385754678
+          },
+          {
+            "decile": 8,
+            "predicted_rate": 0.004472392438324984,
+            "observed_rate": 0.007214812617156421,
+            "lift": 1.367409793613091
+          },
+          {
+            "decile": 9,
+            "predicted_rate": 0.005702133402656912,
+            "observed_rate": 0.008361127133880404,
+            "lift": 1.584668616524423
+          },
+          {
+            "decile": 10,
+            "predicted_rate": 0.008145333823072491,
+            "observed_rate": 0.011410424033791776,
+            "lift": 2.162596092375657
+          }
+        ]
+      }
     }
   },
   "model_metrics": {

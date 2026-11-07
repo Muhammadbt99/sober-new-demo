@@ -105,7 +105,7 @@ export function DepartureStrip({
   const query = useDepartures(origin, destination, { hour, day }, routeIndex, from, true);
   const data = query.data;
   const relative = data?.basis === "relative_risk_estimate";
-  const measure = relative ? "relative risk" : "expected injury crashes";
+  const measure = relative ? "relative risk" : "crash exposure";
 
   return (
     <section className="departure-strip" aria-label="When to leave">

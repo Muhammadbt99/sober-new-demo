@@ -356,12 +356,17 @@ export function PlanPanel({
               <div className="section-heading">
                 <span>Routes</span>
                 <span className="mono">
-                  {route.coverage === "context" ? "lowest estimated risk first" : "lowest expected crashes first"}
+                  {route.coverage === "context" ? "lowest estimated risk first" : "lowest crash exposure first"}
                 </span>
               </div>
               <p className={`traffic-note is-${trafficNote.kind} mono`} title={trafficNote.title}>
                 {trafficNote.text}
               </p>
+              {route.coverage !== "context" && (
+                <p className="section-note">
+                  Crash exposure adds up how many injury crashes the places on this route record at this hour. It compares routes. It is not your own chance of crashing.
+                </p>
+              )}
               <div className="route-list">
                 {route.routes.map((item, index) => (
                   <RouteCard
@@ -660,7 +665,7 @@ function SegmentDetail({
           <div>
             <span className="eyebrow">This segment</span>
             <strong className="mono">{formatCrashes(segment.expected_crashes)}</strong>
-            <span className="metric-note">expected crashes / pass</span>
+            <span className="metric-note">crash exposure / pass</span>
           </div>
           <div>
             <span className="eyebrow">Percentile</span>

@@ -1257,7 +1257,7 @@ def _departure_text(
         gain = (
             f"lowers this route's estimated risk by {percent:.0f}%"
             if basis == "relative_risk_estimate"
-            else f"means {percent:.0f}% fewer expected injury crashes on this route"
+            else f"means {percent:.0f}% less crash exposure on this route"
         )
         text = f"Leaving at {_hour_label(best['hour'])} instead of {_hour_label(chosen['hour'])} {gain}."
         beyond = best.get("adjusted_change_percent")

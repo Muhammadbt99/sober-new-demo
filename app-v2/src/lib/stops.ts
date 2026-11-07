@@ -35,3 +35,23 @@ export function rankStops(stops: SafeStop[]): SafeStop[] {
     (a, b) => a.safety_priority - b.safety_priority || a.distance_m - b.distance_m,
   );
 }
+
+/**
+ * The short list shown in the explore panel: the nearest two hospitals and the
+ * nearest two police stations (where they exist) always make it, and the rest
+ * of the places are filled from `rankStops`. The result is in `rankStops` order.
+ */
+export function shortlistStops(stops: SafeStop[], count: number): SafeStop[] {
+  const byDistance = (a: SafeStop, b: SafeStop) => a.distance_m - b.distance_m;
+  const chosen: SafeStop[] = [];
+  const add = (stop: SafeStop) => {
+    if (chosen.length < count && !chosen.includes(stop)) chosen.push(stop);
+  };
+
+  for (const kind of ["hospital", "police"]) {
+    stops.filter((stop) => stop.type === kind).sort(byDistance).slice(0, 2).forEach(add);
+  }
+  rankStops(stops).forEach(add);
+
+  return rankStops(chosen);
+}

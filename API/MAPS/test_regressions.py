@@ -682,3 +682,20 @@ def test_alerts_exposes_data_quality_metadata(client):
     assert "data_quality" in data
     assert "last_checked" in data
     assert "warning" in data
+
+
+def test_stops_to_send_keeps_the_nearest_police_and_hospital_past_ten_car_parks():
+    # Twelve car parks sit closer than the hospital and the police station.
+    from app import stops_to_send
+
+    parks = [{"name": f"Car park {i}", "type": "parking", "distance_m": 100 + i} for i in range(12)]
+    hospital = {"name": "Far Hospital", "type": "hospital", "distance_m": 900}
+    police = {"name": "Far Police", "type": "police", "distance_m": 950}
+    by_distance = sorted(parks + [hospital, police], key=lambda stop: stop["distance_m"])
+
+    sent = stops_to_send(by_distance)
+
+    assert hospital in sent and police in sent
+    distances = [stop["distance_m"] for stop in sent]
+    assert distances == sorted(distances)
+    assert sent[0] is by_distance[0]

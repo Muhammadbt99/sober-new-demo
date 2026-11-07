@@ -922,9 +922,17 @@ def country_offline(lat: float, lon: float, reach_deg: float = 0.6) -> str | Non
     return best
 
 
+#: Nominatim categories that describe a region or water, not something at the point.
+AREA_NOT_A_PLACE = {"boundary", "natural", "place", "waterway"}
+
+
 def _road_nominatim(lat: float, lon: float, key) -> dict | None:
     data = _nominatim("reverse", {"lat": lat, "lon": lon, "zoom": 17})
-    if not isinstance(data, dict) or "error" in data:
+    if not isinstance(data, dict):
+        return None
+    if "error" in data:
+        # A finished answer ("Unable to geocode"): nothing mapped at this point.
+        _road_cache.put(key, {})
         return None
     address = data.get("address") or {}
     road = {
@@ -932,8 +940,69 @@ def _road_nominatim(lat: float, lon: float, key) -> dict | None:
         "class": data.get("type") if data.get("category") == "highway" else None,
         "country": (address.get("country_code") or "").upper() or None,
     }
+    # At sea inside a country's waters Nominatim names the county or country.
+    if data.get("category") in AREA_NOT_A_PLACE:
+        road["area_only"] = True
     _road_cache.put(key, road)
     return road
+
+
+_LAND = None
+
+
+def _land_rings():
+    """Natural Earth 1:50m land, per polygon: its box and rings as number arrays."""
+    global _LAND
+    if _LAND is None:
+        import json
+
+        import numpy as np
+
+        path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "data", "land_50m.geojson")
+        polygons = []
+        if os.path.exists(path):
+            with open(path, encoding="utf-8") as handle:
+                for geometry in json.load(handle)["geometries"]:
+                    rings = [np.asarray(ring, dtype=np.float64) for ring in geometry["coordinates"]]
+                    outer = rings[0]
+                    box = (outer[:, 0].min(), outer[:, 1].min(), outer[:, 0].max(), outer[:, 1].max())
+                    polygons.append((box, rings))
+        _LAND = polygons
+    return _LAND
+
+
+def on_land(lat: float, lon: float) -> bool | None:
+    """Is the point on land? None when the land file is missing.
+
+    The country outlines cannot answer this: they are coarse and reach 0.6 degrees
+    past the coast, so most of the Gulf reads as Iran or Qatar. This map is finer
+    but still misses piers and new islands, so "not on land" alone proves nothing
+    at the coast: callers also check for a road.
+    """
+    polygons = _land_rings()
+    if not polygons:
+        return None
+    for (x0, y0, x1, y1), rings in polygons:
+        if not (x0 <= lon <= x1 and y0 <= lat <= y1):
+            continue
+        crossings = 0  # Even-odd over every ring, so lakes cut out of a polygon stay water.
+        for ring in rings:
+            xs, ys = ring[:-1, 0], ring[:-1, 1]
+            xs_next, ys_next = ring[1:, 0], ring[1:, 1]
+            spans = (ys > lat) != (ys_next > lat)
+            if spans.any():
+                x, y = xs[spans], ys[spans]
+                dx, dy = (xs_next - xs)[spans], (ys_next - ys)[spans]
+                crossings += int((lon < x + (lat - y) * dx / dy).sum())
+        if crossings % 2:
+            return True
+    return False
+
+
+def no_road_found(lat: float, lon: float) -> bool:
+    """True only when a finished lookup found no road here. A failed or unfinished lookup is not an answer."""
+    found = _road_cache.get((round(lat, 4), round(lon, 4)))
+    return found == {} or bool(found and found.get("area_only"))
 
 
 def country_at(lat: float, lon: float) -> str | None:

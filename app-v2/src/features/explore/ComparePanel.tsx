@@ -17,6 +17,7 @@ function Side({
   safer: boolean;
 }) {
   const color = RISK_COLORS[place.risk_level];
+  const noRoad = place.coverage_reason === "no_road_here";
   return (
     <div className={cn("compare-side", safer && "is-safer")}>
       <div className="compare-side-head">
@@ -25,10 +26,10 @@ function Side({
         </span>
         {safer && <span className="chip chip-good">Safer</span>}
       </div>
-      <div className="compare-score" style={{ color }}>
-        {Math.round(place.risk_score)}
+      <div className="compare-score" style={noRoad ? undefined : { color }}>
+        {noRoad ? "—" : Math.round(place.risk_score)}
       </div>
-      <RiskPill level={place.risk_level} />
+      {noRoad ? <span className="section-note">No mapped road</span> : <RiskPill level={place.risk_level} />}
       <dl className="compare-facts">
         <div>
           <dt>Percentile</dt>
@@ -114,7 +115,9 @@ export function ComparePanel({
             <Side tag="B" place={data.location_b} safer={data.safer_location === "B"} />
           </div>
           <p className="compare-verdict">
-            {data.safer_location === "EQUAL"
+            {[data.location_a, data.location_b].some((place) => place.coverage_reason === "no_road_here")
+              ? ""
+              : data.safer_location === "EQUAL"
               ? "Both places score the same."
               : `${data.safer_location} scores ${Math.abs(data.risk_difference).toFixed(0)} points lower.`}{" "}
             <span>{data.recommendation}</span>

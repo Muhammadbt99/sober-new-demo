@@ -108,7 +108,7 @@ class TestSmallHours:
 class TestWording:
     def test_crash_model_trips_speak_of_expected_crashes(self):
         result = plan({20: 0.001}, basis="expected_injury_crashes")
-        assert "expected" in result["text"] and "crashes" in result["text"]
+        assert "crash exposure" in result["text"]
 
     def test_estimated_trips_do_not_claim_a_crash_count(self):
         result = plan({20: 0.001}, basis="relative_risk_estimate")

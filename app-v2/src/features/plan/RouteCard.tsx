@@ -34,7 +34,7 @@ export function RouteCard({
   const delta = tradeoff(route, fastest);
   // Outside NYC the totals are relative risk, not crash counts.
   const estimated = route.coverage === "context";
-  const unit = estimated ? "relative risk" : "expected crashes";
+  const unit = estimated ? "relative risk" : "crash exposure";
   const share = maxExpected > 0 ? Math.max(4, (route.expected_crashes_total / maxExpected) * 100) : 4;
   const color = RISK_COLORS[route.risk_level];
   const kind = (
@@ -105,7 +105,7 @@ export function RouteCard({
         </div>
         <div className="route-exposure">
           <strong className="mono">{formatCrashes(route.expected_crashes_total)}</strong>
-          <span>{unit} / trip</span>
+          <span>{unit}</span>
         </div>
       </div>
 
@@ -118,7 +118,7 @@ export function RouteCard({
             <span>{signed(delta.km, 1)} km</span>
             {delta.crashes !== null && (
               <span className={delta.crashes < 0 ? "is-better" : "is-worse"}>
-                {signed(delta.crashes, 0)}% {estimated ? "risk" : "crashes"}
+                {signed(delta.crashes, 0)}% {estimated ? "risk" : "exposure"}
               </span>
             )}
           </span>

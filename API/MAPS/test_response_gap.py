@@ -5,7 +5,7 @@ import pandas as pd
 import pytest
 
 from app import app
-from global_model.build_hospitals import keep, merge_duplicates
+from global_model.build_hospitals import keep, merge_duplicates, uae_hospital
 import response_gap
 from response_gap import FAR_KM, HIGH_PERCENTILE, here, nearest, quadrant, summarise
 
@@ -84,6 +84,48 @@ class TestCleaning:
             {"lat": 25.01, "lon": 55.0, "name": "B", "emergency": ""},
         ]
         assert len(merge_duplicates(rows)) == 2
+
+
+DUBAI = (25.2, 55.3)
+DOHA = (25.29, 51.53)
+MUSCAT = (23.59, 58.4)
+
+
+class TestUaeRule:
+    """The strict UAE rule: a blank name, a point outside the UAE, or junk goes."""
+
+    @pytest.mark.parametrize("name", ["", "   "])
+    def test_a_blank_name_goes(self, name):
+        assert uae_hospital(name, *DUBAI) is False
+
+    def test_a_hospital_in_qatar_or_oman_goes_even_if_named_one(self):
+        assert uae_hospital("Hamad Hospital", *DOHA) is False
+        assert uae_hospital("Royal Hospital", *MUSCAT) is False
+
+    @pytest.mark.parametrize(
+        "name",
+        ["Family Care Centre Dubai", "Abu Dhabi Outpatient Hospital", "HR Building Hospital", "مستشفى"],
+    )
+    def test_junk_names_go(self, name):
+        assert uae_hospital(name, *DUBAI) is False
+
+    @pytest.mark.parametrize(
+        "name",
+        [
+            "Burjeel Medical City", "Cleveland Clinic Abu Dhabi", "Danat Al Emarat", "THUMBAY MEDI City",
+            "Doctor Sulaiman Al Habib",
+        ],
+    )
+    def test_major_hospitals_without_the_word_stay(self, name):
+        assert uae_hospital(name, *DUBAI) is True
+
+    @pytest.mark.parametrize("name", ["Rashid Hospital", "مستشفى الامارات"])
+    def test_a_named_hospital_stays(self, name):
+        assert uae_hospital(name, *DUBAI) is True
+
+    @pytest.mark.parametrize("name", ["Samaa Medical Centre", "Getchecked Clinic", "مركز شرطة هيلي", "Asd.saadiat"])
+    def test_a_clinic_or_police_station_goes_without_the_word(self, name):
+        assert uae_hospital(name, *DUBAI) is False
 
 
 class TestTheHospitalListItself:

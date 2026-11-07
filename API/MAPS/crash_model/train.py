@@ -75,20 +75,50 @@ def weighted_mae(y: np.ndarray, mu: np.ndarray, w: np.ndarray) -> float:
     return float(np.sum(w * np.abs(y - mu)) / np.sum(w))
 
 
+def decile_labels(w_sorted: np.ndarray, deciles: int) -> np.ndarray:
+    """Label rows (already sorted by predicted rate) with a decile 0..deciles-1.
+
+    Deciles are cut by cumulative weight (cell-hours), not by row count, so each
+    decile carries about the same exposure. Labels step up by at most one per row
+    and never skip a decile when there are enough rows, so no decile is empty
+    unless the data has fewer rows than deciles.
+    """
+    n = len(w_sorted)
+    labels = np.zeros(n, dtype=int)
+    total = float(np.sum(w_sorted))
+    if n == 0 or total <= 0:
+        return labels
+    cum = np.cumsum(w_sorted)
+    tiny = total * 1e-12
+    target = np.minimum(deciles - 1, np.floor(deciles * (cum - tiny) / total)).astype(int)
+    current = 0
+    for i in range(n):
+        if i > 0:
+            rows_left = n - i
+            if target[i] > current or rows_left <= deciles - 1 - current:
+                current = min(current + 1, deciles - 1)
+        labels[i] = current
+    return labels
+
+
 def calibration_table(y, mu, w, deciles=10) -> list[dict]:
-    order = np.argsort(mu)
-    chunks = np.array_split(order, deciles)
+    order = np.argsort(mu, kind="stable")
+    labels = decile_labels(w[order], deciles)
     base = float(np.sum(w * y) / np.sum(w))
     rows = []
-    for index, chunk in enumerate(chunks, start=1):
+    for index in range(deciles):
+        chunk = order[labels == index]
+        if chunk.size == 0:
+            continue
         wy = float(np.sum(w[chunk] * y[chunk]))
         wmu = float(np.sum(w[chunk] * mu[chunk]))
         wh = float(np.sum(w[chunk]))
         rows.append(
             {
-                "decile": index,
+                "decile": index + 1,
                 "predicted_rate": wmu / wh,
                 "observed_rate": wy / wh,
+                "weight": wh,
                 "lift": (wy / wh) / base if base > 0 else None,
             }
         )
@@ -183,16 +213,23 @@ def predict_model(model, frame: pd.DataFrame) -> np.ndarray:
     return np.clip(model.predict(dataset.feature_matrix(frame)), 1e-9, None)
 
 
-def tune_baseline(frame: pd.DataFrame) -> tuple[EmpiricalBayes, float]:
+SHRINK_GRID = (1.0, 4.0, 12.0, 52.0, 168.0, 500.0)
+
+
+def tune_baseline(train: pd.DataFrame, validation: pd.DataFrame) -> tuple[EmpiricalBayes, float]:
+    """Pick the smoothing on validation data, not on the frame the baseline was fit to.
+
+    Scoring on the training frame always favours the least smoothing (the lookup
+    memorises its own training rows), which handicaps the baseline. Returns the
+    baseline fit on ``train`` with the chosen shrink.
+    """
+    y_val = validation["count"].to_numpy(float)
+    w_val = validation["weight"].to_numpy(float)
     best = None
-    for shrink in (1.0, 4.0, 12.0, 52.0, 168.0):
-        baseline = EmpiricalBayes(shrink).fit(frame)
-        score = weighted_poisson_deviance(
-            frame["count"].to_numpy(float),
-            baseline.predict(frame),
-            frame["weight"].to_numpy(float),
-        )
-        print(f"  baseline shrink={shrink:>5}: deviance={score:.6f}", flush=True)
+    for shrink in SHRINK_GRID:
+        baseline = EmpiricalBayes(shrink).fit(train)
+        score = weighted_poisson_deviance(y_val, baseline.predict(validation), w_val)
+        print(f"  baseline shrink={shrink:>5}: validation deviance={score:.6f}", flush=True)
         if best is None or score < best[0]:
             best = (score, baseline, shrink)
     return best[1], best[2]
@@ -220,10 +257,15 @@ def main() -> int:
     w_test = split.test["weight"].to_numpy(float)
 
     print("\nbaseline (empirical Bayes):", flush=True)
-    baseline, shrink = tune_baseline(split.train)
+    baseline, shrink = tune_baseline(split.train, split.validation)
     baseline_val = evaluate(y_val, baseline.predict(split.validation), w_val, f"eb_shrink_{shrink}")
-    baseline_test = evaluate(y_test, baseline.predict(split.test), w_test, f"eb_shrink_{shrink}")
+    print(f"  chosen shrink={shrink}")
     print(f"  validation deviance {baseline_val['poisson_deviance']:.6f}")
+
+    # The model is refit on train+validation before the test, so the baseline is too.
+    combined = pd.concat([split.train, split.validation], ignore_index=True)
+    baseline = EmpiricalBayes(shrink).fit(combined)
+    baseline_test = evaluate(y_test, baseline.predict(split.test), w_test, f"eb_shrink_{shrink}")
     print(f"  test deviance       {baseline_test['poisson_deviance']:.6f}")
 
     print("\ncandidates:", flush=True)
@@ -243,7 +285,6 @@ def main() -> int:
     best_config = results[0][1]
     print(f"\nselected: {best_config['name']}", flush=True)
 
-    combined = pd.concat([split.train, split.validation], ignore_index=True)
     final_gate_model = fit_model(best_config, combined)
     model_test = evaluate(
         y_test, predict_model(final_gate_model, split.test), w_test, best_config["name"]

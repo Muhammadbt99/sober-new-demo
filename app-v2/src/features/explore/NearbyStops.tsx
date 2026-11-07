@@ -3,7 +3,7 @@ import { MapPin } from "lucide-react";
 import { LoadingBlock } from "@/components/DataState";
 import type { NearestSafeResponse, SafeStop } from "@/lib/contract";
 import { cn } from "@/lib/utils";
-import { formatStopDistance, rankStops, stopKey, stopMeta } from "@/lib/stops";
+import { formatStopDistance, shortlistStops, stopKey, stopMeta } from "@/lib/stops";
 
 const VISIBLE = 6;
 
@@ -30,7 +30,7 @@ export function NearbyStops({
     return <p className="section-note">Safe stops are unavailable in this build.</p>;
   }
 
-  const ranked = rankStops(data.stops).slice(0, VISIBLE);
+  const ranked = shortlistStops(data.stops, VISIBLE);
   if (ranked.length === 0) {
     return (
       <p className="section-note">

@@ -234,7 +234,7 @@ def test_model_card_reports_the_loaded_artifact(client):
     for split in ("temporal_test", "holdout"):
         block = card[split]
         assert block["poisson_deviance"] == meta["model_metrics"][split]["poisson_deviance"]
-        assert block["baseline_deviance"] == meta["baseline"][split]["poisson_deviance"]
+        assert block["baseline_deviance"] == meta["baseline"]["fair"][split]["poisson_deviance"]
         assert block["poisson_deviance"] < block["baseline_deviance"]
         assert [row["decile"] for row in block["deciles"]] == list(range(1, 11))
         lifts = [row["lift"] for row in block["deciles"]]
@@ -248,3 +248,18 @@ def test_model_card_is_unavailable_without_a_model(client, monkeypatch):
     response = client.get("/model_card")
     assert response.status_code == 503
     assert "not available" in response.get_json()["error"]
+
+
+def test_compare_never_calls_a_place_with_no_road_safer(client, monkeypatch):
+    """A 0 at sea means nothing to score, so it must not beat a real street."""
+    monkeypatch.setattr(
+        "app._conditions", lambda lat, lon: ((20, 0, 0), "fallback", 0, "fallback", None)
+    )
+    data = client.get(
+        "/risk/compare?lat1=23.5&lon1=55.0&lat2=25.2697&lon2=55.3094&hour=18&day=4"
+    ).get_json()
+    assert data["location_a"]["coverage_reason"] == "no_road_here"
+    assert data["location_b"]["coverage_reason"] != "no_road_here"
+    assert data["safer_location"] == "EQUAL"
+    assert data["risk_difference"] == 0
+    assert "no mapped road" in data["recommendation"]

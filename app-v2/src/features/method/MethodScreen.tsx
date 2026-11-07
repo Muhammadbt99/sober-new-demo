@@ -118,6 +118,8 @@ export function MethodScreen({
             <p>
               The gate compares the model against an empirical-Bayes baseline on a
               temporal test set and a {borough} spatial holdout. Both must improve.
+              The baseline's smoothing was chosen on validation data; an earlier version
+              compared against an overfitted baseline and overstated the gain.
             </p>
             <div className="gate-line">
               <CheckCircle2 size={16} />
@@ -259,7 +261,7 @@ export function MethodScreen({
             <Sigma size={22} />
             <div>
               <p className="formula mono">
-                expected crashes = Σ ( rate<sub>cell</sub> × segment_km / √cell_area_km² )
+                crash exposure = Σ ( rate<sub>cell</sub> × segment_km / √cell_area_km² )
               </p>
               <p>
                 The route engine splits each provider geometry at H3 boundaries, scores

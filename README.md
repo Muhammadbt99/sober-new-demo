@@ -64,10 +64,10 @@ http://localhost:5173/plan?olat=40.75800&olon=-73.98550&oname=Times+Square&odeta
 |---|---|---|
 | 1 | Live risk surface | Explore at Times Square: CRITICAL 100, model 60/60 (99.7th percentile), nightlife 40/40 (145 venues within 1 km). Every one of the 1,122 model cells is on the map, coloured for this hour. |
 | 2 | Load the scenario | Plan with Times Square -> Brooklyn Borough Hall, 23:00. |
-| 3 | Fastest vs safest | Five routes scored. Safest 0.108 vs fastest 0.168 expected crashes; **36.0% lower**; 22.5 vs 18.0 min. |
+| 3 | Fastest vs safest | Five routes scored. Safest 0.108 vs fastest 0.168 crash exposure; **36.0% lower**; 22.5 vs 18.0 min. |
 | 4 | Explain the worst segment | 9th Avenue, km 0.1-1.3 of the safest route: 99.4th percentile, model 60/60, nightlife 40/40, H3 `882a10725bfffff`. |
 | 5 | Change the hour | 03:00: safest 0.072 vs fastest 0.113 (**36.1% lower**), both a third below 23:00. The surface is time-aware. |
-| 6 | Show the measured gate | Method: 0.0359 vs 0.0459 temporal deviance; 0.0548 vs 0.0557 Brooklyn holdout; 1,122 cells. |
+| 6 | Show the measured gate | Method: 0.0359 vs 0.0372 temporal deviance (3.4% lower); 0.0548 vs 0.0557 Brooklyn holdout; 1,122 cells. |
 | 7 | Be honest outside NYC | Newark: "Outside model coverage", crash model 0/60, rate `-`, no crash points. |
 | 8 | Beyond New York: the UAE | Downtown Dubai, "Global crash model": dense hexes around the point, the percentile among every UAE place and hour, and one line saying it never saw UAE crash records. |
 
@@ -156,9 +156,11 @@ the metadata string is stale. Property-damage-only crashes are excluded.
 | Training window | 2020-01-01 to 2026-06-11 |
 | Crashes | 226,745 injury-or-fatal crashes |
 | Gate | passed 2026-11-03 |
-| Temporal test | deviance **0.035891** vs EB baseline **0.045884** (21.8% lower) |
+| Temporal test | deviance **0.035891** vs EB baseline **0.037161** (3.4% lower) |
 | Brooklyn holdout | deviance **0.054842** vs EB baseline **0.055654** (1.5% lower) |
-| Top-decile lift | **3.90x** temporal / **2.19x** Brooklyn; baseline 2.92x / 1.71x |
+| Top-decile lift | **3.58x** temporal / **2.16x** Brooklyn; baseline 3.12x / 1.63x (weighted by cell-hours) |
+
+The baseline's smoothing is chosen on validation data, and both sides are refit on train plus validation before the temporal test. An earlier version tuned the baseline on its own training rows and reported a 21.8% gain, which was overstated.
 | Deciles | monotonic on both tests |
 | Temporal MAE | 0.007023 vs baseline 0.007934 |
 | Holdout MAE | 0.008387 vs baseline 0.008266 (slightly worse; disclosed) |
@@ -183,7 +185,7 @@ P75-P90 30, P90-P99 50, at/above P99 60) plus nightlife 0-40 (0 bars 0; 1-5 bars
 Route exposure is distance-linear: `rate * segment_km / sqrt(cell_area_km2)`. The
 per-10-km figure is derived from the total and the route length. Duration only
 labels the fastest/balanced routes. The recommendation picks the **lowest total
-expected injury crashes**, not the lowest 0-100 average.
+crash exposure**, not the lowest 0-100 average.
 
 ## API surface
 
@@ -202,7 +204,7 @@ reads its list from the router, so it always matches what is served.
 | `/heatmap` | map hexes (outside New York) | the global estimate sampled on an 8 x 8 grid around a point |
 | `/risk/trend` | Explore "risk by hour" strip | risk by hour |
 | `/risk/compare` | Explore "Compare two places" | side-by-side comparison of a picked place A and B |
-| `/safe_route` | Plan panel and map | up to five routes scored on expected crashes (see below) |
+| `/safe_route` | Plan panel and map | up to five routes scored on crash exposure (see below) |
 | `/safe_route?live=1` or `&date=YYYY-MM-DD` | Plan | the same answer with traffic: every route timed by TomTom on its exact road, plus TomTom's own traffic-aware roads scored for risk like any other. Adds a `traffic` block, and `recommended_route` becomes the fastest unless a slower road cuts risk by at least 5%, buys at least 1% per extra minute and adds at most 30% to the time. All routes are timed or none. Needs `TOMTOM_API_KEY`; without it, times assume empty roads and the app says so |
 | `/safe_route/guidance` | Road simulation | English turn-by-turn directions from TomTom for one route of the trip, along the same road. `available: false` with a reason without a key; the drive still runs, without turns |
 | `/tiles/satellite/{z}/{x}/{y}.jpg` | Map, Satellite button | satellite imagery from TomTom, through the API so the key stays on the server. Tiles are only fetched while the layer is on; 503 without a key |
@@ -233,7 +235,7 @@ two. The planner adds more in two steps, all scored on the same model surface:
 2. **Offset detours.** Only if the provider returned fewer than two routes *and* no
    waypoint alternative survived, the original synthesised detours run.
 
-Routes are ranked by expected injury crashes per trip. Set `SOBER_VIA_ALTERNATIVES=0`
+Routes are ranked by crash exposure. Set `SOBER_VIA_ALTERNATIVES=0`
 to turn the waypoint step off; it also stays off whenever the provider is replaced
 by a test double.
 
@@ -413,7 +415,7 @@ The crash model is trained on New York crash records only, and the global crash
 model serves the UAE. Everywhere else (London, Riyadh, Tokyo...)
 `API/MAPS/context_model.py` gives an **estimate** from
 inputs that exist everywhere, and the UI labels it as one ("Global estimate", "not a
-trained crash model", "relative risk" instead of "expected crashes"):
+trained crash model", "relative risk" instead of "crash exposure"):
 
 | Input | Source | Effect |
 |---|---|---|
@@ -470,6 +472,7 @@ breakdown only. There is no `recent_requests` or `highest_risk_location`.
 | Weather | live and keyless (Open-Meteo, MET Norway); WeatherAPI optional |
 | `API/MAPS/data/road_deaths_per_100k.json` | World Bank SH.STA.TRAF.P5 (WHO estimates), 190 countries, retrieved 2026-11-03 |
 | `API/MAPS/data/countries.geojson` | the 177 country outlines above with ISO codes, for offline country lookup |
+| `API/MAPS/data/land_50m.geojson` | Natural Earth 1:50m land (public domain), coordinates rounded to 3 decimals, for offline land and water checks |
 | `API/MAPS/gazetteer.py` | 82 major cities, the place-search fallback |
 
 The PMTiles style deliberately has no label/glyph layers, so it never makes a font
@@ -635,7 +638,7 @@ shows no crash points. Screenshots:
 - **Holdout quality:** on the held-out borough the model beats the baseline on
   deviance by only 1.5%, its MAE is slightly worse, and its rates run about 40%
   below what happened there (it learned the other boroughs' level). It ranks well
-  (top-decile lift 2.19x), and the score is a percentile, so the ranking is what
+  (top-decile lift 2.16x), and the score is a percentile, so the ranking is what
   it uses. The Method screen shows the exact numbers.
 - **Severity model:** `/ml/*` is surfaced, but only as a clearly labelled research
   tool (Explore "If a crash happened here" and Method section 06). It needs
